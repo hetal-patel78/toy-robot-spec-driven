@@ -1,0 +1,366 @@
+name: CI
+
+on: push
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Install .NET SDK 8
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build ToyRobot.sln
+
+      - name: Unit and whole-flow tests
+        run: dotnet test tests/ToyRobot.Tests --no-build
+
+      - name: End-to-end tests
+        run: dotnet test tests/ToyRobot.EndToEndTests --no-build
+
+      - name: CI-06 line endings and executable mode
+        shell: bash
+        run: |
+          fail=0
+          while IFS=$'\t' read -r info path; do
+            set -- $info
+            state=${2#w/}
+            if [ "$state" = "-text" ]; then
+              continue
+            fi
+            case "$path" in
+              *.cmd)
+                if [ "$state" != "crlf" ]; then
+                  echo "CI-06: $path has working-copy line endings '$state', expected crlf"
+                  fail=1
+                fi
+                ;;
+              *)
+                case "$state" in
+                  lf|none|"") ;;
+                  *)
+                    echo "CI-06: $path has working-copy line endings '$state', expected lf"
+                    fail=1
+                    ;;
+                esac
+                ;;
+            esac
+          done < <(git ls-files --eol)
+          mode=$(git ls-files -s run.sh | cut -c1-6)
+          if [ "$mode" != "100755" ]; then
+            echo "CI-06: run.sh has mode '$mode' in git, expected 100755"
+            fail=1
+          fi
+          exit $fail
+
+      - name: Prepare output folder
+        shell: bash
+        run: mkdir -p "$RUNNER_TEMP/out"
+
+      - name: CI-01 and CI-03 Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call :run challenge-example-1
+          call :run challenge-example-2
+          call :run challenge-example-3
+          call :run bom-challenge-example-1
+          call :run exit-mid-file
+          call :run empty
+          call run.cmd < testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\no-argument.txt"
+          >"%RUNNER_TEMP%\out\no-argument.code" echo %ERRORLEVEL%
+          cd testdata
+          call ..\run.cmd challenge-example-1.txt > "%RUNNER_TEMP%\out\other-folder.txt"
+          >"%RUNNER_TEMP%\out\other-folder.code" echo %ERRORLEVEL%
+          cd ..
+          exit /b 0
+
+          :run
+          call run.cmd testdata\%1.txt > "%RUNNER_TEMP%\out\%1.txt"
+          >"%RUNNER_TEMP%\out\%1.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-01 and CI-03 Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty; do
+            rc=0
+            ./run.sh "testdata/$name.txt" > "$RUNNER_TEMP/out/$name.txt" || rc=$?
+            echo "$rc" > "$RUNNER_TEMP/out/$name.code"
+          done
+          rc=0
+          ./run.sh < testdata/challenge-example-1.txt > "$RUNNER_TEMP/out/no-argument.txt" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/no-argument.code"
+          rc=0
+          (cd testdata && ../run.sh challenge-example-1.txt) > "$RUNNER_TEMP/out/other-folder.txt" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/other-folder.code"
+
+      - name: CI-01 and CI-03 compare
+        shell: bash
+        run: |
+          fail=0
+          check() {
+            # $1 = name of the saved output, $2 = expected file
+            if [ ! -f "$RUNNER_TEMP/out/$1.txt" ] || [ ! -f "$RUNNER_TEMP/out/$1.code" ]; then
+              echo "CI-01: no saved output or exit code for $1"
+              fail=1
+              return
+            fi
+            if ! diff <(tr -d '\r' < "$RUNNER_TEMP/out/$1.txt") <(tr -d '\r' < "$2"); then
+              echo "CI-01: console output (stdout) for $1 differs from $2"
+              fail=1
+            fi
+            code=$(tr -d '\r\n ' < "$RUNNER_TEMP/out/$1.code")
+            if [ "$code" != "0" ]; then
+              echo "CI-01: exit code for $1 is '$code', expected 0"
+              fail=1
+            fi
+          }
+          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty; do
+            check "$name" "testdata/$name.expected.txt"
+          done
+          check no-argument testdata/challenge-example-1.expected.txt
+          check other-folder testdata/challenge-example-1.expected.txt
+          exit $fail
+
+      - name: CI-07 Progress lines Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call run.cmd testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\ci07.out" 2> "%RUNNER_TEMP%\out\ci07.err"
+          >"%RUNNER_TEMP%\out\ci07.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-07 Progress lines Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          rc=0
+          ./run.sh testdata/challenge-example-1.txt > "$RUNNER_TEMP/out/ci07.out" 2> "$RUNNER_TEMP/out/ci07.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci07.code"
+
+      - name: CI-07 Progress lines check
+        shell: bash
+        run: |
+          fail=0
+          base="$RUNNER_TEMP/out/ci07"
+          if [ ! -f "$base.err" ] || [ ! -f "$base.code" ]; then
+            echo "CI-07: no saved console messages (stderr) or exit code"
+            exit 1
+          fi
+          case "$RUNNER_OS" in
+            Windows) file='testdata\challenge-example-1.txt' ;;
+            *) file='testdata/challenge-example-1.txt' ;;
+          esac
+          printf '%s\n' \
+            'Checking for a .NET SDK, version 8 or later...' \
+            'Building the application (Release)...' \
+            "Running the application with commands from $file" > "$RUNNER_TEMP/out/ci07.expected"
+          if ! diff <(tr -d '\r' < "$base.err" | head -n 3) "$RUNNER_TEMP/out/ci07.expected"; then
+            echo "CI-07: the first three lines of console messages (stderr) are not the progress lines"
+            fail=1
+          fi
+          if ! diff <(tr -d '\r' < "$base.out") <(tr -d '\r' < testdata/challenge-example-1.expected.txt); then
+            echo "CI-07: console output (stdout) differs from testdata/challenge-example-1.expected.txt"
+            fail=1
+          fi
+          code=$(tr -d '\r\n ' < "$base.code")
+          if [ "$code" != "0" ]; then
+            echo "CI-07: exit code is '$code', expected 0"
+            fail=1
+          fi
+          exit $fail
+
+      - name: CI-02 Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call :run missing testdata\no-such-file.txt
+          call :run folder testdata
+          call :run two-arguments testdata\challenge-example-1.txt testdata\challenge-example-2.txt
+          call :run wildcard testdata\challenge-example-1.*
+          exit /b 0
+
+          :run
+          call run.cmd %2 %3 > "%RUNNER_TEMP%\out\ci02-%1.out" 2> "%RUNNER_TEMP%\out\ci02-%1.err"
+          >"%RUNNER_TEMP%\out\ci02-%1.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-02 Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          run() {
+            name=$1
+            shift
+            rc=0
+            ./run.sh "$@" > "$RUNNER_TEMP/out/ci02-$name.out" 2> "$RUNNER_TEMP/out/ci02-$name.err" || rc=$?
+            echo "$rc" > "$RUNNER_TEMP/out/ci02-$name.code"
+          }
+          run missing testdata/no-such-file.txt
+          run folder testdata
+          run two-arguments testdata/challenge-example-1.txt testdata/challenge-example-2.txt
+
+      - name: CI-02 check
+        shell: bash
+        run: |
+          fail=0
+          names="missing folder two-arguments"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            names="$names wildcard"
+          fi
+          for name in $names; do
+            base="$RUNNER_TEMP/out/ci02-$name"
+            if [ ! -f "$base.code" ]; then
+              echo "CI-02: no saved exit code for $name"
+              fail=1
+              continue
+            fi
+            code=$(tr -d '\r\n ' < "$base.code")
+            if [ "$code" != "1" ]; then
+              echo "CI-02: $name: exit code is '$code', expected 1"
+              fail=1
+            fi
+            if [ -s "$base.out" ]; then
+              echo "CI-02: $name: console output (stdout) is not empty:"
+              cat "$base.out"
+              fail=1
+            fi
+            if [ ! -s "$base.err" ]; then
+              echo "CI-02: $name: console messages (stderr) are empty"
+              fail=1
+            fi
+            if [ "$name" = "wildcard" ] && ! grep -F -q 'must not contain * or ?' "$base.err"; then
+              echo "CI-02: $name: console messages (stderr) do not contain 'must not contain * or ?':"
+              cat "$base.err"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: CI-04 Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          set "PATH=%SystemRoot%\System32"
+          call run.cmd testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\ci04-no-dotnet.out" 2> "%RUNNER_TEMP%\out\ci04-no-dotnet.err"
+          >"%RUNNER_TEMP%\out\ci04-no-dotnet.code" echo %ERRORLEVEL%
+          mkdir "%RUNNER_TEMP%\old-sdk"
+          >"%RUNNER_TEMP%\old-sdk\dotnet.cmd" echo @echo 7.0.410 [C:\fake\sdk]
+          set "PATH=%RUNNER_TEMP%\old-sdk;%SystemRoot%\System32"
+          call run.cmd testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\ci04-old-sdk.out" 2> "%RUNNER_TEMP%\out\ci04-old-sdk.err"
+          >"%RUNNER_TEMP%\out\ci04-old-sdk.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-04 Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/empty" "$RUNNER_TEMP/old-sdk"
+          rc=0
+          PATH="$RUNNER_TEMP/empty" /bin/bash ./run.sh testdata/challenge-example-1.txt > "$RUNNER_TEMP/out/ci04-no-dotnet.out" 2> "$RUNNER_TEMP/out/ci04-no-dotnet.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci04-no-dotnet.code"
+          printf '#!/bin/sh\necho "7.0.410 [/fake/sdk]"\n' > "$RUNNER_TEMP/old-sdk/dotnet"
+          chmod +x "$RUNNER_TEMP/old-sdk/dotnet"
+          rc=0
+          PATH="$RUNNER_TEMP/old-sdk:/usr/bin:/bin" /bin/bash ./run.sh testdata/challenge-example-1.txt > "$RUNNER_TEMP/out/ci04-old-sdk.out" 2> "$RUNNER_TEMP/out/ci04-old-sdk.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci04-old-sdk.code"
+
+      - name: CI-04 check
+        shell: bash
+        run: |
+          fail=0
+          for name in no-dotnet old-sdk; do
+            base="$RUNNER_TEMP/out/ci04-$name"
+            if [ ! -f "$base.code" ]; then
+              echo "CI-04: no saved exit code for $name"
+              fail=1
+              continue
+            fi
+            code=$(tr -d '\r\n ' < "$base.code")
+            if [ "$code" != "1" ]; then
+              echo "CI-04: $name: exit code is '$code', expected 1"
+              fail=1
+            fi
+            if [ -s "$base.out" ]; then
+              echo "CI-04: $name: console output (stdout) is not empty:"
+              cat "$base.out"
+              fail=1
+            fi
+            if ! grep -q 'https://dotnet.microsoft.com/download' "$base.err"; then
+              echo "CI-04: $name: console messages (stderr) do not name https://dotnet.microsoft.com/download:"
+              cat "$base.err"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: CI-05 make a broken copy
+        shell: bash
+        run: |
+          mkdir "$RUNNER_TEMP/broken"
+          broken=$(cd "$RUNNER_TEMP/broken" && pwd)
+          git archive --format=tar HEAD | tar -x -C "$broken"
+          printf '#error CI-05 makes this build fail on purpose\n' > "$broken/src/ToyRobot/CiBuildBreaker.cs"
+
+      - name: CI-05 Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          cd /d "%RUNNER_TEMP%\broken"
+          call run.cmd testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\ci05-script.out" 2> "%RUNNER_TEMP%\out\ci05-script.err"
+          >"%RUNNER_TEMP%\out\ci05-script.code" echo %ERRORLEVEL%
+          dotnet build src\ToyRobot\ToyRobot.csproj -c Release --nologo > "%RUNNER_TEMP%\out\ci05-build.out" 2>&1
+          >"%RUNNER_TEMP%\out\ci05-build.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-05 Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP/broken"
+          rc=0
+          ./run.sh testdata/challenge-example-1.txt > "$RUNNER_TEMP/out/ci05-script.out" 2> "$RUNNER_TEMP/out/ci05-script.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci05-script.code"
+          rc=0
+          dotnet build src/ToyRobot/ToyRobot.csproj -c Release --nologo > "$RUNNER_TEMP/out/ci05-build.out" 2>&1 || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci05-build.code"
+
+      - name: CI-05 check
+        shell: bash
+        run: |
+          fail=0
+          out="$RUNNER_TEMP/out"
+          if [ ! -f "$out/ci05-script.code" ] || [ ! -f "$out/ci05-build.code" ]; then
+            echo "CI-05: no saved exit codes"
+            exit 1
+          fi
+          script_code=$(tr -d '\r\n ' < "$out/ci05-script.code")
+          build_code=$(tr -d '\r\n ' < "$out/ci05-build.code")
+          if [ "$script_code" = "0" ] || [ "$script_code" != "$build_code" ]; then
+            echo "CI-05: script exit code '$script_code' and build exit code '$build_code' must be equal and not 0"
+            fail=1
+          fi
+          if [ -s "$out/ci05-script.out" ]; then
+            echo "CI-05: console output (stdout) is not empty:"
+            cat "$out/ci05-script.out"
+            fail=1
+          fi
+          if ! grep -q 'CS1029' "$out/ci05-script.err"; then
+            echo "CI-05: console messages (stderr) do not contain CS1029:"
+            cat "$out/ci05-script.err"
+            fail=1
+          fi
+          exit $fail
