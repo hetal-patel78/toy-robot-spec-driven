@@ -700,3 +700,77 @@ Outcome: the working branch and `main` pushed to GitHub. Page 11 (Glossary) writ
 > push it and go ahead with page 12
 
 Outcome: the working branch and `main` pushed to GitHub. Page 12 (Assumptions) written: A1 with a table of what is not known, the default and the fallback for each case; no open questions; and the three questions settled with the outline (A run-script wording, B folder layout and xUnit, C naming the platform on pages 1–4). Decision changes made while writing are not listed there, because decisions are recorded only in design-decisions.md; the prompt log holds their history. Every link in the solution design now resolves.
+
+<a id="p119"></a>**P119.** After the assistant proposed a 12-hour plan for the Spec Kit specification and the implementation. The developer wrote this message, interrupted it, and then added the second:
+> In regards to spec creation can u create work flow for me which does what u explained above.
+>
+> each work flow create specs in parallel for whole applicaton while  and review it , fix it and test it while I am sleeping and once all done tomorrow morning we can start the impkemenation?
+
+> I can  start a new session with all above so u create me prompt
+
+Outcome: the assistant pointed out that DEC-36 and CLAUDE.md said only the developer runs the `/speckit-*` commands, and asked who should run them in the implementation run and how many specs to create.
+
+<a id="p120"></a>**P120.** The developer's answers. On who runs the Spec Kit commands, the developer chose "Claude runs them (Recommended)": change DEC-36 and CLAUDE.md so Claude may run the Spec Kit steps from a prompt the developer approved. On how many specs, the developer answered:
+> all the specs not just create it should create, review , fix , rereview and test it as well
+
+Outcome: DEC-36 and CLAUDE.md changed: the `/speckit-*` commands are run by the developer, or by Claude Code following a prompt the developer approved, and the prompt log records that prompt and the commands run under it. `docs/spec-kit/spec-kit-brief.md` written for the implementation session: one constitution and three specs (001 robot rules, 002 console session, 003 delivery), each created, reviewed, fixed and re-reviewed in parallel, then cross-checked and checked by script (coverage, exact strings, channels, names, DEC-31 cases, analyze, no code), with a run report of open decisions. A short prompt given to the developer to start that session.
+
+<a id="p121"></a>**P121.**
+> ok can u install it please
+
+Outcome: GitHub Spec Kit 1.1.1.dev0 installed in the repository for Claude Code with PowerShell scripts (`specify init --here --integration claude --script ps`): `.specify/` (templates, scripts, configuration) and the `/speckit-*` skills in `.claude/skills/`. `CLAUDE.md` was not changed by the install. The Spec Kit brief updated to match how this version works: the specs are numbered from the folders already in `specs/`, and the current feature is tracked per checkout, so the three specs are created one after another and then completed in parallel, one worktree each.
+
+<a id="p122"></a>**P122.** After the assistant explained why the run prompt said not to push, and that the run's work would then reach GitHub all at once:
+> I suggest push each spec once it created, reviewed and tested so that we have small commits so update the prompt
+
+Outcome: the Spec Kit brief and the run prompt updated. Each spec is committed in small steps; once it has passed its review checklist and the checks that apply to one spec (coverage of its requirements, exact strings, exit codes and channels, names, analyze, no code), its own branch is pushed to GitHub. The combined `specs` branch is pushed at the end. `main` is never pushed by the run; it moves only after the developer's review.
+
+<a id="p123"></a>**P123.** On the Spec Kit run:
+> if u want a decision take ur own decision I want to make sure that the whole app work withour an error
+
+Outcome: the Spec Kit brief and the run prompt updated so the session decides instead of leaving questions open. Where the sources are silent or ambiguous, it chooses the option that best fits design-decisions.md and the solution design, is simplest and keeps every path testable, writes it into the spec and lists it in the run report under "Decided in the run" for the developer to confirm. Limits: it does not edit design-decisions.md, the solution design, CLAUDE.md or the brief; where sources contradict, design-decisions.md wins and the contradiction is reported; nothing out of scope is added; no `[NEEDS CLARIFICATION]` marker is left. The review checklist also requires a planned test for every behaviour, including every error and bad-input path.
+
+<a id="p124"></a>**P124.** While P123 was being applied:
+> u can decide the calrifications as well as u have access to all the documents
+
+Outcome: already covered by the change for P123: rule 11 of the Spec Kit brief has the session answer every `/speckit-clarify` question itself, from the sources where they answer it (design-decisions.md and the solution design, with the handwritten analysis and the clarification documents as background), and otherwise by deciding under rule 10 and listing the decision in the run report.
+
+<a id="p125"></a>**P125.** On the timeline:
+> I want to make sure my app is read and tested by tomorrow 3 PM at the moment it is 1:30 am
+
+Outcome: the assistant showed that implementing only in a later session would finish after 15:00, and asked whether the run should also implement. The developer chose "Specs + implementation (Recommended)". The Spec Kit brief extended: after the specification passes its checks, the session implements 001, 002 and 003 in order with `/speckit-implement` on a branch `impl` (tests first, `dotnet build` and `dotnet test` passing after each phase, a fresh code review per spec, push after each spec), runs the application for real with `run.cmd` from cmd and PowerShell, watches CI on Windows, Linux and macOS and fixes failures (at most five attempts), fast-forwards local `main` but never pushes it, and stops at the last passing point by 07:30. The run report gains the implementation results, real runs, CI results and what is left for the developer.
+
+<a id="p126"></a>**P126.** On the 07:30 stop time in the run prompt, choosing one of the two options the assistant offered:
+> No deadline: let it run until it's finished, but still commit and push after every passing step and keep the report up to date as it goes. Then you'd still have a green point and a current report whenever you start, even if it's still working.
+
+Outcome: the time limit removed from the Spec Kit brief and the run prompt. The session works until everything is finished; it writes the run report early and updates it after every step; after every step that ends with everything passing, it commits, pushes the branch it is working on and fast-forwards local `main` (or says in the report why it could not). It never pushes failing work or `main`.
+
+<a id="p127"></a>**P127.**
+> as i mentioned if solution design any other document cause blocker for delivering full working system then feel free to make the decsion and give me full working system error free by tomorrow
+
+Outcome: rule 10 of the Spec Kit brief widened. Gaps are still filled in the Spec Kit files first. When a document blocks a full, working, error-free system (a decision that cannot work on one of the three systems, sources that contradict each other, or a design point that makes a requirement impossible to meet or test), the run changes it: the brief records that the developer confirmed such changes in advance for this run, which is the confirmation CLAUDE.md asks for. Changes follow the chain (design-decisions.md, then the solution design, then the Spec Kit files), each in its own commit starting "Run change:", and are listed under "Changed in the run" in the run report. The session may never pass by weakening: no deleted, skipped or loosened tests, no expected output changed to match the code, nothing dropped that a requirement or the challenge asks for. CLAUDE.md and the brief stay unedited.
+
+<a id="p128"></a>**P128.** On the run, followed by "ok" after the assistant said it would add a rule:
+> on thing is make sure u don't deleting any thing
+
+Outcome: rule 12 "Never delete anything" added to the Spec Kit brief: no file or folder deleted, moved away or emptied; no content cut from a document (an allowed change under rule 10 edits the text in place and is listed under "Changed in the run"); no prompt-log entry changed or removed; git history kept (no hard reset, clean, rebase, amending pushed commits, force push, branch deletion, stash drop or worktree removal), with the run's worktrees and branches left in place and listed in the run report; anything that seems to need deleting is left and listed for the developer.
+
+<a id="p129"></a>**P129.** After the assistant explained that the run pushes only feature branches, never `main`:
+> no u push to git as well tell workflow to review the code by handing it to seperate agent.
+
+Outcome: the Spec Kit brief now has the run push `main` too, but only after a separate review agent, one that did not write or fix the changes, has reviewed everything since the last pushed `main` against the decisions, the solution design, the specs and the brief's rules, and approved it; all tests must pass, and once CI exists the run must be green on all three systems. A rejection is fixed and reviewed again by a new separate agent. `main` is pushed at least after the specification phase, after each spec is implemented and at the finish; never force-pushed. Each review is recorded in the run report.
+
+<a id="p130"></a>**P130.** On the outline of the run workflow:
+> where is the review and fix part in the workflow?
+
+Outcome: the assistant showed where review and fix happen, and found two gaps in the Spec Kit brief, now closed: the cross-check of the three specs (step 5) and the checks on the whole specification (step 6) now fix every finding and check again until all pass; the code review of each implemented spec (step 9.4) now hands the fixed code to a new fresh reviewer, repeating until one finds nothing (at most three rounds).
+
+<a id="p131"></a>**P131.**
+> also in order to save token can assigne which model each part of worflow should use
+
+Outcome: a "Models" section added to the Spec Kit brief. `opus` writes the constitution, specs, plans and tasks, takes rule-10 decisions and document changes, reviews and cross-checks the specs, and is the separate review agent before every push of `main`; `sonnet` fixes spec findings, implements, fixes failing tests and CI, and reviews each spec's code; `haiku` runs the scripted checks, builds, tests, real runs and CI watching, and updates the run report (`sonnet` for the final report). A `haiku` or `sonnet` agent that fails the same task twice hands it to `opus`.
+
+<a id="p132"></a>**P132.** On which model versions the workflow uses:
+> sonnet 5 or sonnet 5.5 , Opus 5.5
+
+Outcome: the Spec Kit brief names the exact versions: `opus` is Opus 5.5, `sonnet` is Sonnet 5.5 (not Sonnet 5), `haiku` is Haiku 4.5; the session itself runs on Opus 5.5, and the run report records the models used.
