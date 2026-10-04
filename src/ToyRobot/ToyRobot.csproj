@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ToyRobot</RootNamespace>
+    <AssemblyName>ToyRobot</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The tests call Program's internal Run in memory (SG-01, PG-02, DEC-32); Program stays internal. -->
+    <InternalsVisibleTo Include="ToyRobot.Tests" />
+  </ItemGroup>
+
+</Project>
