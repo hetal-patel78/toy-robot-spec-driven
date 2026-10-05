@@ -217,7 +217,6 @@ public class CommandParserTests
                      "PLACE 1,2,NORTH,",
                      "PLACE --1,0,NORTH",
                      "PLACE 0x1,0,NORTH",
-                     "PLACE -2147483649,0,NORTH",
                      new string('A', 10000),
                      "\0",
                      "PLACE 0,0,NORTH",

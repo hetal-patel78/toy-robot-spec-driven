@@ -295,3 +295,8 @@ Outcome: the README section is now "Run the test data": the ready-to-copy cmd, P
 > yes push it also do the same for testing by hand
 
 Outcome: [docs/testing-by-hand.md](../testing-by-hand.md) has a new section, "Run the test data": the command in each shell, then for each of the seven test-data files what the console shows, line by line (each line echoed, then its warning or report). Every block was produced by running the file through the built application; the reports in each block are exactly the file's expected output. No decision or code changed.
+
+<a id="p183"></a>**P183.** The developer ran `dotnet test` locally (.NET SDK 10) and pasted the result: 496 passed, with one warning:
+> Skipping test case with duplicate ID '6b7841cd7136e51afff0015228e03bb106117512' ('ToyRobot.Tests.Unit.CommandParserTests.Parse_never_throws_and_always_returns_one_of_the_three_cases(line: "PLACE -2147483649,0,NORTH")' ...
+
+Outcome: the "never throws" theory in `tests/ToyRobot.Tests/Unit/CommandParserTests.cs` takes every line of the failure table and a few extra lines. When "X is too large" was added, `PLACE -2147483649,0,NORTH` went into the failure table but also stayed in the extra lines, so xUnit saw the same case twice and skipped one. The extra copy is removed; the line is still tested once by the theory and once, with its exact warning, by the failure table. The number of tests run is unchanged (470 + 26); the warning is gone. No decision or application code changed.
