@@ -466,7 +466,7 @@ finding `run.cmd` in the current folder; it was cleared for these runs. A normal
 
 | Run | Commit | Result |
 |---|---|---|
-| 37267711180 | `c756617` (the code as finished) | Pass on `windows-latest`, `ubuntu-latest` and `macos-latest` |
+| 37270183559 | `5aa73b4` (the code as finished) | Pass on `windows-latest`, `ubuntu-latest` and `macos-latest` |
 
 ## 8. Left for the developer
 
