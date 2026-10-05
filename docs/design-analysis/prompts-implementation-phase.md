@@ -278,3 +278,8 @@ Outcome: the sequence diagrams on pages 7.1 to 7.7 were compared with the code, 
 > ye good ideas to rename
 
 Outcome: `docs/try-it-by-typing.md` renamed to `docs/testing-by-hand.md`, with the heading "Testing by hand". The README links ("Run it" and "Where to look") point to the new name; earlier records that name the old page say it was renamed. The page's content is unchanged. No decision or code changed.
+
+<a id="p180"></a>**P180.** On the test data:
+> can u add the a new file in test data that show multiple operation not 1 or not but a complicated check
+
+Outcome: a seventh test-data pair, `testdata/long-session.txt` and `long-session.expected.txt` (spec 003, [TD-01](../../specs/003-delivery/spec.md#td-01); task T040). The 36 lines mix every kind of line: commands before PLACE, a PLACE off the table, the robot walked along two edges with a MOVE blocked at each corner, an unknown command, a PLACE with values missing, a blank line, a second PLACE in lower case, a line starting with spaces, a full turn, a negative PLACE, and four REPORTs. The expected file holds the four reports (console output, stdout), produced by the built application and checked by hand. Test first: the TD-02 test and both CI-01 lists name the new pair. Spec 003 (TD-01, TD-02, SC-002, SC-006, a new decision), its contract, data model, plan, quickstart and the README's test-data table now list seven pairs. No decision in design-decisions.md or application code changed.

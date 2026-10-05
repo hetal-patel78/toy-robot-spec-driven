@@ -13,6 +13,7 @@ public class DeliveryTests
     [InlineData("bom-challenge-example-1")]
     [InlineData("exit-mid-file")]
     [InlineData("empty")]
+    [InlineData("long-session")]
     public void Test_data_holds_every_input_and_expected_pair(string name)
     {
         var folder = Path.Combine(AppProcess.FindRepositoryRoot(), "testdata");

@@ -58,7 +58,7 @@ specs/003-delivery/
 ├── contracts/
 │   ├── run-scripts.md   # the run scripts' arguments, channels and exit codes
 │   ├── ci-workflow.md   # the CI workflow's trigger, systems and steps
-│   └── testdata.md      # the test-data pair format and the six pairs
+│   └── testdata.md      # the test-data pair format and the seven pairs
 ├── checklists/
 │   └── requirements.md
 └── tasks.md             # Phase 2 (/speckit-tasks)
@@ -72,7 +72,7 @@ toy-robot-spec-driven/
 ├── tests/
 │   ├── ToyRobot.Tests/                   spec 001 and 002 (not changed here)
 │   └── ToyRobot.ConsoleEndToEndTests/           spec 002; this spec adds DeliveryTests.cs (TD-02, BS-01)
-├── testdata/                             this spec: six pairs (TD-01)
+├── testdata/                             this spec: seven pairs (TD-01)
 │   ├── challenge-example-1.txt / .expected.txt
 │   ├── challenge-example-2.txt / .expected.txt
 │   ├── challenge-example-3.txt / .expected.txt

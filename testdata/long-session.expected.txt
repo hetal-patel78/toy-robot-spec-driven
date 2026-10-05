@@ -1,0 +1,8 @@
+Output:
+0,0,WEST
+Output:
+4,4,EAST
+Output:
+3,0,EAST
+Output:
+3,0,EAST

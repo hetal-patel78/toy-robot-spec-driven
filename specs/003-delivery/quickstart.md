@@ -9,7 +9,7 @@ dotnet build
 dotnet test
 ```
 
-All tests pass, including spec 002's [E2E-01][e2e-01] over the six test-data pairs, [TD-02][td-02] and [BS-01][bs-01].
+All tests pass, including spec 002's [E2E-01][e2e-01] over the seven test-data pairs, [TD-02][td-02] and [BS-01][bs-01].
 
 ## 2. Run scripts with a challenge example (NFR-08)
 
@@ -50,7 +50,7 @@ The README is the root `README.md`. Check that it holds, in about one screen, th
 6. The output format with an example: `Output:` then `X,Y,F` on console output (stdout); the prompt, echo, warnings and how-to-run message on console messages (stderr) ([DEC-21][dec-21], [DEC-23][dec-23]).
 7. A few key assumptions (5 x 5 table, (0,0) SOUTH WEST; commands from console input; any letter case, full direction words; ignored commands give a warning; EXIT ends a session) with a link to `docs/design-analysis/design-decisions.md`.
 8. Tested on Windows, Linux and macOS via GitHub Actions: the CI badge `https://github.com/hetal-patel78/toy-robot-spec-driven/actions/workflows/ci.yml/badge.svg`, linking to `https://github.com/hetal-patel78/toy-robot-spec-driven/actions/workflows/ci.yml`.
-9. The test-data list (the six pairs in `testdata/`).
+9. The test-data list (the seven pairs in `testdata/`).
 10. "How this would evolve": multiple robots, a configurable table and obstacles; none is built ([DEC-38][dec-38], [DEC-39][dec-39]).
 11. Where the development-process material and AI artefacts are: `CLAUDE.md`; `docs/design-analysis/prompts-design-phase.md`; `docs/design-analysis/prompts-implementation-phase.md`; the Spec Kit files (`.specify/memory/constitution.md`, `specs/`); the handwritten analysis (`docs/design-analysis/handwritten/`); the clarifications (`docs/design-analysis/clarifications/`); the design analysis (`docs/design-analysis/README.md`); the solution design (`docs/solution-design/README.md`). The existing "Where to look" links stay.
 

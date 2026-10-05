@@ -81,6 +81,7 @@ The solution is tested on all three systems through the [CI workflow](https://gi
 | `bom-challenge-example-1` | Challenge example 1 in a file that starts with a byte-order mark |
 | `exit-mid-file` | `EXIT` in the middle of a file: later lines are not run |
 | `empty` | an empty file: no output, exit code 0 |
+| `long-session` | one long session mixing every kind of line: commands before PLACE, PLACE off the table, MOVE blocked at two corners, bad and blank lines, lower case and spaces, a full turn and four REPORTs |
 
 ## How this would evolve
 Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-38][dec-38], [DEC-39][dec-39] in the design decisions).

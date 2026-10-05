@@ -78,6 +78,7 @@ jobs:
           call :run bom-challenge-example-1
           call :run exit-mid-file
           call :run empty
+          call :run long-session
           call run.cmd < testdata\challenge-example-1.txt > "%RUNNER_TEMP%\out\no-argument.txt"
           >"%RUNNER_TEMP%\out\no-argument.code" echo %ERRORLEVEL%
           cd testdata
@@ -95,7 +96,7 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty; do
+          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session; do
             rc=0
             ./run.sh "testdata/$name.txt" > "$RUNNER_TEMP/out/$name.txt" || rc=$?
             echo "$rc" > "$RUNNER_TEMP/out/$name.code"
@@ -128,7 +129,7 @@ jobs:
               fail=1
             fi
           }
-          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty; do
+          for name in challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session; do
             check "$name" "testdata/$name.expected.txt"
           done
           check no-argument testdata/challenge-example-1.expected.txt

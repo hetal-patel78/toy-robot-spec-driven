@@ -12,7 +12,7 @@ This spec has no classes of its own. Its "entities" are files and the steps they
 | Line endings | LF in the repository and in every checkout (`.gitattributes`); compared line by line, so CRLF output also passes |
 | Last line | ends with a line break; the empty pair is two zero-byte files |
 
-Rules: every input file has exactly one expected file with the same `<name>`; spec 002's [E2E-01][e2e-01] runs every pair; [TD-02][td-02] checks all six are present. The six names and their content are in [contracts/testdata.md](contracts/testdata.md).
+Rules: every input file has exactly one expected file with the same `<name>`; spec 002's [E2E-01][e2e-01] runs every pair; [TD-02][td-02] checks all seven are present. The seven names and their content are in [contracts/testdata.md](contracts/testdata.md).
 
 ## Run script (NFR-08)
 
