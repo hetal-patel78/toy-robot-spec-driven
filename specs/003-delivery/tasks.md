@@ -171,6 +171,10 @@ Rules for every cmd step below (GitHub's `shell: cmd` runs with delayed expansio
 
 ---
 
+## Phase 10: Menu scripts (developer request 2026-10-05)
+
+- [x] T041 [US1] Menu scripts ([MN-01][mn-01]; [NFR-08][nfr-08]; [DEC-41][dec-41]). Test first: add the CI steps "[CI-08][ci-08] Menu" for Windows (cmd, input from a file) and for Linux and macOS (bash, input piped), and the check step; add `menu.sh` to the mode check of [CI-06][ci-06]. Then write `menu.cmd` (CRLF) and `menu.sh` (LF, executable) at the repository root: each calls the run script by its own folder, gives a file run and the comparison no console input, and shows the list again after every choice except 0. Run by hand on Windows from cmd and PowerShell and in Git Bash: choices 1, 8, 9 (typed session), `x` and 0, and a copy with a changed expected file (FAIL).
+
 ## Test coverage of every behaviour in spec.md
 
 | Behaviour (spec) | Planned test | Task |
@@ -239,6 +243,7 @@ US1 example:
 [ci-05]: spec.md#ci-05
 [ci-06]: spec.md#ci-06
 [ci-07]: spec.md#ci-07
+[ci-08]: spec.md#ci-08
 [dec-04]: ../../docs/design-analysis/design-decisions.md#dec-04-standard-input-only
 [dec-10]: ../../docs/design-analysis/design-decisions.md#dec-10-ending-a-session
 [dec-20]: ../../docs/design-analysis/design-decisions.md#dec-20-bad-lines
@@ -251,11 +256,13 @@ US1 example:
 [dec-37]: ../../docs/design-analysis/design-decisions.md#dec-37-deliverables
 [dec-38]: ../../docs/design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: ../../docs/design-analysis/design-decisions.md#dec-39-not-included
+[dec-41]: ../../docs/design-analysis/design-decisions.md#dec-41-menu-scripts
 [e2e-01]: ../002-console-session/spec.md#e2e-01
 [e2e-05]: ../002-console-session/spec.md#e2e-05
 [nfr-02]: spec.md#nfr-02
 [nfr-02a]: spec.md#nfr-02a
 [nfr-03]: spec.md#nfr-03
+[mn-01]: spec.md#mn-01
 [nfr-08]: spec.md#nfr-08
 [nfr-09]: spec.md#nfr-09
 [r-01]: research.md#r-01-net-sdk-check-nfr-08-step-1

@@ -13,6 +13,8 @@ A C# .NET 8 console application for the classic "Toy Robot" coding challenge, bu
 ## Run it
 Run the commands from the repository root. The scripts build the app quietly and then run it.
 
+The quickest way to try everything is the menu: `menu` (cmd), `.\menu.cmd` (PowerShell) or `./menu.sh` (bash, zsh). It lists the test-data files (each shown with PASS or FAIL against its expected output), a typed session and the automated tests; type a number and press Enter.
+
 | Shell | With a file of commands | Typing the commands |
 |---|---|---|
 | cmd | `run commands.txt` | `run` |

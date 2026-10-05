@@ -383,3 +383,12 @@ Outcome: in [docs/testing-by-hand.md](../testing-by-hand.md), exit-mid-file's bl
 The assistant found that solution design page 5 and specs 001 and 002 already showed the folders, but the design decisions (the source of truth) had no decision for them, and page 6 did not say where each component lives. On "yes go ahead and push":
 
 Outcome: [DEC-40](design-decisions.md#dec-40-source-folders) "Source folders" in the design decisions: the folders, their namespaces, what each holds, where a new command goes, and the reason. Solution design page 5 cites it; page 6 has a "Folder" row for every component; page 10 (traceability) lists it for NFR-07; spec 001's decision and task T060 cite it; the design-analysis README says DEC-01 to DEC-40. The two briefs keep "DEC-01 to DEC-39", as they were the inputs at the time. No code changed.
+
+<a id="p195"></a>**P195.** On the run scripts:
+> can u also do me favor can u add parent script which when run it will display all the test to run and the user just need to select which test they want to run by that way they will not have to type each command with each file name  manually and this will save a lot of time.
+>
+> for both running from file as well as from terminal
+
+The assistant showed the proposed menu (each test-data file with PASS or FAIL, all files, a typed session, the automated tests) and explained "type commands yourself" (the typed session). The developer answered "yes go ahead and push".
+
+Outcome: [DEC-41](design-decisions.md#dec-41-menu-scripts) "Menu scripts" (DEC-37 no longer says there is no demo mode); `menu.cmd` and `menu.sh` at the repository root; spec 003 requirement MN-01, CI check CI-08 and SC-008, `menu.sh` in NFR-02a and CI-06, a decision, task T041, both contracts and the plan; solution design pages 4, 5, 9 and 10; the README and the testing-by-hand page. While testing, `menu.cmd` lost its input after the first choice: `fc` reads console input, so the file run, `fc` and `dotnet test` now get `< nul`. No application code changed.

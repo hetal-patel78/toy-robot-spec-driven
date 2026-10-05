@@ -42,6 +42,25 @@ Each script writes these lines to console messages (stderr), in this order, and 
 
 Error cases (no SDK, failed build, how-to-run message, file not found) show the lines before the failure but never the "Running" line. Build output is shown only when the build fails. Console output (stdout) is unchanged.
 
+## Menu scripts (developer request, 2026-10-05; MN-01, CI-08)
+
+| Shell | Start the menu |
+|---|---|
+| cmd | `menu` |
+| PowerShell | `.\menu.cmd` |
+| bash, zsh | `./menu.sh` |
+
+| Choice | Runs | Writes (console output, stdout) |
+|---|---|---|
+| 1 to 7 | the run script with `testdata/<name>.txt`, no console input | "=== <name> ===", "--- console output (stdout):", the run's console output, then "PASS: <name>" or "FAIL: <name> - <reason>" |
+| 8 | choices 1 to 7 in order | as above for each, then "All 7 files PASS" or "<n> of 7 files FAIL" |
+| 9 | the run script with no argument | the typed session, then "Typed session ended." |
+| 10 | `dotnet test ToyRobot.sln --nologo`, no console input | the test results |
+| 0 | — | nothing; exit code 0 |
+| anything else | — | "Not a choice: <choice>" |
+
+The run script's own messages stay on console messages (stderr). The end of the input ends `menu.sh` (exit code 0); `menu.cmd` ends after three empty choices in a row (exit code 0).
+
 [ci-01]: ../spec.md#ci-01
 [ci-02]: ../spec.md#ci-02
 [ci-03]: ../spec.md#ci-03

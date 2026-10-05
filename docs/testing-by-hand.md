@@ -2,6 +2,17 @@
 
 How to run the application by hand and what to expect. Every warning and output line on this page was produced by running the same commands through the built application.
 
+## The menu
+The menu runs everything on this page by number, without typing file names. From the repository root:
+
+| Shell | Command |
+|---|---|
+| cmd | `menu` |
+| PowerShell | `.\menu.cmd` |
+| bash, zsh (Linux, macOS) | `./menu.sh` |
+
+Choices 1 to 7 run one test-data file and say PASS or FAIL against its expected output, 8 runs all seven, 9 starts a typed session (the menu comes back after `EXIT`), 10 runs all automated tests, and 0 quits.
+
 ## Start a typed session
 Run a script from the repository root with no file name:
 

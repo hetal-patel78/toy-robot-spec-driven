@@ -10,7 +10,7 @@ This folder holds the design decisions for the Toy Robot Simulator (the classic 
 - Program starts the Runner. For each line, the Runner asks the CommandParser for a command object (one class per command), then passes it to RobotOperator (holds the shared rules and the robot), which asks the Table (checks positions). The whole flow is tested in memory, end to end against the built app, and on Windows, Linux and macOS via GitHub Actions.
 
 ## Start here
-1. **[design-decisions.md](design-decisions.md): the single source of truth.** Every rule and design decision (DEC-01 to DEC-40), grouped by topic, each with its reason and, where it comes from the challenge, the challenge wording. **A reviewer only needs this file.**
+1. **[design-decisions.md](design-decisions.md): the single source of truth.** Every rule and design decision (DEC-01 to DEC-41), grouped by topic, each with its reason and, where it comes from the challenge, the challenge wording. **A reviewer only needs this file.**
 2. **[review-trail.md](review-trail.md): how the decisions were reached.** One line per review finding, pointing to the decision that settled it.
 3. **[prompts-design-phase.md](prompts-design-phase.md): the prompts given to the AI assistant** where decisions were made or instructions given, as the challenge asks for prompts used as inputs to code generation.
 4. **[archive/](archive/README.md): the original working notes**, kept unchanged as a record of the process.

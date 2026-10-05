@@ -113,6 +113,26 @@ How to feed a file in each shell ([DEC-04][dec-04]):
 | cmd, bash, zsh, without the scripts | `ToyRobot < commands.txt` (path of the built application: page [5](05-high-level-design.md#folder-layout-and-the-built-application)) |
 | PowerShell, without the scripts | `cmd /c "ToyRobot < commands.txt"`, because PowerShell does not support `<` |
 
+## Menu scripts
+
+Two more scripts at the repository root, `menu.cmd` (Windows: cmd and PowerShell) and `menu.sh` (Linux and macOS), let a reviewer try everything by choosing a number instead of typing file names ([DEC-41][dec-41]):
+
+| Choice | What it does |
+|---|---|
+| 1 to 7 | One test-data file through the run script: its console output (stdout), then PASS or FAIL against the expected file |
+| 8 | All seven files, then how many passed |
+| 9 | A typed session; the menu comes back after EXIT or the end of input |
+| 10 | All automated tests (`dotnet test`) |
+| 0 | Quit |
+
+Every choice goes through the run script, so the .NET check and the build are the same. How to start the menu:
+
+| Shell | Command |
+|---|---|
+| cmd | `menu` |
+| PowerShell | `.\menu.cmd` |
+| bash, zsh | `./menu.sh` |
+
 ## Extensibility
 
 None of these is built ([DEC-39][dec-39]). They show that the design leaves room for them, and which parts would change.
@@ -212,6 +232,7 @@ Back to the [solution design overview](README.md).
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: ../design-analysis/design-decisions.md#dec-39-not-included
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-scripts
 [nfr-02]: 03-non-functional-requirements.md#nfr-02
 [nfr-03]: 03-non-functional-requirements.md#nfr-03
 [nfr-08]: 03-non-functional-requirements.md#nfr-08

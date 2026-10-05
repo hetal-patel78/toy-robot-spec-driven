@@ -57,11 +57,13 @@ jobs:
                 ;;
             esac
           done < <(git ls-files --eol)
-          mode=$(git ls-files -s run.sh | cut -c1-6)
-          if [ "$mode" != "100755" ]; then
-            echo "CI-06: run.sh has mode '$mode' in git, expected 100755"
-            fail=1
-          fi
+          for script in run.sh menu.sh; do
+            mode=$(git ls-files -s "$script" | cut -c1-6)
+            if [ "$mode" != "100755" ]; then
+              echo "CI-06: $script has mode '$mode' in git, expected 100755"
+              fail=1
+            fi
+          done
           exit $fail
 
       - name: Prepare output folder
@@ -363,5 +365,48 @@ jobs:
             echo "CI-05: console messages (stderr) do not contain CS1029:"
             cat "$out/ci05-script.err"
             fail=1
+          fi
+          exit $fail
+
+      - name: CI-08 Menu Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          (echo 1& echo 8& echo x& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
+          call menu.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
+          >"%RUNNER_TEMP%\out\ci08.code" echo %ERRORLEVEL%
+          exit /b 0
+
+      - name: CI-08 Menu Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          rc=0
+          printf '1\n8\nx\n0\n' | ./menu.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
+
+      - name: CI-08 Menu check
+        shell: bash
+        run: |
+          fail=0
+          out="$RUNNER_TEMP/out"
+          code=$(tr -d '\r\n ' < "$out/ci08.code")
+          if [ "$code" != "0" ]; then
+            echo "CI-08: exit code '$code', expected 0"
+            fail=1
+          fi
+          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Not a choice: x'; do
+            if ! tr -d '\r' < "$out/ci08.out" | grep -qF "$expected"; then
+              echo "CI-08: console output (stdout) does not contain '$expected'"
+              fail=1
+            fi
+          done
+          if tr -d '\r' < "$out/ci08.out" | grep -q '^FAIL: '; then
+            echo "CI-08: console output (stdout) has a line starting with 'FAIL: '"
+            fail=1
+          fi
+          if [ "$fail" -ne 0 ]; then
+            cat "$out/ci08.out"
+            cat "$out/ci08.err"
           fi
           exit $fail
