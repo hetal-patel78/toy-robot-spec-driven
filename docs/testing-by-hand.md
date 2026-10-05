@@ -11,7 +11,7 @@ Run a script from the repository root with no file name:
 | PowerShell | `.\run.cmd` |
 | bash, zsh (Linux, macOS) | `./run.sh` |
 
-After the build the script shows a menu; type a number and press Enter. 1 starts a typed session (the menu comes back after `EXIT`); 2 shows the test-data menu, where 1 to 7 run one test-data file and show the commands read (warnings in yellow), the app's output (bright cyan) and PASS (green) or FAIL (red) against its expected output (a FAIL also shows the expected output), 8 runs all seven and ends with a summary, and 0 goes back; 3 runs all automated tests; 0 quits.
+After the build the script shows a menu; type a number and press Enter. 1 starts a typed session (the menu comes back after `EXIT`); 2 shows the test-data menu, where 1 to 7 run one test-data file and show the commands read (warnings in yellow), the app's output (bright cyan) and PASS (green) or FAIL (red) against its expected output (a FAIL also shows the expected output), 8 runs all seven and ends with a summary, and 0 goes back; 3 runs all automated tests; 4 shows the help (the same text as `--help`, below) and the menu comes back; 0 quits.
 
 ## Start a typed session
 Start the menu (above) and choose 1. The app shows a `> ` prompt. Type one command per line and press Enter; type only the command, not the `> `. The blocks of commands on this page can be copied and pasted into the session as they are. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
@@ -277,7 +277,17 @@ See the exit code straight after a command:
 | PowerShell | `$LASTEXITCODE` |
 | bash, zsh | `echo $?` |
 
-**The application with an argument.** The application takes no arguments; it reads commands from console input. Any argument gives the how-to-run message and exit code 1, and no command is read.
+**Help.** Started with `--help`, the application shows the help text on console output (stdout) and stops with exit code 0; no command is read. The run scripts pass `--help` on, after their first two progress lines (no "Running" line), and menu choice 4 shows the same text.
+
+| Shell | Command |
+|---|---|
+| cmd | `run --help` or `src\ToyRobot\bin\Release\net8.0\ToyRobot.exe --help` |
+| PowerShell | `.\run.cmd --help` |
+| bash, zsh | `./run.sh --help` or `./src/ToyRobot/bin/Release/net8.0/ToyRobot --help` |
+
+Console output (stdout) starts with `Toy Robot Simulator - help`; the full text is in [DEC-04](design-analysis/design-decisions.md#dec-04-standard-input-only).
+
+**The application with any other argument.** The application takes no other argument; it reads commands from console input. Any other argument (a file name, `-h`, `--HELP`, or `--help` with another argument) gives the how-to-run message and exit code 1, and no command is read.
 
 | Shell | Command |
 |---|---|
@@ -296,6 +306,7 @@ How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and typ
 | Two files | `run testdata\challenge-example-1.txt testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-1.txt testdata/challenge-example-2.txt` | `How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file for the menu. In PowerShell, use .\run.cmd instead of run.` (bash: `How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file for the menu.`) |
 | A file that does not exist | `run testdata\no-such-file.txt` | `./run.sh testdata/no-such-file.txt` | `File not found: "testdata\no-such-file.txt"` (bash: `File not found: testdata/no-such-file.txt`) |
 | A folder | `run testdata` | `./run.sh testdata` | `File not found: "testdata"` (bash: `File not found: testdata`) |
+| Help in capitals (taken as a file name) | `run --HELP` | `./run.sh --HELP` | `File not found: "--HELP"` (bash: `File not found: --HELP`) |
 | `*` or `?` in the name (cmd only) | `run testdata\challenge-example-1.*` | | `The file name must not contain * or ?: "testdata\challenge-example-1.*"` |
 
 **A normal run** (any command in "Run the test data" above, or a typed session ended with `EXIT`) ends with exit code 0.

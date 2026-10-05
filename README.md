@@ -27,14 +27,18 @@ Toy Robot - choose what to run
    1  Type commands yourself
    2  Run a test-data file
    3  Run the automated tests (dotnet test)
+   4  Show help (commands, rules, how to end a session)
    0  Quit
 ```
 
 - **1** starts a typed session; when it ends, the menu comes back.
 - **2** lists the seven test-data files, and all seven together. Each shows the commands read (warnings in yellow), what the app printed, and PASS (green) or FAIL (red) against its expected output; a FAIL also shows the expected output. All seven together end with a summary.
 - **3** runs all the automated tests.
+- **4** shows the help, then the menu comes back.
 
 Commands piped or redirected into the script (`run < commands.txt` in cmd) are read as commands, without the menu.
+
+To show the help (how to start the app, the table, each command and its rules, and how to end a session) without the menu: `run --help` (cmd), `.\run.cmd --help` (PowerShell) or `./run.sh --help` (bash, zsh), or the app itself with `--help`.
 
 While they work, the scripts show what they are doing on the console (checking .NET, building, then running); only the application's REPORT output goes to console output (stdout).
 
@@ -58,10 +62,10 @@ From the repository root, in any shell (cmd, PowerShell, bash, zsh). `dotnet tes
 
 | What | Command | Expected |
 |---|---|---|
-| All tests | `dotnet test` | 497 passed, 0 failed (471 in ToyRobot.Tests, 26 in ToyRobot.ConsoleEndToEndTests) |
+| All tests | `dotnet test` | 505 passed, 0 failed (476 in ToyRobot.Tests, 29 in ToyRobot.ConsoleEndToEndTests) |
 | Unit tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.Unit"` | 365 passed |
-| Runner whole-flow tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.RunnerWholeFlow"` | 106 passed |
-| Console end-to-end tests only | `dotnet test tests/ToyRobot.ConsoleEndToEndTests` | 26 passed |
+| Runner whole-flow tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.RunnerWholeFlow"` | 111 passed |
+| Console end-to-end tests only | `dotnet test tests/ToyRobot.ConsoleEndToEndTests` | 29 passed |
 
 What each level covers is under [Tested on Windows, Linux and macOS](#tested-on-windows-linux-and-macos).
 
@@ -80,7 +84,7 @@ dotnet test
 PowerShell has no `<` for input, so it uses `cmd /c` here (or the run script above).
 
 ## Output format
-`REPORT` prints `Output:` and then `X,Y,F` (for example `0,1,NORTH`) on console output (stdout). Everything else (the prompt, the echo of each line read from a file, warnings and the how-to-run message) goes to console messages (stderr), so redirecting stdout to a file saves only the `Output:` and position lines. Exit codes: 0 normal end, 1 any argument (how-to-run message), 2 unexpected problem (one `Error: unexpected problem - ...` line on stderr instead of a stack trace).
+`REPORT` prints `Output:` and then `X,Y,F` (for example `0,1,NORTH`) on console output (stdout). Everything else (the prompt, the echo of each line read from a file, warnings and the how-to-run message) goes to console messages (stderr), so redirecting stdout to a file saves only the `Output:` and position lines. The help text for `--help` also goes to console output (stdout); no command is read then. Exit codes: 0 normal end or help shown, 1 any other argument (how-to-run message), 2 unexpected problem (one `Error: unexpected problem - ...` line on stderr instead of a stack trace).
 
 ```
 Output:
@@ -89,7 +93,7 @@ Output:
 
 ## Key assumptions
 - The table is 5 x 5; (0,0) is the south-west corner.
-- Commands come from console input (stdin), one per line; the app takes no arguments.
+- Commands come from console input (stdin), one per line; the app takes no arguments except `--help`.
 - Commands are accepted in any letter case; directions are the full words `NORTH`, `SOUTH`, `EAST` and `WEST`.
 - A command that cannot be carried out is ignored with a warning on console messages (stderr); the run continues.
 - `EXIT` ends a session.
