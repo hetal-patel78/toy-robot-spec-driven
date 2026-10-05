@@ -376,7 +376,7 @@ jobs:
         run: |
           set NO_COLOR=1
           set TOYROBOT_MENU=1
-          (echo 2& echo 1& echo 8& echo x& echo 0& echo 4& echo y& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
+          (echo 2& echo 1& echo 8& echo x& echo 0& echo 4& echo 3& echo 6& echo z& echo 0& echo y& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
           call run.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
           >"%RUNNER_TEMP%\out\ci08.code" echo %ERRORLEVEL%
           exit /b 0
@@ -386,7 +386,7 @@ jobs:
         shell: bash
         run: |
           rc=0
-          printf '2\n1\n8\nx\n0\n4\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          printf '2\n1\n8\nx\n0\n4\n3\n6\nz\n0\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
           echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
 
       - name: CI-08 Menu check
@@ -399,12 +399,17 @@ jobs:
             echo "CI-08: exit code '$code', expected 0"
             fail=1
           fi
-          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Toy Robot Simulator - help' 'Not a choice: x' 'Not a choice: y'; do
+          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Toy Robot - help: choose a topic' '  PLACE X,Y,F  Put the robot on the table at X,Y facing F.' 'Not a choice: x' 'Not a choice: z' 'Not a choice: y'; do
             if ! tr -d '\r' < "$out/ci08.out" | grep -qF "$expected"; then
               echo "CI-08: console output (stdout) does not contain '$expected'"
               fail=1
             fi
           done
+          count=$(tr -d '\r' < "$out/ci08.out" | grep -c '^Toy Robot Simulator - help$' || true)
+          if [ "$count" != "1" ]; then
+            echo "CI-08: 'Toy Robot Simulator - help' appears $count times, expected once (topic 6 only)"
+            fail=1
+          fi
           if tr -d '\r' < "$out/ci08.out" | grep -q '^FAIL: '; then
             echo "CI-08: console output (stdout) has a line starting with 'FAIL: '"
             fail=1

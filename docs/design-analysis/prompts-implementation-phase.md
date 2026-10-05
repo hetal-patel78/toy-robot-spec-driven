@@ -486,3 +486,19 @@ Outcome: constitution 1.1.1 (PATCH): the help text is in the list of strings tha
 > U can direct push once ci is green
 
 Outcome: once CI run 50 was green on Windows, Linux and macOS (the Windows job waited about 30 minutes for a GitHub runner), `main` was fast-forwarded to the working branch and pushed.
+
+<a id="p211"></a>**P211.** After testing menu choice 4 on Windows (with a photo of the terminal showing the end of the help and the menu):
+> U missed one thing in help it does not show how to run place command 
+>
+> And it is not show what each command does 
+>
+> Move will move robot 1 unit or 1 step
+> Left change the direction by 90 degrees and same for right
+> For report as well what does report do
+
+The assistant found that the help was complete but the menu, printed straight after the 38 lines, pushed the start of the help (HOW TO START, THE TABLE, COMMANDS) off the top of a small terminal. It proposed a pause ("Press Enter to go back to the menu"), shown as a flow diagram, then, on the developer's question "I just don understand why show help cannot show the sub menu instead of help", a help menu of topics.
+
+<a id="p212"></a>**P212.**
+> go with the sub menu
+
+Outcome: menu choice 4 opens a help menu: 1 How to start, 2 The table, 3 Commands, 4 Rules, 5 Ending a session, 6 All of it, 0 back. Each topic is the section of the app's `--help` output under its heading, so there is still one help text. [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts), with a note in DEC-04; solution design page 9; spec 003 (MN-01, scenario 6c, CI-08, SC-008, contracts, tasks T048 to T051); CI-08 changed first and shown failing, then `run.sh` and `run.cmd`; README and testing-by-hand. The application is unchanged.

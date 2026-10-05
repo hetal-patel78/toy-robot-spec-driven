@@ -47,7 +47,7 @@ fi
 app="$dir/src/ToyRobot/bin/Release/net8.0/ToyRobot"
 
 # The menu (DEC-41): type commands, run a test-data file (its console output compared with the expected file), run the tests,
-# or show the help.
+# or show the help, one topic at a time.
 # Its own lines are console output (stdout).
 files=(challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session)
 
@@ -142,6 +142,52 @@ files_menu() {
   done
 }
 
+# Writes the section of the application's help text whose heading line starts with $1, up to the line before the next
+# blank line; with no $1, all of it. The text is the application's own --help output, so there is one help text (DEC-04).
+help_topic() {
+  local line inside=0
+  printf '\n'
+  while IFS= read -r line; do
+    if [ -z "$1" ]; then
+      printf '%s\n' "$line"
+    elif [ "$inside" -eq 1 ]; then
+      [ -z "$line" ] && break
+      printf '%s\n' "$line"
+    else
+      case "$line" in
+        "$1"*) inside=1; printf '%s\n' "$line" ;;
+      esac
+    fi
+  done < <("$app" --help < /dev/null)
+}
+
+# The help menu (DEC-41): one topic of the help at a time, so each fits on a small screen; returns 1 when the menu
+# ends, 0 to go back to the main menu. Topics are plain text (no colour).
+help_menu() {
+  while true; do
+    printf '\n%sToy Robot - help: choose a topic%s\n\n' "$bold" "$reset"
+    printf '   1  How to start\n'
+    printf '   2  The table\n'
+    printf '   3  Commands\n'
+    printf '   4  Rules\n'
+    printf '   5  Ending a session\n'
+    printf '   6  All of it\n'
+    printf '   0  back\n\n'
+    choose || return 1
+    case "$choice" in
+      0) return 0 ;;
+      1) help_topic 'HOW TO START' ;;
+      2) help_topic 'THE TABLE' ;;
+      3) help_topic 'COMMANDS' ;;
+      4) help_topic 'RULES' ;;
+      5) help_topic 'ENDING A SESSION' ;;
+      6) help_topic '' ;;
+      '') ;;
+      *) printf 'Not a choice: %s\n' "$choice" ;;
+    esac
+  done
+}
+
 menu() {
   out=$(mktemp) || exit 1
   err=$(mktemp) || exit 1
@@ -174,11 +220,7 @@ menu() {
         printf '\n'
         dotnet test "$dir/ToyRobot.sln" --nologo < /dev/null
         ;;
-      4)
-        # The application's own help text, plain (no colour); it reads no input.
-        printf '\n'
-        "$app" --help < /dev/null
-        ;;
+      4) help_menu || break ;;
       '') ;;
       *) printf 'Not a choice: %s\n' "$choice" ;;
     esac

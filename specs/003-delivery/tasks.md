@@ -188,6 +188,17 @@ Needs spec 002 Phase 12 (the application's `--help`) done first.
 
 ---
 
+## Phase 12: Help menu of topics (developer request 2026-10-05)
+
+Found by the developer on Windows: menu choice 4 printed the whole help and then the menu, which pushed the start of the help (the commands) off a small terminal.
+
+- [x] T048 [US1] Test first ([CI-08][ci-08]; [MN-01][mn-01]; [DEC-41][dec-41]): in `.github/workflows/ci.yml`, change the CI-08 input to `2`, `1`, `8`, `x`, `0`, `4`, `3`, `6`, `z`, `0`, `y`, `0` and the check to the strings of [CI-08][ci-08], with `Toy Robot Simulator - help` exactly once. Run the CI-08 commands locally against the current `run.sh`: they fail (no help menu).
+- [x] T049 [US1] In `run.sh` (LF, executable) and `run.cmd` (CRLF) ([MN-01][mn-01]; [DEC-04][dec-04], [DEC-41][dec-41]): choice 4 opens the help menu of [MN-01][mn-01]; topics 1 to 5 run the application with `--help` and no console input and write the lines from the one starting with the topic's heading to the line before the next blank line; 6 writes all of it; 0 goes back; any other choice writes `Not a choice: <choice>`; the end of the input ends `run.sh`, and three empty choices end `run.cmd`, as in the other menus. `run.cmd` numbers the lines with `findstr /n "^"`, so blank lines are kept, and writes each through a `for` variable, so `<` in the help stays text. The CI-08 commands now pass, and so do CI-01 to CI-09 run locally.
+- [x] T050 [US3] README ("Run it": choice 4 opens a help menu) and `docs/testing-by-hand.md` (the menu, the help) ([NFR-09][nfr-09]; [DEC-37][dec-37], [DEC-41][dec-41]).
+- [x] T051 Run `dotnet build ToyRobot.sln` (0 warnings) and `dotnet test ToyRobot.sln`; run by hand `./run.sh`, then `4`, each topic 1 to 6, `z`, `0`, `0`, with and without `NO_COLOR` ([NFR-08][nfr-08]; [DEC-31][dec-31]).
+
+---
+
 ## Test coverage of every behaviour in spec.md
 
 | Behaviour (spec) | Planned test | Task |
@@ -198,7 +209,7 @@ Needs spec 002 Phase 12 (the application's `--help`) done first.
 | US1 sc. 5a: no argument, redirected console input (stdout and exit code) | [CI-03][ci-03] | T015, T016 |
 | US1 sc. 6: missing file, folder (message on stderr) | [CI-02][ci-02] | T017, T023 |
 | US1 sc. 6b: `--help` gives the application's help text, exit code 0 | [CI-09][ci-09] | T044, T045 |
-| US1 sc. 6c, [MN-01][mn-01] choice 4: the menu shows the help | [CI-08][ci-08] | T044, T045 |
+| US1 sc. 6c, [MN-01][mn-01] choice 4: the help menu shows a topic and the whole help | [CI-08][ci-08] | T044, T045, T048, T049 |
 | [NFR-09][nfr-09]: the README says how to show the help | README check | T046 |
 | US1 sc. 7: more than one argument (how-to-run message on stderr) | [CI-02][ci-02] | T017, T023 |
 | US1 sc. 8: no `dotnet`; only an older SDK (message naming `https://dotnet.microsoft.com/download` on stderr) | [CI-04][ci-04] (a), (b) | T018, T023, T035 |
@@ -219,6 +230,7 @@ Needs spec 002 Phase 12 (the application's `--help`) done first.
 - US3: T030 needs US1 (script commands) and T029; T031 needs T028; T032 needs T031.
 - US4: T033 after T004 (same file); T034 after T033.
 - Phase 11 (developer request): T044 after spec 002 T063 and T065; T045 after T044; T046 and T047 after T045.
+- Phase 12 (developer request): T048 before T049; T050 and T051 after T049.
 - T035 to T037 after all stories. T038 (developer request) after T037: its [CI-07][ci-07] step is written and shown failing before the scripts change. T039 (developer request) after T038: its [CI-02][ci-02] case is written and shown failing before `run.cmd` changes.
 
 ## Parallel opportunities

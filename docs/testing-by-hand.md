@@ -11,7 +11,7 @@ Run a script from the repository root with no file name:
 | PowerShell | `.\run.cmd` |
 | bash, zsh (Linux, macOS) | `./run.sh` |
 
-After the build the script shows a menu; type a number and press Enter. 1 starts a typed session (the menu comes back after `EXIT`); 2 shows the test-data menu, where 1 to 7 run one test-data file and show the commands read (warnings in yellow), the app's output (bright cyan) and PASS (green) or FAIL (red) against its expected output (a FAIL also shows the expected output), 8 runs all seven and ends with a summary, and 0 goes back; 3 runs all automated tests; 4 shows the help (the same text as `--help`, below) and the menu comes back; 0 quits.
+After the build the script shows a menu; type a number and press Enter. 1 starts a typed session (the menu comes back after `EXIT`); 2 shows the test-data menu, where 1 to 7 run one test-data file and show the commands read (warnings in yellow), the app's output (bright cyan) and PASS (green) or FAIL (red) against its expected output (a FAIL also shows the expected output), 8 runs all seven and ends with a summary, and 0 goes back; 3 runs all automated tests; 4 opens the help menu, where 1 to 5 show one topic of the help (How to start, The table, Commands, Rules, Ending a session; each from the `--help` text below), 6 shows all of it, and 0 goes back; 0 quits.
 
 ## Start a typed session
 Start the menu (above) and choose 1. The app shows a `> ` prompt. Type one command per line and press Enter; type only the command, not the `> `. The blocks of commands on this page can be copied and pasted into the session as they are. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
@@ -277,7 +277,7 @@ See the exit code straight after a command:
 | PowerShell | `$LASTEXITCODE` |
 | bash, zsh | `echo $?` |
 
-**Help.** Started with `--help`, the application shows the help text on console output (stdout) and stops with exit code 0; no command is read. The run scripts pass `--help` on, after their first two progress lines (no "Running" line), and menu choice 4 shows the same text.
+**Help.** Started with `--help`, the application shows the help text on console output (stdout) and stops with exit code 0; no command is read. The run scripts pass `--help` on, after their first two progress lines (no "Running" line), and menu choice 4 shows the same text one topic at a time.
 
 | Shell | Command |
 |---|---|

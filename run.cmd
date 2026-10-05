@@ -87,6 +87,7 @@ rem The menu (DEC-41): type commands, run a test-data file (its console output c
 set "out=%TEMP%\toyrobot-menu-%RANDOM%%RANDOM%.out"
 set "err=%out%.err"
 set "sum=%out%.sum"
+set "hlp=%out%.hlp"
 set "empties=0"
 rem Colours (Windows 10 or later): PASS green, FAIL red, warnings yellow, the app's console output bright cyan, headings bold.
 rem Set NO_COLOR to turn them off.
@@ -180,13 +181,50 @@ dotnet test "%~dp0ToyRobot.sln" --nologo < nul
 goto :menu
 
 :showhelp
-rem The application's own help text, plain (no colour); it reads no input.
+rem The help menu (DEC-41): one topic of the help at a time, so each fits on a small screen. Topics are plain text.
 echo.
-"%app%" --help < nul
-goto :menu
+echo %bold%Toy Robot - help: choose a topic%reset%
+echo.
+echo    1  How to start
+echo    2  The table
+echo    3  Commands
+echo    4  Rules
+echo    5  Ending a session
+echo    6  All of it
+echo    0  back
+echo.
+call :choose
+if defined endmenu goto :quit
+if "%choice%"=="" goto :showhelp
+if "%choice%"=="0" goto :menu
+if "%choice%"=="1" call :helptopic "HOW TO START" & goto :showhelp
+if "%choice%"=="2" call :helptopic "THE TABLE" & goto :showhelp
+if "%choice%"=="3" call :helptopic "COMMANDS" & goto :showhelp
+if "%choice%"=="4" call :helptopic "RULES" & goto :showhelp
+if "%choice%"=="5" call :helptopic "ENDING A SESSION" & goto :showhelp
+if "%choice%"=="6" call :helptopic "" & goto :showhelp
+echo Not a choice: %choice%
+goto :showhelp
+
+:helptopic
+rem Writes the section of the application's help text whose heading line starts with %1, up to the line before the
+rem next blank line; with "" all of it. The text is the application's own --help output, so there is one help text
+rem (DEC-04). findstr /n numbers every line, so blank lines are kept (as "12:"); each line is written through a for
+rem variable, which cmd does not parse again, so the < in the help stays text.
+"%app%" --help < nul > "%hlp%"
+echo.
+if "%~1"=="" (type "%hlp%" & exit /b 0)
+set "start="
+set "stop="
+for /f "delims=:" %%n in ('findstr /n /b /c:"%~1" "%hlp%"') do if not defined start set "start=%%n"
+if not defined start exit /b 0
+for /f "tokens=1* delims=:" %%a in ('findstr /n "^" "%hlp%"') do if %%a GTR %start% if "%%b"=="" if not defined stop set "stop=%%a"
+if not defined stop set "stop=9999"
+for /f "tokens=1* delims=:" %%a in ('findstr /n "^" "%hlp%"') do if %%a GEQ %start% if %%a LSS %stop% echo(%%b
+exit /b 0
 
 :quit
-for %%t in ("%out%" "%err%" "%sum%") do if exist %%t del %%t
+for %%t in ("%out%" "%err%" "%sum%" "%hlp%") do if exist %%t del %%t
 exit /b 0
 
 :file
