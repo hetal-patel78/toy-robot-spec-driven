@@ -156,3 +156,14 @@ Outcome: confirmed by the developer. The same answer, with the next number, then
 > confirm all at this stage as I want to test the changes from the new repo and then finish
 
 Outcome: confirmed by the developer: the placeholder entry point and every other item in section 3 of the [run report](../spec-kit/implementation-run-report.md#3-decided-in-the-run), as they stand. None of them changes behaviour, so design-decisions.md is unchanged.
+
+<a id="p161"></a>**P161.** While testing the typed session on Windows:
+> control + Z and the i press enter on command prompt does not exit the application
+> Exit command work in power shell and command prompt
+
+Outcome: on Windows the console gives Ctrl+Z then Enter to the app as a line holding only the character U+001A, not as the end of input, so the Runner treated it as a bad line and kept reading. EXIT was not affected; Ctrl+D on Linux and macOS was not affected.
+
+<a id="p162"></a>**P162.** On the proposed fix (a line that is only Ctrl+Z ends the input; DEC-10, spec 002, test first, then Runner):
+> ask other agent to implement the fix and use Sonnet 5.5
+
+Outcome: a decision change confirmed by the developer, so it was made in the order the chain asks: [DEC-10](design-decisions.md#dec-10-ending-a-session) (a line that is exactly the single character U+001A ends the input like the end of a file, typed or redirected, with no warning and exit code 0); then the solution design pages (functional requirement FR-16, the components page, the exit flow page, the glossary); then spec 002 (FR-16, two acceptance scenarios, an edge case, task T058); then the tests, written first and failing (2 of the 462 tests failed; the other 460 passed); then the Runner. All 462 tests pass (437 + 25); spec checks 1 to 5 pass. Done by a Sonnet 5.5 agent.

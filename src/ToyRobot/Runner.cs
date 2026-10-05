@@ -10,6 +10,9 @@ public sealed class Runner
 {
     private const char ByteOrderMark = '\uFEFF';
 
+    // The Windows console gives Ctrl+Z then Enter as a line holding only this character, not as the end of input (DEC-10).
+    private const string CtrlZ = "\u001A";
+
     private readonly TextReader _input;
     private readonly TextWriter _output;
     private readonly TextWriter _error;
@@ -31,7 +34,7 @@ public sealed class Runner
         _interactive = interactive;
     }
 
-    /// <summary>Runs the session. Returns at EXIT or at the end of the input.</summary>
+    /// <summary>Runs the session. Returns at EXIT, at the end of the input, or at a line that is only Ctrl+Z (FR-16; DEC-10).</summary>
     public void Run()
     {
         var isFirstLine = true;
@@ -44,7 +47,7 @@ public sealed class Runner
             }
 
             var line = _input.ReadLine();
-            if (line is null)
+            if (line is null || line == CtrlZ)
             {
                 return;
             }
