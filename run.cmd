@@ -3,6 +3,7 @@ setlocal EnableExtensions DisableDelayedExpansion
 rem Builds the Toy Robot application and runs it (Windows cmd and PowerShell).
 rem   run.cmd              typed at a keyboard: shows the menu (DEC-41); redirected or piped console input: the commands are read from it
 rem   run.cmd commands.txt commands are read from the file
+rem   run.cmd --help       shows the application's help (DEC-04)
 rem Messages of this script (progress lines and errors) go to console messages (stderr); console output (stdout) is the application's
 rem and the menu's own lines.
 
@@ -24,9 +25,11 @@ if not "%rc%"=="0" goto :buildfailed
 del "%log%"
 set "app=%~dp0src\ToyRobot\bin\Release\net8.0\ToyRobot.exe"
 
-rem 3. Arguments: none, or one existing file.
+rem 3. Arguments: none, --help, or one existing file.
 if not "%~2"=="" goto :howtorun
 if "%~1"=="" goto :noargument
+rem --help (exactly: if without /i is case-sensitive, as the application matches it) shows the application's help.
+if "%~1"=="--help" goto :help
 rem A name with * or ? would be expanded by the progress line below; reject it. The first token (cut at * or ?) equals the whole argument only when it holds neither.
 set "wild=1"
 for /f "eol=| delims=*?" %%a in ("%~1") do if "%%a"=="%~1" set "wild="
@@ -49,6 +52,11 @@ goto :menustart
 :readinput
 >&2 echo Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter.
 "%app%"
+exit /b %ERRORLEVEL%
+
+:help
+rem No commands are read, so there is no "Running" line.
+"%app%" --help < nul
 exit /b %ERRORLEVEL%
 
 :buildfailed
@@ -95,6 +103,7 @@ echo.
 echo    1  Type commands yourself
 echo    2  Run a test-data file
 echo    3  Run the automated tests (dotnet test)
+echo    4  Show help (commands, rules, how to end a session)
 echo    0  Quit
 echo.
 call :choose
@@ -104,6 +113,7 @@ if "%choice%"=="0" goto :quit
 if "%choice%"=="1" goto :typed
 if "%choice%"=="2" goto :files
 if "%choice%"=="3" goto :tests
+if "%choice%"=="4" goto :showhelp
 echo Not a choice: %choice%
 goto :menu
 
@@ -167,6 +177,12 @@ goto :menu
 :tests
 echo.
 dotnet test "%~dp0ToyRobot.sln" --nologo < nul
+goto :menu
+
+:showhelp
+rem The application's own help text, plain (no colour); it reads no input.
+echo.
+"%app%" --help < nul
 goto :menu
 
 :quit

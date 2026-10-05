@@ -2,6 +2,7 @@
 # Builds the Toy Robot application and runs it (Linux and macOS; bash 3.2 or later).
 #   ./run.sh              typed at a keyboard: shows the menu (DEC-41); redirected or piped console input: the commands are read from it
 #   ./run.sh commands.txt commands are read from the file
+#   ./run.sh --help       shows the application's help (DEC-04)
 # Messages of this script (progress lines and errors) go to console messages (stderr); console output (stdout) is the application's
 # and the menu's own lines.
 # Up to and including the .NET check only bash built-ins are used, so the check also works when PATH is empty.
@@ -38,14 +39,15 @@ if [ "$rc" -ne 0 ]; then
   printf '%s\n' "$out" >&2
   exit "$rc"
 fi
-# 3. Arguments: none, or one existing file.
+# 3. Arguments: none, --help, or one existing file.
 if [ "$#" -gt 1 ]; then
   printf '%s\n' 'How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file for the menu.' >&2
   exit 1
 fi
 app="$dir/src/ToyRobot/bin/Release/net8.0/ToyRobot"
 
-# The menu (DEC-41): type commands, run a test-data file (its console output compared with the expected file), or run the tests.
+# The menu (DEC-41): type commands, run a test-data file (its console output compared with the expected file), run the tests,
+# or show the help.
 # Its own lines are console output (stdout).
 files=(challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session)
 
@@ -156,6 +158,7 @@ menu() {
     printf '   1  Type commands yourself\n'
     printf '   2  Run a test-data file\n'
     printf '   3  Run the automated tests (dotnet test)\n'
+    printf '   4  Show help (commands, rules, how to end a session)\n'
     printf '   0  Quit\n\n'
     choose || break
     case "$choice" in
@@ -170,6 +173,11 @@ menu() {
       3)
         printf '\n'
         dotnet test "$dir/ToyRobot.sln" --nologo < /dev/null
+        ;;
+      4)
+        # The application's own help text, plain (no colour); it reads no input.
+        printf '\n'
+        "$app" --help < /dev/null
         ;;
       '') ;;
       *) printf 'Not a choice: %s\n' "$choice" ;;
@@ -186,6 +194,12 @@ if [ "$#" -eq 0 ]; then
   fi
   printf 'Running the application: type commands, one per line; end with EXIT or Ctrl+D.\n' >&2
   "$app"
+  exit $?
+fi
+# --help (exactly, as the application matches it) shows the application's help; no commands are read, so there is
+# no "Running" line.
+if [ "$1" = "--help" ]; then
+  "$app" --help < /dev/null
   exit $?
 fi
 if [ ! -f "$1" ]; then

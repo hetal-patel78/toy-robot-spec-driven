@@ -194,6 +194,7 @@ jobs:
           call :run folder testdata
           call :run two-arguments testdata\challenge-example-1.txt testdata\challenge-example-2.txt
           call :run wildcard testdata\challenge-example-1.*
+          call :run upper-help --HELP
           exit /b 0
 
           :run
@@ -215,12 +216,13 @@ jobs:
           run missing testdata/no-such-file.txt
           run folder testdata
           run two-arguments testdata/challenge-example-1.txt testdata/challenge-example-2.txt
+          run upper-help --HELP
 
       - name: CI-02 check
         shell: bash
         run: |
           fail=0
-          names="missing folder two-arguments"
+          names="missing folder two-arguments upper-help"
           if [ "$RUNNER_OS" = "Windows" ]; then
             names="$names wildcard"
           fi
@@ -374,7 +376,7 @@ jobs:
         run: |
           set NO_COLOR=1
           set TOYROBOT_MENU=1
-          (echo 2& echo 1& echo 8& echo x& echo 0& echo y& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
+          (echo 2& echo 1& echo 8& echo x& echo 0& echo 4& echo y& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
           call run.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
           >"%RUNNER_TEMP%\out\ci08.code" echo %ERRORLEVEL%
           exit /b 0
@@ -384,7 +386,7 @@ jobs:
         shell: bash
         run: |
           rc=0
-          printf '2\n1\n8\nx\n0\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          printf '2\n1\n8\nx\n0\n4\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
           echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
 
       - name: CI-08 Menu check
@@ -397,7 +399,7 @@ jobs:
             echo "CI-08: exit code '$code', expected 0"
             fail=1
           fi
-          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Not a choice: x' 'Not a choice: y'; do
+          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Toy Robot Simulator - help' 'Not a choice: x' 'Not a choice: y'; do
             if ! tr -d '\r' < "$out/ci08.out" | grep -qF "$expected"; then
               echo "CI-08: console output (stdout) does not contain '$expected'"
               fail=1
@@ -410,5 +412,54 @@ jobs:
           if [ "$fail" -ne 0 ]; then
             cat "$out/ci08.out"
             cat "$out/ci08.err"
+          fi
+          exit $fail
+
+      - name: CI-09 Help Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call run.cmd --help > "%RUNNER_TEMP%\out\ci09.out" 2> "%RUNNER_TEMP%\out\ci09.err"
+          >"%RUNNER_TEMP%\out\ci09.code" echo %ERRORLEVEL%
+          src\ToyRobot\bin\Release\net8.0\ToyRobot.exe --help > "%RUNNER_TEMP%\out\ci09.app"
+          exit /b 0
+
+      - name: CI-09 Help Linux and macOS
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          rc=0
+          ./run.sh --help > "$RUNNER_TEMP/out/ci09.out" 2> "$RUNNER_TEMP/out/ci09.err" || rc=$?
+          echo "$rc" > "$RUNNER_TEMP/out/ci09.code"
+          src/ToyRobot/bin/Release/net8.0/ToyRobot --help > "$RUNNER_TEMP/out/ci09.app" || true
+
+      - name: CI-09 Help check
+        shell: bash
+        run: |
+          fail=0
+          base="$RUNNER_TEMP/out/ci09"
+          if [ ! -f "$base.code" ] || [ ! -f "$base.app" ]; then
+            echo "CI-09: no saved exit code or application output"
+            exit 1
+          fi
+          code=$(tr -d '\r\n ' < "$base.code")
+          if [ "$code" != "0" ]; then
+            echo "CI-09: exit code is '$code', expected 0"
+            fail=1
+          fi
+          if ! diff <(tr -d '\r' < "$base.out") <(tr -d '\r' < "$base.app"); then
+            echo "CI-09: the script's console output (stdout) differs from the application's --help output"
+            fail=1
+          fi
+          if [ "$(tr -d '\r' < "$base.out" | head -n 1)" != "Toy Robot Simulator - help" ]; then
+            echo "CI-09: the first line of console output (stdout) is not 'Toy Robot Simulator - help'"
+            fail=1
+          fi
+          printf '%s\n' \
+            'Checking for a .NET SDK, version 8 or later...' \
+            'Building the application (Release)...' > "$base.expected-err"
+          if ! diff <(tr -d '\r' < "$base.err") "$base.expected-err"; then
+            echo "CI-09: console messages (stderr) are not exactly the first two progress lines"
+            fail=1
           fi
           exit $fail
