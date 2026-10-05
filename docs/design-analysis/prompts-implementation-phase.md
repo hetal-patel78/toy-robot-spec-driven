@@ -371,3 +371,8 @@ The application files are now grouped by job, with namespaces following the fold
 > https://github.com/hetal-patel78/toy-robot-spec-driven/blob/main/docs/testing-by-hand.md
 
 Outcome: P189 had removed the `> ` from the typed-session examples but left it in "Run the test data", whose blocks showed the app's echo of each file line. That section now gives, for each of the seven test-data files, the lines of the file (which can be pasted into a typed session as they are) and then what the app prints for them (warnings and reports, without the echoed lines); exit-mid-file says to stop at `EXIT` when typing. Every block was produced from the files and a real run of the built application. The only `> ` left on the page describes the prompt and the ignored `> MOVE` example. No decision or code changed.
+
+<a id="p193"></a>**P193.** The developer pasted all of exit-mid-file's lines into a typed session in PowerShell: the session ended at `EXIT`, and the `MOVE` after it went to PowerShell, which ran `Move-Item` and asked for a path. On the assistant's suggestion to split that file's block:
+> yes split it and push
+
+Outcome: in [docs/testing-by-hand.md](../testing-by-hand.md), exit-mid-file's block now holds only the lines up to and including `EXIT` (type or paste only these); the two lines after `EXIT` are named in the text, with why they must not be pasted and how to cancel `Move-Item` (Ctrl+C). No decision or code changed.

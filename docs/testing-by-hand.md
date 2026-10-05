@@ -173,16 +173,16 @@ Output:
 ```
 
 ### exit-mid-file
-`EXIT` in the middle of the file: the `MOVE` and `REPORT` after it are not read. When typing, stop at `EXIT`: the session ends there, so any lines pasted after it would go to the shell instead.
+`EXIT` in the middle of the file: the lines after it are not read.
 
-Lines in `testdata/exit-mid-file.txt`:
+Lines in `testdata/exit-mid-file.txt` up to and including `EXIT` (type or paste only these):
 ```
 PLACE 0,0,NORTH
 REPORT
 EXIT
-MOVE
-REPORT
 ```
+
+The file has two more lines after `EXIT`, which the app never reads: `MOVE` and `REPORT`. Do not paste them into a typed session: the session has already ended, so they would go to the shell (in PowerShell, `MOVE` is a shortcut for `Move-Item`, which then asks for a file to move; press Ctrl+C to cancel it).
 
 Printed:
 ```
