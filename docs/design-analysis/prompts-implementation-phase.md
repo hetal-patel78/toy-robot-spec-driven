@@ -283,3 +283,10 @@ Outcome: `docs/try-it-by-typing.md` renamed to `docs/testing-by-hand.md`, with t
 > can u add the a new file in test data that show multiple operation not 1 or not but a complicated check
 
 Outcome: a seventh test-data pair, `testdata/long-session.txt` and `long-session.expected.txt` (spec 003, [TD-01](../../specs/003-delivery/spec.md#td-01); task T040). The 36 lines mix every kind of line: commands before PLACE, a PLACE off the table, the robot walked along two edges with a MOVE blocked at each corner, an unknown command, a PLACE with values missing, a blank line, a second PLACE in lower case, a line starting with spaces, a full turn, a negative PLACE, and four REPORTs. The expected file holds the four reports (console output, stdout), produced by the built application and checked by hand. Test first: the TD-02 test and both CI-01 lists name the new pair. Spec 003 (TD-01, TD-02, SC-002, SC-006, a new decision), its contract, data model, plan, quickstart and the README's test-data table now list seven pairs. No decision in design-decisions.md or application code changed.
+
+<a id="p181"></a>**P181.** On the README section "The three challenge examples":
+> add all the test data file in the
+> The three challenge examples
+> Copy and run; each prints the two lines shown
+
+Outcome: the README section is now "Run the test data": the ready-to-copy cmd, PowerShell and bash commands and the expected console output (stdout) for all seven test-data files, the three challenge examples first. The table names each file; the "Test data" section still says what each file shows. Spec 003 is unchanged: its README requirements ([NFR-09](../../specs/003-delivery/spec.md#nfr-09), [SC-004](../../specs/003-delivery/spec.md#sc-004)) ask for at least the three challenge examples. No decision or code changed.

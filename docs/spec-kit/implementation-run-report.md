@@ -520,6 +520,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Solution design page 7.7 (start-up): the diagram and steps show Program choosing the reader before the argument check, as the code does | Review of every sequence diagram against the code ([P178][p178]); 7.1 to 7.6 already matched | page 7.7 diagram; then its steps and the step numbers it refers to | Links checked; no code, test or decision changed |
 | The typed-session page renamed from `docs/try-it-by-typing.md` to [docs/testing-by-hand.md](../testing-by-hand.md) | Developer's request ([P179][p179]): the name says it is for testing by hand; it stays in `docs/` because `testdata/` holds only the pairs the tests read | the page and its heading; then the README links | Links checked; no code, test or decision changed |
 | A seventh test-data pair, `long-session`: one 36-line session mixing every kind of line, with four REPORTs | Developer's request ([P180][p180]): one file that shows the rules working together, not one rule at a time | test first: the TD-02 theory and both CI-01 lists; then the two files; then spec 003 (TD-01, TD-02, SC-002, SC-006, a decision, task T040), its contract, data model, plan and quickstart; then the README | Expected output from the built application, checked by hand; all tests pass (470 + 26); links checked |
+| README: "The three challenge examples" became "Run the test data", with ready-to-copy commands and expected console output (stdout) for all seven test-data files | Developer's request ([P181][p181]) | README section heading, sentence and table | Every command's output matches its expected file (CI-01 runs the same commands on all three systems); links checked |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -665,6 +666,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p178]: ../design-analysis/prompts-implementation-phase.md#p178
 [p179]: ../design-analysis/prompts-implementation-phase.md#p179
 [p180]: ../design-analysis/prompts-implementation-phase.md#p180
+[p181]: ../design-analysis/prompts-implementation-phase.md#p181
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

@@ -23,14 +23,18 @@ While they work, the scripts show what they are doing on the console (checking .
 
 When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/testing-by-hand.md](docs/testing-by-hand.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
 
-## The three challenge examples
-Copy and run; each prints the two lines shown.
+## Run the test data
+Copy and run; each prints the console output (stdout) shown. The first three are the challenge examples; what each file shows is under [Test data](#test-data).
 
-| Example | cmd | PowerShell | bash, zsh | Console output (stdout) |
+| File | cmd | PowerShell | bash, zsh | Console output (stdout) |
 |---|---|---|---|---|
-| 1 | `run testdata\challenge-example-1.txt` | `.\run.cmd testdata\challenge-example-1.txt` | `./run.sh testdata/challenge-example-1.txt` | `Output:` `0,1,NORTH` |
-| 2 | `run testdata\challenge-example-2.txt` | `.\run.cmd testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-2.txt` | `Output:` `0,0,WEST` |
-| 3 | `run testdata\challenge-example-3.txt` | `.\run.cmd testdata\challenge-example-3.txt` | `./run.sh testdata/challenge-example-3.txt` | `Output:` `3,3,NORTH` |
+| challenge-example-1 | `run testdata\challenge-example-1.txt` | `.\run.cmd testdata\challenge-example-1.txt` | `./run.sh testdata/challenge-example-1.txt` | `Output:` `0,1,NORTH` |
+| challenge-example-2 | `run testdata\challenge-example-2.txt` | `.\run.cmd testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-2.txt` | `Output:` `0,0,WEST` |
+| challenge-example-3 | `run testdata\challenge-example-3.txt` | `.\run.cmd testdata\challenge-example-3.txt` | `./run.sh testdata/challenge-example-3.txt` | `Output:` `3,3,NORTH` |
+| bom-challenge-example-1 | `run testdata\bom-challenge-example-1.txt` | `.\run.cmd testdata\bom-challenge-example-1.txt` | `./run.sh testdata/bom-challenge-example-1.txt` | `Output:` `0,1,NORTH` |
+| exit-mid-file | `run testdata\exit-mid-file.txt` | `.\run.cmd testdata\exit-mid-file.txt` | `./run.sh testdata/exit-mid-file.txt` | `Output:` `0,0,NORTH` |
+| empty | `run testdata\empty.txt` | `.\run.cmd testdata\empty.txt` | `./run.sh testdata/empty.txt` | nothing |
+| long-session | `run testdata\long-session.txt` | `.\run.cmd testdata\long-session.txt` | `./run.sh testdata/long-session.txt` | four reports, each `Output:` then: `0,0,WEST`, `4,4,EAST`, `3,0,EAST`, `3,0,EAST` |
 
 ## Build, test and run directly
 ```
