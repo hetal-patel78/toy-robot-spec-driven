@@ -8,7 +8,7 @@ In the order a line meets them. Full descriptions are on page [6](06-components.
 
 | Name | Meaning |
 |---|---|
-| **[Program](06-components.md#program)** | The entry point. Checks that there are no arguments, chooses the input reader, creates the Table, RobotOperator and the Runner, starts the Runner and returns the exit code. A last safeguard turns an unexpected exception into one error line and exit code 2 ([DEC-26][dec-26], [DEC-32][dec-32]). |
+| **[Program](06-components.md#program)** | The entry point. Checks the arguments (shows the help text for `--help`, the how-to-run message for any other argument), chooses the input reader, creates the Table, RobotOperator and the Runner, starts the Runner and returns the exit code. A last safeguard turns an unexpected exception into one error line and exit code 2 ([DEC-26][dec-26], [DEC-32][dec-32]). |
 | **[Runner](06-components.md#runner)** | Runs the session: reads each line, shows the prompt or the echo, passes the line to the CommandParser and the command object to RobotOperator, and writes every result and warning. The only component that writes text ([DEC-26][dec-26]). |
 | **[CommandParser](06-components.md#commandparser)** | Turns one line into a command object, EXIT, or a failure with its reason. Checks the format only, never the table ([DEC-28][dec-28]). |
 | **[IRobotCommand](06-components.md#command-classes)** | The small interface every command class implements: `Name`, `NeedsRobotOnTable` and `Execute` ([DEC-27][dec-27]). |
@@ -37,8 +37,8 @@ In alphabetical order.
 | **Console** | Where commands are typed and everything the application prints appears. |
 | **Console end-to-end test** | A test that starts the real built application as a separate program and checks its real console input and output (stdout and stderr), exit codes, the test data and the run scripts. Lives in the project `ToyRobot.ConsoleEndToEndTests` ([DEC-31][dec-31]). |
 | **Console input (stdin)** | Where the commands come from: the keyboard, or a file or pipe redirected into the application. Technically standard input. |
-| **Console messages (stderr)** | Everything the application prints except the REPORT result: the prompt, the echo, warnings, the how-to-run message and the unexpected-problem error line. Technically standard error ([DEC-23][dec-23]). |
-| **Console output (stdout)** | Only the REPORT result, `Output:` and the position. Technically standard output ([DEC-23][dec-23]). |
+| **Console messages (stderr)** | Everything the application prints except the REPORT result and the help text: the prompt, the echo, warnings, the how-to-run message and the unexpected-problem error line. Technically standard error ([DEC-23][dec-23]). |
+| **Console output (stdout)** | Only the REPORT result, `Output:` and the position, or the help text when the application is started with `--help`. Technically standard output ([DEC-23][dec-23]). |
 | **CRLF, LF** | The two ways of ending a line of text: CRLF on Windows, LF on Linux and macOS. Tests compare line by line, so both pass. |
 | **Current state** | Where the robot is and which way it faces now; nothing while the robot is not on the table. Commands read it through `CurrentState`. |
 | **DEC-nn** | A decision in [design-decisions.md][dd], for example [DEC-15][dec-15]. That file is the source of truth. |
@@ -48,7 +48,8 @@ In alphabetical order.
 | **Exit code** | The number a program returns to the system when it stops: 0 means success, 1 means it was used incorrectly, 2 means an unexpected problem ([DEC-32][dec-32]). |
 | **Failure** | What the CommandParser returns for a bad line, with the reason used in the warning. It is a normal result, not an error that stops the application. |
 | **FR, NFR** | A functional requirement (what the application must do, page [2](02-functional-requirements.md)) or a non-functional requirement (a quality it must have, page [3](03-non-functional-requirements.md)). |
-| **How-to-run message** | The one-line help written to console messages (stderr) when the application is started with any argument ([DEC-04][dec-04]). |
+| **Help text** | The text written to console output (stdout) when the application is started with `--help` as its only argument: how to start it, the table, each command and the rules, and how a session ends. The application then stops with exit code 0 without reading input ([DEC-04][dec-04]). |
+| **How-to-run message** | The one-line message written to console messages (stderr) when the application is started with any argument other than `--help` on its own ([DEC-04][dec-04]). |
 | **Immutable** | Cannot be changed once created. A RobotState is replaced by a new one, never changed ([DEC-12][dec-12], [DEC-13][dec-13]). |
 | **Interactive** | A person is typing, rather than input being redirected. Program decides this from `Console.IsInputRedirected` ([DEC-24][dec-24]). |
 | **Interface** | In C#, a list of members a class promises to provide, without the code. Other parts depend on the interface instead of the class. |

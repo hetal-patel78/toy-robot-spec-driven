@@ -11,10 +11,15 @@ The components and their jobs come from [DEC-26][dec-26]. How they fit together 
 | **Folder** | `src/ToyRobot/`, the project root (namespace `ToyRobot`) ([DEC-40][dec-40]). |
 | **Job** | The thin entry point. It checks the arguments, creates the other parts and starts the Runner, inside a last safeguard against unexpected exceptions ([DEC-04][dec-04], [DEC-26][dec-26], [DEC-32][dec-32]). |
 | **Takes in** | The command-line arguments and the real console. |
-| **Gives back** | Exit code 1 with the how-to-run message in console messages (stderr) if any argument is given; otherwise exit code 0 when the Runner returns. Exit code 2 with the line `Error: unexpected problem - <exception message>` in console messages (stderr) if an unexpected exception escapes this work ([DEC-23][dec-23], [DEC-32][dec-32]). |
+| **Gives back** | Exit code 0 with the help text in console output (stdout) if the only argument is `--help`; exit code 1 with the how-to-run message in console messages (stderr) if any other argument is given; otherwise exit code 0 when the Runner returns. Exit code 2 with the line `Error: unexpected problem - <exception message>` in console messages (stderr) if an unexpected exception escapes this work ([DEC-23][dec-23], [DEC-32][dec-32]). |
 | **Does not** | Read or parse commands, apply rules, change the console's encoding settings, or handle Ctrl+C ([DEC-10][dec-10], [DEC-26][dec-26]). |
 
 Program has two methods. `Main` is the thin wiring of the real console: it decides `interactive` and chooses the input reader (steps 2 and 3 below), then calls `Run(args, input, output, error, interactive)` with that reader, `Console.Out` and `Console.Error`, and returns its exit code. Choosing the reader reads nothing, so it is done before the argument check, outside the safeguard. `Run` is internal, so the tests can call it with in-memory readers and writers; it does the argument check, steps 1 and 4, and the safeguard.
+
+The argument check, the first thing `Run` does ([DEC-04][dec-04]):
+- **Exactly one argument, and it is `--help`** (an exact, case-sensitive match): write the help text to console output (`output`) and return exit code 0. The help text is held in Program as its lines, each written with `WriteLine`, so it ends with a line break like every other line the application writes. Its exact text is on page [2](02-functional-requirements.md#help-text).
+- **Any other argument, or more than one:** write the how-to-run message to console messages (`error`) and return exit code 1.
+- In both cases `Run` reads nothing from `input` and creates no other part, so typed or redirected input is left unread.
 
 Steps when there is no argument:
 1. Create `Table(5, 5)` and `RobotOperator(table)` ([DEC-03][dec-03]).
@@ -22,7 +27,7 @@ Steps when there is no argument:
 3. Choose the input reader. For redirected input, Program opens console input (stdin) with its own UTF-8 reader, which also removes a leading byte-order mark. When a person is typing, it uses `Console.In` ([DEC-20][dec-20], [DEC-26][dec-26]).
 4. Create the Runner with that reader, `Console.Out` (console output, stdout), `Console.Error` (console messages, stderr), RobotOperator and `interactive`, and run it ([DEC-29][dec-29]).
 
-The safeguard: `Run` does the argument check, creates the parts and runs the Runner inside one `try`. If any exception escapes, it writes exactly one line to console messages (stderr), `Error: unexpected problem - <exception message>` (the exception's `Message`), and returns exit code 2. If writing that line fails too, it still returns 2 and does not throw. No input causes this: every bad input has a defined result and no component throws for input. It is there for faults outside the application's control, such as the console or a pipe closing while it writes, and for defects. Ctrl+C is still not handled ([DEC-10][dec-10], [DEC-32][dec-32]).
+The safeguard: `Run` does the argument check (including writing the help text), creates the parts and runs the Runner inside one `try`. If any exception escapes, it writes exactly one line to console messages (stderr), `Error: unexpected problem - <exception message>` (the exception's `Message`), and returns exit code 2. If writing that line fails too, it still returns 2 and does not throw. No input causes this: every bad input has a defined result and no component throws for input. It is there for faults outside the application's control, such as the console or a pipe closing while it writes, and for defects. Ctrl+C is still not handled ([DEC-10][dec-10], [DEC-32][dec-32]).
 
 It does not change the console's encoding: on Windows that can fail when there is no console window (for example in CI), and the output is plain ASCII, so no change is needed ([DEC-26][dec-26]).
 

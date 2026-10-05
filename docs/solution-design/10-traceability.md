@@ -32,10 +32,11 @@ Links each requirement to the decisions it comes from, the components that imple
 | [FR-14](02-functional-requirements.md) Echo of each line when redirected | [DEC-25][dec-25] | Runner | | ✓ | |
 | [FR-15](02-functional-requirements.md) EXIT ends the session | [DEC-10][dec-10] | CommandParser, Runner, Program | ✓ | ✓ | ✓ |
 | [FR-16](02-functional-requirements.md) End of input ends the session | [DEC-10][dec-10], [DEC-32][dec-32] | Runner, Program | | ✓ | ✓ |
-| [FR-17](02-functional-requirements.md) Any argument: how-to-run message, exit code 1 | [DEC-04][dec-04] | Program | | | ✓ |
+| [FR-17](02-functional-requirements.md) Any other argument: how-to-run message, exit code 1 | [DEC-04][dec-04] | Program | | ✓ | ✓ |
+| [FR-18](02-functional-requirements.md) `--help`: help text, exit code 0 | [DEC-04][dec-04], [DEC-23][dec-23], [DEC-32][dec-32] | Program | | ✓ | ✓ |
 
 Notes:
-- **Exit codes** ([FR-15][fr-15], [FR-16][fr-16], [FR-17][fr-17]) are returned by Program, so the console end-to-end tests check them ([DEC-31][dec-31]). Exit code 2 for an unexpected problem ([NFR-01][nfr-01]) cannot be caused by any input, so it is checked in memory through Program's internal `Run` method, with a reader or writer that fails ([DEC-32][dec-32]).
+- **Exit codes** ([FR-15][fr-15], [FR-16][fr-16], [FR-17][fr-17], [FR-18][fr-18]) are returned by Program, so the console end-to-end tests check them ([DEC-31][dec-31]). Exit code 2 for an unexpected problem ([NFR-01][nfr-01]) cannot be caused by any input, so it is checked in memory through Program's internal `Run` method, with a reader or writer that fails ([DEC-32][dec-32]).
 - **The prompt and the echo** ([FR-13][fr-13], [FR-14][fr-14]) are on console messages (stderr). The Runner whole-flow tests check them exactly, giving the Runner `interactive` as true or false. The console end-to-end tests compare only console output (stdout), so they do not check them.
 - **Every row of the [DEC-08][dec-08] table** and **every warning in [DEC-22][dec-22]**, with its exact text, must have a test ([FR-09][fr-09], [FR-10][fr-10], [DEC-31][dec-31]).
 - **The three challenge examples** are test-data files, so they run in the console end-to-end tests and are compared with their expected output ([FR-02][fr-02], [FR-03][fr-03], [FR-06][fr-06]).
@@ -53,7 +54,7 @@ These are mostly proved by how the tests run, or by a review, rather than by one
 | [NFR-05](03-non-functional-requirements.md) Testable without the console | [DEC-03][dec-03], [DEC-29][dec-29], [DEC-31][dec-31] | Runner (given its input and outputs), Table (size in the constructor) | Runner whole-flow tests, including a 2 x 2 table |
 | [NFR-06](03-non-functional-requirements.md) Tested at three levels | [DEC-31][dec-31] | `ToyRobot.Tests`, `ToyRobot.ConsoleEndToEndTests` | CI runs all three levels; the test list is compared with [DEC-31][dec-31] |
 | [NFR-07](03-non-functional-requirements.md) Readable code (SOLID) | [DEC-34][dec-34], [DEC-40][dec-40] | All components | Code review against page [6](06-components.md) |
-| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`, with the menu | CI runs each system's script with a challenge example; the error cases are checked by their exit codes |
+| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`, with the menu | CI runs each system's script with a challenge example and with `--help`; the error cases are checked by their exit codes |
 | [NFR-09](03-non-functional-requirements.md) Short README | [DEC-37][dec-37] | The README | Following the README word for word on a fresh copy, in cmd, PowerShell and bash |
 
 ---
@@ -101,3 +102,4 @@ Back to the [solution design overview](README.md).
 [fr-16]: 02-functional-requirements.md#fr-16
 [fr-17]: 02-functional-requirements.md#fr-17
 [nfr-01]: 03-non-functional-requirements.md#nfr-01
+[fr-18]: 02-functional-requirements.md#fr-18

@@ -46,7 +46,7 @@ Each scenario has its own page, with one sequence diagram and a short explanatio
 | 7.4 | [A bad line](07-logical-flow/04-bad-line.md) | Input: `HELLO`. Requirement: [FR-10][fr-10]. |
 | 7.5 | [PLACE off the table](07-logical-flow/05-place-off-the-table.md) | Input: `PLACE 9,9,NORTH`. Requirement: [FR-02][fr-02]. |
 | 7.6 | [EXIT](07-logical-flow/06-exit.md) | Input: `EXIT`, followed by more lines. Requirement: [FR-15][fr-15]. |
-| 7.7 | [Start-up](07-logical-flow/07-start-up.md) | Requirements: [FR-13][fr-13], [FR-14][fr-14], [FR-17][fr-17]. |
+| 7.7 | [Start-up](07-logical-flow/07-start-up.md) | Requirements: [FR-13][fr-13], [FR-14][fr-14], [FR-17][fr-17], [FR-18][fr-18]. |
 
 ---
 
@@ -70,3 +70,4 @@ Back to the [solution design overview](README.md).
 [fr-14]: 02-functional-requirements.md#fr-14
 [fr-15]: 02-functional-requirements.md#fr-15
 [fr-17]: 02-functional-requirements.md#fr-17
+[fr-18]: 02-functional-requirements.md#fr-18

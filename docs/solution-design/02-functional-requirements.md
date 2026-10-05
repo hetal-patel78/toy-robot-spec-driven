@@ -10,7 +10,7 @@ What the application must do, as numbered requirements, each with one acceptance
 
   | Term on this page | Channel | Carries |
   |---|---|---|
-  | **Console output (stdout)** | standard output | Only the REPORT result: `Output:` and the position |
+  | **Console output (stdout)** | standard output | Only the REPORT result: `Output:` and the position. When the application is started with `--help`, no command is read and console output carries the help text instead ([FR-18][fr-18]) |
   | **Console messages (stderr)** | standard error | Everything else: the `> ` prompt, the echo of each line, warnings, the how-to-run message and the unexpected-problem error line ([DEC-32][dec-32]) |
   | **Console input (stdin)** | standard input | The commands, typed or redirected from a file |
 
@@ -59,17 +59,63 @@ For the other inputs in a row, the quote holds that line instead. The warning qu
 
 | Requirement | Acceptance criterion | Decisions |
 |---|---|---|
-| **FR-12**<br><a id="fr-12"></a>Console output (stdout) must carry only the REPORT result (`Output:` and the position). Warnings, the prompt, the echo and the how-to-run message must go to console messages (stderr). | **Given** the [FR-07][fr-07] input in `commands.txt`.<br>**When** run in cmd, bash or zsh as `ToyRobot < commands.txt > results.txt`.<br>**Then** `results.txt` holds exactly:<br>`Output:`<br>`0,0,NORTH`<br>and the screen shows only the console messages (stderr) of FR-07. | [DEC-23][dec-23] |
+| **FR-12**<br><a id="fr-12"></a>Console output (stdout) must carry only the REPORT result (`Output:` and the position), or the help text when started with `--help` ([FR-18][fr-18]). Warnings, the prompt, the echo and the how-to-run message must go to console messages (stderr). | **Given** the [FR-07][fr-07] input in `commands.txt`.<br>**When** run in cmd, bash or zsh as `ToyRobot < commands.txt > results.txt`.<br>**Then** `results.txt` holds exactly:<br>`Output:`<br>`0,0,NORTH`<br>and the screen shows only the console messages (stderr) of FR-07. | [DEC-23][dec-23] |
 | **FR-13**<br><a id="fr-13"></a>When a person is typing, the prompt `> ` must be written to console messages (stderr) before each line is read, and typed lines must not be echoed. With redirected input there is no prompt. | **Given** a person is typing.<br>**When** they type `MOVE`, then `EXIT`, pressing Enter after each.<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr)** (`⏎` marks a line break):<br>`> Warning: MOVE ignored - robot is not on the table⏎> ` | [DEC-24][dec-24] |
 | **FR-14**<br><a id="fr-14"></a>With redirected input, every line read must be echoed to console messages (stderr), before it is processed, as `> ` and the line without whitespace at either end. This includes bad lines, blank lines and EXIT; lines after EXIT are not read, so they are not echoed. | **When** the lines are: `MOVE` with spaces before and after it, an empty line, `EXIT`, `REPORT`.<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):**<br>`> MOVE`<br>`Warning: MOVE ignored - robot is not on the table`<br>`> ` (`>` and a space)<br>`Warning: blank line ignored`<br>`> EXIT` | [DEC-25][dec-25] |
 
-## Ending a session
+## Ending a session, and starting with an argument
 
 | Requirement | Acceptance criterion | Decisions |
 |---|---|---|
 | **FR-15**<br><a id="fr-15"></a>When the command word is EXIT, in any case, the session must end at once with exit code 0, even before PLACE. Anything after EXIT on its line is ignored, and later lines are not read. EXIT gives no output of its own. `EXITNOW` is an unknown command. | **When:**<br>`exit now`<br>`REPORT`<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):**<br>`> exit now`<br>**Exit code:** 0 | [DEC-10][dec-10] |
 | **FR-16**<br><a id="fr-16"></a>The session must end at the end of the input with exit code 0. A typing user ends input with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). A line that is exactly the single character Ctrl+Z (U+001A), which is how the Windows console gives Ctrl+Z then Enter, ends the input in the same way: nothing after it is read or run, and it gives no warning. Empty input must not cause an error. | **Given** an empty file.<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):** (empty)<br>**Exit code:** 0 | [DEC-10][dec-10], [DEC-32][dec-32] |
-| **FR-17**<br><a id="fr-17"></a>If the application is started with any argument, it must not read input. It must write the how-to-run message to console messages (stderr) and stop with exit code 1. | **When** started as `ToyRobot --help` (or with a file name).<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):**<br>`How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` (three spaces before the bracket)<br>**Exit code:** 1 | [DEC-04][dec-04] |
+| **FR-17**<br><a id="fr-17"></a>If the application is started with any argument other than `--help` on its own, it must not read input. It must write the how-to-run message to console messages (stderr) and stop with exit code 1. This includes `-h`, `--HELP` and `--help` with another argument. | **When** started as `ToyRobot commands.txt` (or `ToyRobot -h`, `ToyRobot --HELP` or `ToyRobot --help commands.txt`).<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):**<br>`How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` (three spaces before the bracket)<br>**Exit code:** 1 | [DEC-04][dec-04] |
+| **FR-18**<br><a id="fr-18"></a>If the application is started with exactly one argument, `--help` (lower case), it must not read input. It must write the help text below to console output (stdout), write nothing to console messages (stderr), and stop with exit code 0. The help text says how to start the application, describes the table, each command and the rules, and says how a session ends. | **Given** input that holds `PLACE 0,0,NORTH` and `REPORT`.<br>**When** started as `ToyRobot --help`.<br>**Then console output (stdout):** the [help text](#help-text), exactly<br>**Console messages (stderr):** (empty)<br>**Exit code:** 0<br>The input is not read, so there is no `Output:` line. | [DEC-04][dec-04], [DEC-23][dec-23], [DEC-32][dec-32] |
+
+### Help text
+
+The exact help text of [FR-18][fr-18], from [DEC-04][dec-04]. It is plain ASCII. It repeats the rules of [FR-01][fr-01] to [FR-07][fr-07], [FR-15][fr-15] and [FR-16][fr-16]; if one of them changes, the help text changes with it.
+
+```text
+Toy Robot Simulator - help
+
+HOW TO START
+  Type commands:        ToyRobot
+  Commands from a file: ToyRobot < commands.txt
+                        run commands.txt         (cmd)
+                        .\run.cmd commands.txt   (PowerShell)
+                        ./run.sh commands.txt    (bash, zsh)
+
+THE TABLE
+  5 x 5 units. Positions are X = 0..4 and Y = 0..4.
+  0,0 is the SOUTH WEST corner; NORTH is up (Y + 1), EAST is right (X + 1).
+
+COMMANDS (one per line, upper or lower case)
+  PLACE X,Y,F  Put the robot on the table at X,Y facing F.
+               F is NORTH, SOUTH, EAST or WEST (full word).
+               Example: PLACE 0,0,NORTH
+  MOVE         Move the robot one unit forward in the direction it faces.
+  LEFT         Turn the robot 90 degrees left, without moving it.
+  RIGHT        Turn the robot 90 degrees right, without moving it.
+  REPORT       Show the robot's position and direction, for example:
+                 Output:
+                 0,1,NORTH
+  EXIT         End the session.
+
+RULES
+  - The first valid PLACE puts the robot on the table. Until then
+    MOVE, LEFT, RIGHT and REPORT are ignored.
+  - A PLACE or MOVE that would put the robot off the table is ignored;
+    the robot stays where it was and later commands still work.
+  - An ignored command or a line that is not a valid command shows a
+    warning, and the next line is read.
+
+ENDING A SESSION
+  EXIT                     Ends the session.
+  Ctrl+Z then Enter        End of input on Windows: ends the session.
+  Ctrl+D                   End of input on Linux and macOS: ends the session.
+  Ctrl+C                   Stops the app at once.
+```
 
 The tests cover many more cases than the one example per requirement here, such as every corner, full turn cycles and every bad-line variant. They are listed in [DEC-31][dec-31] and planned on page [9](09-considerations.md).
 
@@ -105,3 +151,7 @@ Back to the [solution design overview](README.md).
 [fr-07]: #fr-07
 [fr-10]: #fr-10
 [fr-14]: #fr-14
+[fr-01]: #fr-01
+[fr-15]: #fr-15
+[fr-16]: #fr-16
+[fr-18]: #fr-18

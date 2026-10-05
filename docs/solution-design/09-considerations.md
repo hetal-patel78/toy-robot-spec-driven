@@ -16,14 +16,15 @@ No input makes the application crash, including an empty input or a very large n
 | A robot command before a valid PLACE | Ignored with a warning; RobotOperator checks this before running the command | [DEC-19][dec-19] |
 | An empty input | The session ends at once with exit code 0 | [DEC-10][dec-10] |
 | A byte-order mark at the start of the input | Removed, so the first command is read normally | [DEC-20][dec-20] |
-| Any argument on the command line | The how-to-run message, then exit code 1 | [DEC-04][dec-04] |
+| `--help` as the only argument | The help text on console output (stdout), then exit code 0; no input is read | [DEC-04][dec-04] |
+| Any other argument on the command line | The how-to-run message, then exit code 1 | [DEC-04][dec-04] |
 | An unexpected exception: not caused by any input, but by a fault outside the application's control (for example the console or a pipe closing while it writes) or a defect | Program's last safeguard catches it, writes `Error: unexpected problem - <exception message>` to console messages (stderr) instead of a .NET stack trace, and stops with exit code 2. If writing that line fails, it still stops with exit code 2. | [DEC-23][dec-23], [DEC-26][dec-26], [DEC-32][dec-32] |
 
 After every bad line the session carries on, so later valid commands still work, as the challenge requires.
 
 ## Output streams and exit codes
 
-Only the REPORT result goes to console output (stdout); everything else goes to console messages (stderr) ([DEC-23][dec-23]):
+Only the REPORT result, or the help text for `--help`, goes to console output (stdout); everything else goes to console messages (stderr) ([DEC-23][dec-23]):
 
 | What is written | When | Where |
 |---|---|---|
@@ -31,7 +32,8 @@ Only the REPORT result goes to console output (stdout); everything else goes to 
 | Warnings | Every ignored line or command | Console messages (stderr) |
 | The `> ` prompt | Only when a person is typing | Console messages (stderr) |
 | The echo, `> ` and the line | Only when input is redirected | Console messages (stderr) |
-| The how-to-run message | Any argument given | Console messages (stderr) |
+| The help text | The only argument is `--help` ([DEC-04][dec-04]) | Console output (stdout) |
+| The how-to-run message | Any other argument given | Console messages (stderr) |
 | `Error: unexpected problem - <exception message>` | An unexpected problem ([DEC-32][dec-32]) | Console messages (stderr) |
 
 On screen they all appear together. The split matters only when output is saved or compared: `ToyRobot < commands.txt > results.txt` saves only the REPORT results, and `2> warnings.txt` saves the rest.
@@ -41,7 +43,8 @@ Exit codes of the application:
 | Exit code | When | Decision |
 |---|---|---|
 | 0 | The input ends, or EXIT is read | [DEC-10][dec-10] |
-| 1 | Any argument is given (after the how-to-run message) | [DEC-04][dec-04] |
+| 0 | `--help` is the only argument (after the help text) | [DEC-04][dec-04] |
+| 1 | Any other argument is given (after the how-to-run message) | [DEC-04][dec-04] |
 | 2 | An unexpected problem (after the error line) | [DEC-32][dec-32] |
 | Non-zero, set by the system | Ctrl+C: the standard .NET behaviour applies; the application does not handle it | [DEC-10][dec-10] |
 
@@ -54,13 +57,13 @@ There are three test levels ([DEC-31][dec-31]). Tests use **xUnit** and live in 
 | Level | What it tests | How | Project |
 |---|---|---|---|
 | **1. Unit tests** | Table, Direction, CommandParser, RobotOperator and each command class, one at a time | Direct calls with small inputs; any table size | `ToyRobot.Tests`, folder `Unit/` |
-| **2. Runner whole-flow tests** | The whole application in memory, from the Runner inward: Runner → CommandParser → RobotOperator → commands → Table, together (some through Program's internal `Run` method) | The Runner is given a `StringReader` as input and two `StringWriter`s as its outputs, instead of the console ([DEC-29][dec-29]). Console output (stdout) and console messages (stderr) are checked separately and exactly. Program's safeguard is tested the same way, through its internal `Run` method with a reader or writer that fails ([DEC-32][dec-32]). | `ToyRobot.Tests`, folder `RunnerWholeFlow/` |
-| **3. Console end-to-end tests** | The real built application as a separate process: the real console, `Console.IsInputRedirected`, the UTF-8 input reader and Program | Run the application with each test-data file redirected and compare console output (stdout) with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after the end of input and after EXIT | `ToyRobot.ConsoleEndToEndTests` |
+| **2. Runner whole-flow tests** | The whole application in memory, from the Runner inward: Runner → CommandParser → RobotOperator → commands → Table, together (some through Program's internal `Run` method) | The Runner is given a `StringReader` as input and two `StringWriter`s as its outputs, instead of the console ([DEC-29][dec-29]). Console output (stdout) and console messages (stderr) are checked separately and exactly. The help text and the how-to-run message are checked the same way, through `Run`, including that no input is read. Program's safeguard is tested the same way, through its internal `Run` method with a reader or writer that fails ([DEC-32][dec-32]). | `ToyRobot.Tests`, folder `RunnerWholeFlow/` |
+| **3. Console end-to-end tests** | The real built application as a separate process: the real console, `Console.IsInputRedirected`, the UTF-8 input reader and Program | Run the application with each test-data file redirected and compare console output (stdout) with the expected file; run it with `--help` and check the help text, nothing on console messages (stderr) and exit code 0; run it with other arguments (a file name, `-h`, `--HELP`, `--help` and another argument) and check the how-to-run message and exit code 1; check exit code 0 after the end of input and after EXIT | `ToyRobot.ConsoleEndToEndTests` |
 
 - **Line by line.** Expected output is compared line by line, so Windows and Linux line endings both pass.
 - **Test names** use the challenge wording where possible, for example `Robot_not_on_table_ignores_MOVE`.
 - **Test data.** The `testdata/` folder holds input files with matching expected-output files, used by the console end-to-end tests and by CI ([DEC-37][dec-37]).
-- **What must be covered.** The full list is in [DEC-31][dec-31]. In short: the three challenge examples and the hand-traced examples; every edge and corner; full LEFT and RIGHT cycles; a 2 x 2 table; every robot command before PLACE; invalid, repeated and negative PLACEs; letter case; every row of the [DEC-08][dec-08] table, including tabs and non-breaking spaces; every warning with its exact text; EXIT in every position; the prompt and the echo; an empty input; a byte-order mark; the how-to-run message and exit codes; the unexpected-problem line and exit code 2.
+- **What must be covered.** The full list is in [DEC-31][dec-31]. In short: the three challenge examples and the hand-traced examples; every edge and corner; full LEFT and RIGHT cycles; a 2 x 2 table; every robot command before PLACE; invalid, repeated and negative PLACEs; letter case; every row of the [DEC-08][dec-08] table, including tabs and non-breaking spaces; every warning with its exact text; EXIT in every position; the prompt and the echo; an empty input; a byte-order mark; the help text and the how-to-run message, with their exit codes; the unexpected-problem line and exit code 2.
 - Page [10](10-traceability.md) shows which test levels prove each functional and non-functional requirement.
 
 ### Test flow
@@ -98,10 +101,10 @@ Two scripts at the repository root let a reviewer start the application without 
 |---|---|---|
 | 1 | Checks that a .NET SDK, version 8 or later, is installed | Says where to get it; exit code 1 |
 | 2 | Builds the application quietly (`Release`) | Shows the build output; exits with the build's exit code |
-| 3 | Checks the arguments: none shows the menu (below) when console input is a keyboard, or starts the application with the redirected console input; one must be a file that exists, which is fed to the application's console input (stdin) | Missing file: a message, exit code 1. More than one argument: the script's how-to-run message, exit code 1 |
+| 3 | Checks the arguments: none shows the menu (below) when console input is a keyboard, or starts the application with the redirected console input; one that is `--help` starts the application with `--help`, so it shows its help text; any other one must be a file that exists, which is fed to the application's console input (stdin) | Missing file: a message, exit code 1. More than one argument: the script's how-to-run message, exit code 1 |
 | 4 | Exits with the application's own exit code | — |
 
-The application itself still takes no arguments; the script redirects the file for it ([DEC-04][dec-04]). The scripts write their own messages, and any build output, to console messages (stderr), so console output (stdout) carries only the REPORT results. The wording of the script messages is not fixed.
+The application itself still takes no file name; the script redirects the file for it ([DEC-04][dec-04]). `--help` is the one argument the script passes on to the application. The scripts write their own messages, and any build output, to console messages (stderr), so console output (stdout) carries only the application's own console output: the REPORT results, or the help text. The wording of the script messages is not fixed.
 
 How to feed a file in each shell ([DEC-04][dec-04]):
 
@@ -142,7 +145,7 @@ None of these is built ([DEC-39][dec-39]). They show that the design leaves room
 Where the challenge is silent or open, these are the assumptions the design makes. Each is recorded as a decision.
 
 - The table is 5 x 5 with positions 0 to 4; (0,0) is the SOUTH WEST corner, and NORTH increases Y ([DEC-01][dec-01], [DEC-02][dec-02]).
-- Commands come from console input (stdin), typed or redirected from a file; there is no file-name argument ([DEC-04][dec-04]).
+- Commands come from console input (stdin), typed or redirected from a file; there is no file-name argument; the only argument is `--help`, which shows the help text ([DEC-04][dec-04]).
 - Commands and directions are accepted in any letter case; directions are full words only ([DEC-06][dec-06], [DEC-07][dec-07]).
 - An ignored command is reported with a warning on console messages (stderr); the challenge says ignored, not silent ([DEC-19][dec-19], [DEC-22][dec-22]).
 - REPORT prints `Output:` and then the position, as in the challenge examples ([DEC-21][dec-21]).
@@ -157,7 +160,7 @@ Each line is quoted from the decision's "Trade-off" line in design-decisions.md.
 | Decision | Trade-off |
 |---|---|
 | [DEC-03][dec-03] Table size | "a different table size needs a code change in `Program`; accepted to keep the first build simple." |
-| [DEC-04][dec-04] Standard input only | "there is no file-name argument, so a file must be redirected; Windows PowerShell has no `<`, so it needs the run scripts or `cmd /c` ([DEC-37][dec-37])." |
+| [DEC-04][dec-04] Standard input only | "there is no file-name argument, so a file must be redirected; Windows PowerShell has no `<`, so it needs the run scripts or `cmd /c` ([DEC-37][dec-37]). The help text repeats rules held in other decisions, so it must be kept in step with them; the tests check it word for word ([DEC-31][dec-31])." |
 | [DEC-08][dec-08] How a line is read | "a wider input format than the challenge shows, and more cases to test (every row above is a test, [DEC-31][dec-31])." |
 | [DEC-09][dec-09] A leading `>` | "pasting the challenge examples exactly as printed, with their `>`, gives warnings instead of results (assumption A1)." |
 | [DEC-10][dec-10] Ending a session | "a command the challenge does not define, and a looser format for EXIT than for the other commands." |

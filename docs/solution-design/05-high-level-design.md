@@ -45,7 +45,7 @@ flowchart LR
 
 ## How it works
 
-1. **Start-up.** Program checks for arguments. If there are any, it writes the how-to-run message and stops with exit code 1 ([DEC-04][dec-04]). Otherwise it creates the Table (5 x 5), RobotOperator and the Runner, and starts the Runner ([DEC-03][dec-03], [DEC-26][dec-26]). All of this runs inside a last safeguard: an unexpected exception gives one error line in console messages (stderr) and exit code 2 ([DEC-32][dec-32]).
+1. **Start-up.** Program checks for arguments. If the only argument is `--help`, it writes the help text to console output (stdout) and stops with exit code 0. If there is any other argument, it writes the how-to-run message and stops with exit code 1. In both cases it reads no input ([DEC-04][dec-04]). Otherwise it creates the Table (5 x 5), RobotOperator and the Runner, and starts the Runner ([DEC-03][dec-03], [DEC-26][dec-26]). All of this runs inside a last safeguard: an unexpected exception gives one error line in console messages (stderr) and exit code 2 ([DEC-32][dec-32]).
 2. **One line at a time.** The Runner reads a line. It writes the prompt before reading (when a person is typing) or the echo after reading (when input is redirected) ([DEC-24][dec-24], [DEC-25][dec-25]).
 3. **Format check.** The CommandParser turns the line into a **command object** (one class per robot command, such as `MoveCommand`), EXIT, or a failure with its reason. It checks only the format; whether the position is on the table is not its job ([DEC-27][dec-27], [DEC-28][dec-28]).
 4. **A failure** is shown as a warning in console messages (stderr) and never reaches RobotOperator ([DEC-27][dec-27]).

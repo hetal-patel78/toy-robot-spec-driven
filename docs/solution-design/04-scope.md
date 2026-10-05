@@ -11,9 +11,10 @@ What this solution includes, and what it leaves out on purpose, with the reason 
 | Input from the console, typed by a person or redirected from a file or a pipe, one command per line | [DEC-04][dec-04], [DEC-05][dec-05] |
 | Commands in any letter case, with extra spaces allowed | [DEC-07][dec-07], [DEC-08][dec-08] |
 | A one-line warning for every ignored command or bad line, after which processing continues | [DEC-19][dec-19], [DEC-20][dec-20], [DEC-22][dec-22] |
-| The REPORT result as console output (stdout); warnings, the prompt, the echo and the how-to-run message as console messages (stderr), so the REPORT result can be saved on its own | [DEC-21][dec-21], [DEC-23][dec-23] |
+| The REPORT result as console output (stdout), or the help text for `--help`; warnings, the prompt, the echo and the how-to-run message as console messages (stderr), so the REPORT result can be saved on its own | [DEC-21][dec-21], [DEC-23][dec-23] |
 | A prompt when a person is typing, and an echo of each line when input is redirected | [DEC-24][dec-24], [DEC-25][dec-25] |
-| A how-to-run message for any argument, and exit codes 0 (normal end), 1 (wrong use) and 2 (unexpected problem, shown as one error line instead of a .NET stack trace) | [DEC-04][dec-04], [DEC-10][dec-10], [DEC-32][dec-32] |
+| Help for `--help`: how to start the application, the table, each command and its rules, and how a session ends | [DEC-04][dec-04] |
+| A how-to-run message for any other argument, and exit codes 0 (normal end or help shown), 1 (wrong use) and 2 (unexpected problem, shown as one error line instead of a .NET stack trace) | [DEC-04][dec-04], [DEC-10][dec-10], [DEC-32][dec-32] |
 | Run scripts for Windows, Linux and macOS | [DEC-37][dec-37] |
 | A menu in the run scripts (no file, console input from a keyboard) to type commands, run the test-data files or run the automated tests by number | [DEC-41][dec-41] |
 | Tests at three levels, run by CI (an automated build and test run) on Windows, Linux and macOS | [DEC-31][dec-31], [DEC-33][dec-33] |
@@ -32,6 +33,7 @@ What this solution includes, and what it leaves out on purpose, with the reason 
 | A logging library, a dependency injection container (a library that connects the parts of a program), and a Dockerfile (a recipe for packaging the program in a container) | Too heavy for a console application of this size. | [DEC-39][dec-39] |
 | A log file for results and warnings | The challenge says printing to the console is enough. Redirecting console output (stdout) and console messages (stderr) already saves the REPORT result and the warnings separately. A log file would add choices about its location, permissions, overwriting or appending, and paths on each system, plus tests. | [DEC-23][dec-23], [DEC-39][dec-39] |
 | Accepting a leading `>` in input | The `>` in the challenge examples is read as a prompt, so `> MOVE` is a bad line. This may change if assumption [A1](12-assumptions.md) proves wrong. | [DEC-09][dec-09] |
+| A HELP command typed during a session | It would be a seventh command. Help is asked for when starting the application, with `--help`, as with other console programs. `HELP` typed in a session is an unknown command. | [DEC-04][dec-04], [DEC-39][dec-39] |
 | Handling Ctrl+C | The standard behaviour applies: the application stops at once, with the exit code the system sets. | [DEC-10][dec-10] |
 
 ---

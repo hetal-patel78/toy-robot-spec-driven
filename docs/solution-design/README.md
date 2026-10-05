@@ -7,7 +7,7 @@ This document explains how the Toy Robot Simulator is built. It turns the design
 - Every requirement, component and design point cites the decision it comes from, for example [DEC-15][dec-15].
 
 Two terms used throughout:
-- **The console** is where commands are typed and where everything the application prints appears. It prints two kinds of text: **console output**, which is only the REPORT result (`Output:` and the position), and **console messages**, which are everything else (the `> ` prompt, the echo of each line, warnings, the how-to-run message and the unexpected-problem error line). Both appear together on screen, but they are kept separate so the REPORT result can be saved on its own. Technically, **console output (stdout)** is standard output, **console messages (stderr)** are standard error, and **console input (stdin)** is standard input. Wherever the channel matters, these pages name it with its tag.
+- **The console** is where commands are typed and where everything the application prints appears. It prints two kinds of text: **console output**, which is only the REPORT result (`Output:` and the position), or the help text when the application is started with `--help`, and **console messages**, which are everything else (the `> ` prompt, the echo of each line, warnings, the how-to-run message and the unexpected-problem error line). Both appear together on screen, but they are kept separate so the REPORT result can be saved on its own. Technically, **console output (stdout)** is standard output, **console messages (stderr)** are standard error, and **console input (stdin)** is standard input. Wherever the channel matters, these pages name it with its tag.
 - **Exit code** is the number a program returns to the system when it stops: 0 means success, 1 means it was used incorrectly, 2 means an unexpected problem.
 
 ## The design in one minute
@@ -26,7 +26,7 @@ Two terms used throughout:
 The challenge asks for a console application that simulates a toy robot on a 5 x 5 table and never lets it fall off. It reads the commands PLACE, MOVE, LEFT, RIGHT and REPORT. The deliverables also include test data, a README, a description of the development process and the AI prompts used.
 
 **2. [Functional requirements](02-functional-requirements.md)**
-Numbered [FR-01][fr-01] onwards. They cover the table, how a line is read, each command, ignored commands, the REPORT output, ending a session and the how-to-run message. Each one has Given / When / Then acceptance criteria with an exact input and the exact console output (stdout) and console messages (stderr), using the warning text of [DEC-22][dec-22].
+Numbered [FR-01][fr-01] onwards. They cover the table, how a line is read, each command, ignored commands, the REPORT output, ending a session, the help text for `--help` and the how-to-run message. Each one has Given / When / Then acceptance criteria with an exact input and the exact console output (stdout) and console messages (stderr), using the warning text of [DEC-22][dec-22].
 
 **3. [Non-functional requirements](03-non-functional-requirements.md)**
 Numbered [NFR-01][nfr-01] onwards: never crash, works on Windows, Linux and macOS, runs on .NET 8 or a later version, readable code, testable without the console, and run scripts for each system. Each one says how it is checked.
