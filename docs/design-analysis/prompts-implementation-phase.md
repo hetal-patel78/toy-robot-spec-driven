@@ -376,3 +376,10 @@ Outcome: P189 had removed the `> ` from the typed-session examples but left it i
 > yes split it and push
 
 Outcome: in [docs/testing-by-hand.md](../testing-by-hand.md), exit-mid-file's block now holds only the lines up to and including `EXIT` (type or paste only these); the two lines after `EXIT` are named in the text, with why they must not be pasted and how to cancel `Move-Item` (Ctrl+C). No decision or code changed.
+
+<a id="p194"></a>**P194.** On the source folders of [P191](#p191):
+> no I mean previously all files were part of src and not split to the relevant folders. I noticed that and aske u to make change and u did the change but we need to reflect it in SD and Spec because spec were generated using SD and design decisions. This is needed because if someone download clone the folder and carry on further development then the AI tool will only know what is in documents
+
+The assistant found that solution design page 5 and specs 001 and 002 already showed the folders, but the design decisions (the source of truth) had no decision for them, and page 6 did not say where each component lives. On "yes go ahead and push":
+
+Outcome: [DEC-40](design-decisions.md#dec-40-source-folders) "Source folders" in the design decisions: the folders, their namespaces, what each holds, where a new command goes, and the reason. Solution design page 5 cites it; page 6 has a "Folder" row for every component; page 10 (traceability) lists it for NFR-07; spec 001's decision and task T060 cite it; the design-analysis README says DEC-01 to DEC-40. The two briefs keep "DEC-01 to DEC-39", as they were the inputs at the time. No code changed.

@@ -533,6 +533,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Source code grouped into `Domain/`, `Commands/`, `Parsing/` and `Session/`, namespaces following the folders; Program at the project root | Developer's request ([P191][p191]) | test first (`Each_public_type_is_in_the_namespace_of_its_folder`); then `git mv` and `using` directives; then spec 001 (decision, plan, contract, data model, tasks T060) and spec 002; then source paths in every spec; then solution design page 5; then the README | 497 tests pass (471 + 26); spec checks pass; links checked; no behaviour change |
 | Testing by hand, "Run the test data": each file's lines (pasteable) and what the app prints, instead of the echoed console with `> ` | Developer's finding ([P192][p192]): the section still showed `> ` before each line | the section's introduction; then the seven files | Blocks from the files and a real run of the built application; links checked |
 | Testing by hand, exit-mid-file: the pasteable block stops at `EXIT`; the lines after it are named in the text, with a warning | Developer's finding ([P193][p193]): pasting the whole file sent `MOVE` to PowerShell (`Move-Item`) after the session ended | the exit-mid-file entry | Links checked |
+| DEC-40 "Source folders" added to the design decisions; solution design pages 5, 6 and 10 and spec 001 cite it | Developer's request ([P194][p194]): the folders must be traceable from the source of truth, so that later work, by a person or an AI tool, follows them | design decisions; then pages 5, 6 and 10; then spec 001's decision and T060 | Spec checks pass; all tests pass; links checked; no code change |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -691,6 +692,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p191]: ../design-analysis/prompts-implementation-phase.md#p191
 [p192]: ../design-analysis/prompts-implementation-phase.md#p192
 [p193]: ../design-analysis/prompts-implementation-phase.md#p193
+[p194]: ../design-analysis/prompts-implementation-phase.md#p194
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

@@ -107,6 +107,7 @@ toy-robot-spec-driven/
 └── README.md                     the README
 ```
 
+- **Source folders.** Inside `src/ToyRobot/`, the components are grouped by job, and the namespaces follow the folders (`ToyRobot.Session`, `ToyRobot.Parsing`, `ToyRobot.Commands`, `ToyRobot.Domain`; Program in `ToyRobot`). Page [6](06-components.md) gives each component's folder ([DEC-40][dec-40]).
 - The tests use **xUnit**, a common .NET test framework.
 - **The built application.** [DEC-04][dec-04] uses `ToyRobot` to stand for the built application and leaves its exact path to this page. The run scripts build the `Release` configuration (the optimised build, as opposed to `Debug`), so the application is at:
   - Windows: `src\ToyRobot\bin\Release\net8.0\ToyRobot.exe`
@@ -136,3 +137,4 @@ Back to the [solution design overview](README.md).
 [dec-32]: ../design-analysis/design-decisions.md#dec-32-never-crash
 [dec-34]: ../design-analysis/design-decisions.md#dec-34-readable-code-solid
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
+[dec-40]: ../design-analysis/design-decisions.md#dec-40-source-folders

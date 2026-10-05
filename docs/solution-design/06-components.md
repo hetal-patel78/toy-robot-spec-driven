@@ -8,6 +8,7 @@ The components and their jobs come from [DEC-26][dec-26]. How they fit together 
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/`, the project root (namespace `ToyRobot`) ([DEC-40][dec-40]). |
 | **Job** | The thin entry point. It checks the arguments, creates the other parts and starts the Runner, inside a last safeguard against unexpected exceptions ([DEC-04][dec-04], [DEC-26][dec-26], [DEC-32][dec-32]). |
 | **Takes in** | The command-line arguments and the real console. |
 | **Gives back** | Exit code 1 with the how-to-run message in console messages (stderr) if any argument is given; otherwise exit code 0 when the Runner returns. Exit code 2 with the line `Error: unexpected problem - <exception message>` in console messages (stderr) if an unexpected exception escapes this work ([DEC-23][dec-23], [DEC-32][dec-32]). |
@@ -29,6 +30,7 @@ It does not change the console's encoding: on Windows that can fail when there i
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Session/` (namespace `ToyRobot.Session`) ([DEC-40][dec-40]). |
 | **Job** | Runs the session: reads lines, shows the prompt or the echo, passes each line to the CommandParser and each command object to RobotOperator, and writes the results ([DEC-26][dec-26]). |
 | **Takes in** | `Runner(TextReader input, TextWriter output, TextWriter error, RobotOperator robotOperator, bool interactive)` ([DEC-29][dec-29]). `output` is console output (stdout) and `error` is console messages (stderr). It creates its own CommandParser, because the parser has no settings or state. |
 | **Gives back** | Text on the two writers. It returns when it reads EXIT or reaches the end of the input. |
@@ -50,6 +52,7 @@ Trimming uses `Trim()`, which removes every kind of whitespace (spaces, tabs, no
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Parsing/`, with the parse result (namespace `ToyRobot.Parsing`) ([DEC-40][dec-40]). |
 | **Job** | Turns one line into a command object, EXIT, or a failure with its reason. It creates the command object for the command it reads. It checks the **format only** ([DEC-26][dec-26], [DEC-28][dec-28]). |
 | **Takes in** | One line of text. |
 | **Gives back** | A parse result (below). |
@@ -93,6 +96,7 @@ The reason is the warning text without the `Warning: ` prefix, for example `'PLA
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Commands/`, with `IRobotCommand` and the outcome (namespace `ToyRobot.Commands`) ([DEC-40][dec-40]). |
 | **Job** | One class per robot command: `PlaceCommand`, `MoveCommand`, `LeftCommand`, `RightCommand` and `ReportCommand`. Each holds **only its own logic**: where the robot would go next, or the position to report, and its own warning text ([DEC-26][dec-26], [DEC-27][dec-27]). |
 | **Takes in** | Created by the CommandParser. `PlaceCommand` holds X, Y (whole numbers) and F (a Direction); the others hold nothing. When run, a command receives `IRobotOperator`, never the Robot itself ([DEC-14][dec-14]). |
 | **Gives back** | An outcome (see [Outcome](#outcome)). |
@@ -121,6 +125,7 @@ PLACE, MOVE, LEFT and RIGHT all change the robot the same way, through RobotOper
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Domain/`, with `IRobotOperator` (namespace `ToyRobot.Domain`) ([DEC-40][dec-40]). |
 | **Job** | Holds the only Robot and the rules **shared by all commands**: the robot must be on the table (except for PLACE), and a new state is checked with the Table before it replaces the old one ([DEC-13][dec-13], [DEC-26][dec-26], [DEC-27][dec-27]). |
 | **Takes in** | The Table, when it is created. Then one command object at a time, never EXIT and never a failure ([DEC-27][dec-27], [DEC-30][dec-30]). |
 | **Gives back** | An outcome for each command (below). |
@@ -159,6 +164,7 @@ The warning texts, without the `Warning: ` prefix, and who produces them:
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Domain/` (namespace `ToyRobot.Domain`) ([DEC-40][dec-40]). |
 | **Job** | Holds its placement and the single method that replaces it ([DEC-14][dec-14], [DEC-26][dec-26]). |
 | **Takes in** | Created by RobotOperator with no placement. Its replace method accepts only a real `RobotState`, never `null` ([DEC-11][dec-11], [DEC-14][dec-14]). |
 | **Gives back** | Its placement: `null` (not on the table) or a `RobotState`. |
@@ -168,6 +174,7 @@ The warning texts, without the `Warning: ` prefix, and who produces them:
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Domain/` (namespace `ToyRobot.Domain`) ([DEC-40][dec-40]). |
 | **Job** | An immutable value: X, Y and the facing Direction ([DEC-12][dec-12]). |
 | **Takes in** | X, Y and the Direction, when it is created, for example as a C# `record`. |
 | **Gives back** | X, Y and the Direction. |
@@ -177,6 +184,7 @@ The warning texts, without the `Warning: ` prefix, and who produces them:
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Domain/` (namespace `ToyRobot.Domain`) ([DEC-40][dec-40]). |
 | **Job** | The four directions, NORTH, SOUTH, EAST and WEST, with turning left and right ([DEC-26][dec-26]). |
 | **Takes in** | Nothing; it is a fixed set of four values. |
 | **Gives back** | The direction after a left turn or a right turn ([DEC-17][dec-17]), and its name in upper case for REPORT and warnings ([DEC-07][dec-07]). |
@@ -186,6 +194,7 @@ The warning texts, without the `Warning: ` prefix, and who produces them:
 
 | | |
 |---|---|
+| **Folder** | `src/ToyRobot/Domain/` (namespace `ToyRobot.Domain`) ([DEC-40][dec-40]). |
 | **Job** | Knows its size and answers "is this position on the table?" ([DEC-26][dec-26], [DEC-28][dec-28]). |
 | **Takes in** | Its width and height, in its constructor ([DEC-03][dec-03]). A position X,Y is on the table when 0 ≤ X < width and 0 ≤ Y < height ([DEC-01][dec-01]). |
 | **Gives back** | Yes or no for a position. |
@@ -225,3 +234,4 @@ Back to the [solution design overview](README.md).
 [dec-30]: ../design-analysis/design-decisions.md#dec-30-exit-is-handled-by-the-runner
 [dec-32]: ../design-analysis/design-decisions.md#dec-32-never-crash
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
+[dec-40]: ../design-analysis/design-decisions.md#dec-40-source-folders

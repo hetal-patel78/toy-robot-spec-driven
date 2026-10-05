@@ -420,6 +420,21 @@ Order of precedence: this file, then the solution design, then the Spec Kit file
 - Development-process material: the handwritten analysis documents (Brainstorm, FR, NFR, HLD), presented as the initial analysis; the clarification documents (`docs/design-analysis/clarifications/*.pdf`) that answered the review findings; this design analysis folder; the solution design document with its sequence diagrams (main flow and the unhappy paths: commands before PLACE, invalid PLACE, blocked MOVE, bad line); and the test-flow diagram.
 - Reason: the challenge's guidelines ask for source code, test data, a README, a description of the development process with notable decisions and trade-offs, and any prompts or artefacts used as inputs to code generation. The handwritten documents show where the analysis started; this folder's README states that this file wins wherever they differ.
 
+### DEC-40 Source folders
+
+The application's files are grouped by job in `src/ToyRobot/`, and the namespaces follow the folders:
+
+| Folder | Namespace | Holds |
+|---|---|---|
+| `src/ToyRobot/` (the project root) | `ToyRobot` | Program |
+| `Session/` | `ToyRobot.Session` | Runner |
+| `Parsing/` | `ToyRobot.Parsing` | CommandParser and its parse result |
+| `Commands/` | `ToyRobot.Commands` | the command interface, one class per command, and the outcome |
+| `Domain/` | `ToyRobot.Domain` | Table, Direction, RobotState, Robot, RobotOperator and the narrow interface it gives commands |
+
+A new command is a new class in `Commands/` plus one line in the CommandParser ([DEC-27][dec-27]). The tests follow the same rule: their folders and namespaces match (`Unit/`, `RunnerWholeFlow/` and the console end-to-end project).
+- Reason: a reader, or a tool continuing the work, finds each component by its job, and the folders show the parts of the design ([DEC-26][dec-26], [DEC-34][dec-34]). Added after the implementation at the developer's request; until then all the files were directly in `src/ToyRobot/`.
+
 ---
 
 ## 8. Out of scope and future
@@ -482,3 +497,4 @@ Other assumptions, stated in the README: positions 0..4 with (0,0) at the SOUTH 
 [dec-37]: #dec-37-deliverables
 [dec-27]: #dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-39]: #dec-39-not-included
+[dec-40]: #dec-40-source-folders
