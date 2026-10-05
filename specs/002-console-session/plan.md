@@ -47,7 +47,7 @@ Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 | II. Three Test Levels, Tests First | This spec plans levels 2 and 3 (level 1 is spec 001). In `tasks.md` every test task comes before the code that makes it pass; each phase ends with `dotnet build` and `dotnet test` all passing. Expected output is compared line by line (console end-to-end) and exactly (Runner whole-flow). | Pass |
 | III. Never Crash | The Runner handles every parse result and outcome; nothing is thrown for any input; [NFR-01][nfr-01] tests at both levels (empty input, a number too large, every kind of bad line, BOM). Program's last safeguard turns an unexpected exception into one error line and exit code 2 ([PG-02][pg-02], [DEC-32][dec-32]), tested in memory ([SG-01][sg-01]). | Pass |
 | IV. Cross-Platform | No platform-specific code in the application; the console end-to-end tests start `ToyRobot.exe` or `ToyRobot` by platform; CRLF and LF input are both tested ([WF-03][wf-03], [E2E-07][e2e-07]); CI runs all levels on three systems (spec 003). | Pass |
-| V. No Over-Engineering | Only the BCL and xUnit; no options, no configuration, no extra commands or messages; the table size stays a constructor argument set by Program. | Pass |
+| V. No Over-Engineering | Only the BCL and xUnit; no options other than `--help` ([DEC-04][dec-04]), no configuration, no extra commands or messages; the table size stays a constructor argument set by Program. | Pass |
 | VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`, and the help text for `--help` to `Console.Out` (DEC-23 lists it on standard output; constitution 1.1.0, principle VI). Every test checks the two channels separately. | Pass |
 
 No violations; Complexity Tracking is empty.
@@ -135,9 +135,9 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 - `internal static int Run(string[] args, TextReader input, TextWriter output, TextWriter error, bool interactive)`, all inside one `try`:
   - `if (args.Length == 1 && args[0] == "--help")` (ordinal, case-sensitive): write each line of the help text ([FR-18][fr-18]) with `output.WriteLine`; return 0. `input` is not read ([DEC-04][dec-04]).
   - `else if (args.Length > 0)`: `error.WriteLine("How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)")`; return 1. `input` is not read.
-  - The help text is a `private static readonly string[] HelpLines` in Program, copied line for line from [DEC-04][dec-04] (spec Assumptions, "help text in Program").
   - Otherwise: `var table = new Table(5, 5)`; `var robotOperator = new RobotOperator(table)`; `new Runner(input, output, error, robotOperator, interactive).Run()`; return 0.
   - `catch (Exception exception)`: in an inner `try`, `error.WriteLine("Error: unexpected problem - " + exception.Message)`, with an inner `catch (Exception)` that ignores a failure to write it; return 2 ([PG-02][pg-02], [DEC-23][dec-23], [DEC-32][dec-32]).
+  - The help text is a `private static readonly string[] HelpLines` in Program, copied line for line from [DEC-04][dec-04] (spec Assumptions, "help text in Program").
 - `src/ToyRobot/ToyRobot.csproj` gets an `ItemGroup` with `<InternalsVisibleTo Include="ToyRobot.Tests" />` (an MSBuild item; no library or package), so `ToyRobot.Tests` can call `Run` ([SG-01][sg-01]).
 - Program does not set `Console.OutputEncoding` or `Console.InputEncoding`, and does not handle Ctrl+C ([DEC-10][dec-10], [DEC-26][dec-26]).
 

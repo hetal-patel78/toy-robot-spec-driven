@@ -141,8 +141,8 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 
 ### Tests for User Story 4 (write first; they fail until T040)
 
-- [x] T038 [P] [US4] In `tests/ToyRobot.ConsoleEndToEndTests/HowToRunMessageTests.cs`, theory `How_to_run_message_and_exit_code_1_when_started_with_an_argument` ([E2E-02][e2e-02]; [FR-17][fr-17]; [DEC-04][dec-04], [DEC-31][dec-31] "the how-to-run message and exit codes (console end-to-end)") with rows `--help`, `commands.txt`, and the two arguments `a`, `b`: stdin no bytes; stdout `""`; stderr lines exactly one line, `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` (three spaces before the bracket); exit code 1.
-- [x] T039 [P] [US4] In `tests/ToyRobot.ConsoleEndToEndTests/HowToRunMessageTests.cs`, test `Input_is_not_read_when_started_with_an_argument` ([E2E-08][e2e-08]; [FR-17][fr-17]; [DEC-04][dec-04]): argument `--help`, stdin `AppProcess.Utf8("PLACE 0,0,NORTH", "REPORT")`; stdout `""`; stderr lines exactly the how-to-run message line (no echo); exit code 1.
+- [x] T038 [P] [US4] In `tests/ToyRobot.ConsoleEndToEndTests/HowToRunMessageTests.cs`, theory `How_to_run_message_and_exit_code_1_when_started_with_an_argument` ([E2E-02][e2e-02]; [FR-17][fr-17]; [DEC-04][dec-04], [DEC-31][dec-31] "the how-to-run message and exit codes (console end-to-end)") with rows `--help`, `commands.txt`, and the two arguments `a`, `b`: stdin no bytes; stdout `""`; stderr lines exactly one line, `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` (three spaces before the bracket); exit code 1. (Argument `--help` changed by T061, DEC-04.)
+- [x] T039 [P] [US4] In `tests/ToyRobot.ConsoleEndToEndTests/HowToRunMessageTests.cs`, test `Input_is_not_read_when_started_with_an_argument` ([E2E-08][e2e-08]; [FR-17][fr-17]; [DEC-04][dec-04]): argument `--help`, stdin `AppProcess.Utf8("PLACE 0,0,NORTH", "REPORT")`; stdout `""`; stderr lines exactly the how-to-run message line (no echo); exit code 1. (Argument `--help` changed by T061, DEC-04.)
 
 ### Implementation for User Story 4
 
@@ -216,7 +216,7 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
   (c) `Unexpected_problem_when_the_error_line_cannot_be_written_still_gives_exit_code_2`: input `PLACE 0,0,NORTH`, `REPORT`; output and error both `FailingWriter` → `Run` returns exit code 2 and does not throw.
   They do not compile until T055 adds `Run` (red).
 - [x] T054 [US4] [US5] In the same file, write the tests of the existing behaviour through `Program.Run` ([SG-01][sg-01], [PG-01][pg-01]; [FR-17][fr-17], [FR-16][fr-16], [NFR-01][nfr-01]; [DEC-04][dec-04], [DEC-10][dec-10], [DEC-26][dec-26]):
-  (a) `Run_with_an_argument_gives_the_how_to_run_message_and_exit_code_1`: args `--help`, input a `StringReader` holding `PLACE 0,0,NORTH` → stdout `""`; stderr exactly `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` followed by `"\n"`; exit code 1; the input was not read (its next `ReadLine` still gives `PLACE 0,0,NORTH`).
+  (a) `Run_with_an_argument_gives_the_how_to_run_message_and_exit_code_1`: args `--help`, input a `StringReader` holding `PLACE 0,0,NORTH` → stdout `""`; stderr exactly `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` followed by `"\n"`; exit code 1; the input was not read (its next `ReadLine` still gives `PLACE 0,0,NORTH`). (Args `--help` changed to `commands.txt` by T061, DEC-04.)
   (b) `Run_with_Challenge_Example_1_gives_its_output_and_exit_code_0`: input `PLACE 0,0,NORTH`, `MOVE`, `REPORT`, `interactive: false` → stdout exactly `Output:`, `0,1,NORTH`; stderr exactly `> PLACE 0,0,NORTH`, `> MOVE`, `> REPORT`; exit code 0.
   They do not compile until T055 (red).
 - [x] T055 Implement the safeguard in `src/ToyRobot/Program.cs` and `src/ToyRobot/ToyRobot.csproj` ([PG-01][pg-01], [PG-02][pg-02]; [NFR-01][nfr-01], [FR-17][fr-17]; [DEC-23][dec-23], [DEC-26][dec-26], [DEC-32][dec-32]; plan "Program"): add an `ItemGroup` with `<InternalsVisibleTo Include="ToyRobot.Tests" />` to the project file (an MSBuild item, no library or package; Program stays `internal static`, so spec 001's DesignRulesTests list is unchanged); add `internal static int Run(string[] args, TextReader input, TextWriter output, TextWriter error, bool interactive)` that does the argument check (how-to-run message on `error`, return 1), creates `Table(5, 5)`, `RobotOperator(table)` and the Runner over `input`, `output` and `error`, runs it and returns 0, all inside one `try`; its `catch (Exception exception)` writes `Error: unexpected problem - ` and the exception's `Message` as one line to `error`, ignoring an exception from that write, and returns 2. `Main` keeps only the console wiring: it decides `interactive`, chooses the reader as before and returns `Run(args, reader, Console.Out, Console.Error, interactive)`. The Runner is not changed. T053 and T054 pass.
@@ -261,7 +261,7 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 
 - [ ] T063 [US6] In `src/ToyRobot/Program.cs` ([PG-01][pg-01], [PG-02][pg-02]; [FR-17][fr-17], [FR-18][fr-18]; [DEC-04][dec-04], [DEC-26][dec-26]; plan "Program"): add `private static readonly string[] HelpLines`, copied line for line from [DEC-04][dec-04]; at the start of `Run`, inside the existing `try`, `if (args.Length == 1 && args[0] == "--help")` write each line with `output.WriteLine` and return 0; the existing `if (args.Length > 0)` how-to-run branch follows unchanged. Update the class and `Run` comments to say 0 for help (DEC-04).
 - [ ] T064 Run `dotnet build ToyRobot.sln` (0 warnings), `dotnet test ToyRobot.sln` and `dotnet test ToyRobot.sln -c Release` from the repository root: all pass ([NFR-06][nfr-06]; [DEC-31][dec-31]).
-- [ ] T065 [P] Check by search that the help lines in `src/ToyRobot/Program.cs`, `ProgramHelpTests.cs` and `HelpTests.cs` match [DEC-04][dec-04] line for line, and review `src/ToyRobot/Program.cs` against page 6 and [PG-01][pg-01] ([NFR-07][nfr-07] in spec 001; [DEC-26][dec-26], [DEC-34][dec-34]).
+- [ ] T065 [P] ([SC-008][sc-008]) Check by search that the help lines in `src/ToyRobot/Program.cs`, `ProgramHelpTests.cs` and `HelpTests.cs` match [DEC-04][dec-04] line for line, and review `src/ToyRobot/Program.cs` against page 6 and [PG-01][pg-01] ([NFR-07][nfr-07] in spec 001; [DEC-26][dec-26], [DEC-34][dec-34]).
 
 ---
 
@@ -387,3 +387,4 @@ Each later phase adds one Runner or Program step after its tests (EXIT, prompt, 
 [wf-03]: spec.md#wf-03
 [fr-18]: spec.md#fr-18
 [e2e-10]: spec.md#e2e-10
+[sc-008]: spec.md#sc-008
