@@ -502,3 +502,11 @@ The assistant found that the help was complete but the menu, printed straight af
 > go with the sub menu
 
 Outcome: menu choice 4 opens a help menu: 1 How to start, 2 The table, 3 Commands, 4 Rules, 5 Ending a session, 6 All of it, 0 back. Each topic is the section of the app's `--help` output under its heading, so there is still one help text. [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts), with a note in DEC-04; solution design page 9; spec 003 (MN-01, scenario 6c, CI-08, SC-008, contracts, tasks T048 to T051); CI-08 changed first and shown failing, then `run.sh` and `run.cmd`; README and testing-by-hand. The application is unchanged.
+
+<a id="p213"></a>**P213.** Asked whether to push the help menu to `main` once CI is green:
+> Yes
+
+<a id="p214"></a>**P214.** With CI still waiting for GitHub runners:
+> Merge it to main
+
+Outcome: `main` was fast-forwarded to the working branch and pushed before the CI run for the help menu had started, at the developer's request; CI then ran on `main` and the branch.
