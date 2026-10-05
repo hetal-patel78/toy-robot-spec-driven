@@ -268,3 +268,8 @@ Outcome: alternative 8.6 (the Robot checks the table itself) removed, so page 8 
 > having 04 will add confusions  as well I believe so ho about it we just keep 01, 02 and 03 and make 05 ->04
 
 Outcome: alternative 8.4 (each command is given the Robot and the Table) removed, and the separate-validator page renamed from 8.5 to 8.4 (`04-separate-validator.md`). Page 8 now has four alternatives: three other overall designs and one other choice within the chosen design. Page 8, the overview page and item 8 of the solution-design brief list four. Earlier records that name the removed page 8.4 ([P175](#p175), the review log, the report) say it was removed later. No decision or code changed.
+
+<a id="p178"></a>**P178.** On the solution design:
+> can u also confirm all the sequence diagram matches with our current implementation
+
+Outcome: the sequence diagrams on pages 7.1 to 7.7 were compared with the code, line by line. Pages 7.1 to 7.6 match. Page 7.7 (start-up) showed Program choosing the reader after the argument check and after creating the parts; `Program.Main` chooses it first, before the argument check, as the page's own note on the safeguard already said. The diagram and its steps now show the reader chosen first (steps renumbered). The alternatives on page 8 describe designs that were not built, so they were not compared. No decision or code changed.

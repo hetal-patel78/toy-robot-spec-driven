@@ -517,6 +517,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Solution design page 8.4 (an alternative, removed later: [P177][p177]): a "Compared with the chosen design" paragraph says that RobotOperator and `IRobotOperator` are removed there, with links to the chosen flow | Found while reviewing ([P175][p175]): the page could be read as the chosen design | page 8.4; then the review log | Links checked; no code, test or decision changed |
 | Solution design page 8: alternative 8.6 (the Robot checks the table itself) removed; five alternatives remain | Developer's request ([P176][p176]): too many alternatives can confuse a reader | page 8 and its table; then the overview page; then the solution-design brief, item 8 | Links checked; no code, test or decision changed |
 | Solution design page 8: alternative 8.4 (each command is given the Robot and the Table) removed; the separate-validator page is now 8.4; four alternatives remain | Developer's request ([P177][p177]): the page was easy to confuse with the chosen design and with 8.2 | page 8 and its table; then the renamed page; then the overview page; then the solution-design brief, item 8 | Links checked; no code, test or decision changed |
+| Solution design page 7.7 (start-up): the diagram and steps show Program choosing the reader before the argument check, as the code does | Review of every sequence diagram against the code ([P178][p178]); 7.1 to 7.6 already matched | page 7.7 diagram; then its steps and the step numbers it refers to | Links checked; no code, test or decision changed |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -659,6 +660,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p175]: ../design-analysis/prompts-implementation-phase.md#p175
 [p176]: ../design-analysis/prompts-implementation-phase.md#p176
 [p177]: ../design-analysis/prompts-implementation-phase.md#p177
+[p178]: ../design-analysis/prompts-implementation-phase.md#p178
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy
