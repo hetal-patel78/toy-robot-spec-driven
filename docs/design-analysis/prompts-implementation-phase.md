@@ -486,3 +486,8 @@ Outcome: constitution 1.1.1 (PATCH): the help text is in the list of strings tha
 > U can direct push once ci is green
 
 Outcome: once CI run 50 was green on Windows, Linux and macOS (the Windows job waited about 30 minutes for a GitHub runner), `main` was fast-forwarded to the working branch and pushed.
+
+<a id="p211"></a>**P211.** After `main` with the `--help` change ([P200](#p200) to [P210](#p210)) was pulled into the working copy, the assistant ran the spec check script: it stopped with an error, because it expected exactly FR-01 to FR-17, and once that was fixed it reported 12 issues in checks 2, 3 and 4, almost all from the script not knowing `--help`. The developer answered:
+> yes go ahead and push
+
+Outcome: the spec check script now knows FR-18: it is owned by spec 002 and added after the run (the Spec Kit brief, the record of the run's inputs, is unchanged); the lines of DEC-04's help text are not taken for warnings; `--help` on its own, in lower case, gives exit code 0 and any other argument 1; page 2's "the help text" is matched for FR-18; scenarios such as 6b and 6c are read as their own scenarios; `HelpLines` is a decided name, now written in spec 002's decision "help text in Program". In spec 003's contracts two displayed texts are in quotes instead of code spans. All 6 scripted checks pass. The application is unchanged.
