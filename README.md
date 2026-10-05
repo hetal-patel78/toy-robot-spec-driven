@@ -89,8 +89,8 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | Trying the application by hand: commands, a normal session, ignored commands and their warnings | [docs/try-it-by-typing.md](docs/try-it-by-typing.md) |
 | Design analysis overview | [docs/design-analysis/README.md](docs/design-analysis/README.md) |
 | Design decisions (the single source of truth) | [docs/design-analysis/design-decisions.md](docs/design-analysis/design-decisions.md) |
-| Handwritten initial analysis | [docs/design-analysis/handwritten/](docs/design-analysis/handwritten/) (PDFs) |
-| Clarifications | [docs/design-analysis/clarifications/](docs/design-analysis/clarifications/) |
+| Handwritten initial analysis | [docs/design-analysis/handwritten/images/](docs/design-analysis/handwritten/images/) (one image per page; the PDFs are in [docs/design-analysis/handwritten/](docs/design-analysis/handwritten/)) |
+| Clarifications | [docs/design-analysis/clarifications/images/](docs/design-analysis/clarifications/images/) (one image per page; the PDFs are in [docs/design-analysis/clarifications/](docs/design-analysis/clarifications/)) |
 | Instructions for the AI assistant | [CLAUDE.md](CLAUDE.md) |
 | Prompts used in the design phase | [docs/design-analysis/prompts-design-phase.md](docs/design-analysis/prompts-design-phase.md) |
 | Prompts used in the implementation phase | [docs/design-analysis/prompts-implementation-phase.md](docs/design-analysis/prompts-implementation-phase.md) |

@@ -184,3 +184,9 @@ Outcome: the section is its own page, [docs/try-it-by-typing.md](../try-it-by-ty
 > Also the  Where to look table is missing the prompt-review section i.e. the prompt I supplied when I was reviewing the changes
 
 Outcome: the link is a sentence at the end of the README's "Run it" section, after how to end a typed session, and a row in "Where to look"; there is no separate section. The "Where to look" row for [prompts-review.md](prompts-review.md) was already there under "Questions asked while reviewing the delivered work"; it now reads "Prompts used while reviewing the delivered work (questions and answers)", in line with the rows for the other two prompt logs.
+
+<a id="p166"></a>**P166.** On the README's "Where to look" row for the handwritten analysis:
+> Handwritten initial analysis	docs/design-analysis/handwritten/ (PDFs) this to 
+> https://github.com/hetal-patel78/toy-robot-spec-driven/tree/main/docs/design-analysis/handwritten/images
+
+Outcome: the row links to the page images first, with the PDFs alongside; after the assistant asked, the developer chose "Yes, both, then push", so the Clarifications row does the same.
