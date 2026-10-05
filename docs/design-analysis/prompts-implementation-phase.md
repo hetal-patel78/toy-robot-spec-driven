@@ -452,3 +452,10 @@ The assistant explained that help is normally an option of the program being run
 > ok go ahead, use your recommendations
 
 Outcome: [DEC-04](design-decisions.md#dec-04-standard-input-only) now says that the only argument the app accepts is exactly `--help`: the app prints the help text of [P201](#p201) on standard output, reads no input and exits with code 0. Any other argument, including `-h`, `--HELP` and `--help` with another argument, still gives the how-to-run message and exit code 1. DEC-23 (help text on standard output), DEC-26 (`Program`), DEC-31 (tests), DEC-32 (exit code 0 for help), and DEC-37 (`run --help` and `./run.sh --help` pass `--help` to the app; the README shows how to get help) say so. The solution design, the Spec Kit files, the code and the README follow, in that order.
+
+<a id="p205"></a>**P205.** On the menu of [P197](#p197) and the help of [P204](#p204):
+> I also recommend showing help in the menu when user just use run command. What do u say?
+
+The assistant recommended a new menu choice, 4 "Show help", which starts the app with `--help` and then shows the menu again. It advised against printing the help with every menu, because the help is about 40 lines and the menu comes back after every choice. Choices 1, 2, 3 and 0 keep their numbers. The developer answered "Yes that is what I meant did not explain exactly how I was visioning it".
+
+Outcome: [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts) has choice 4, CI checks it through `TOYROBOT_MENU`, and the reason is recorded; DEC-37 lists the help among the menu's choices. Solution design pages 3, 4 and 9 say so. Spec 003 and the run scripts follow.

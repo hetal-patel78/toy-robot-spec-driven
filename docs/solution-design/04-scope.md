@@ -16,7 +16,7 @@ What this solution includes, and what it leaves out on purpose, with the reason 
 | Help for `--help`: how to start the application, the table, each command and its rules, and how a session ends | [DEC-04][dec-04] |
 | A how-to-run message for any other argument, and exit codes 0 (normal end or help shown), 1 (wrong use) and 2 (unexpected problem, shown as one error line instead of a .NET stack trace) | [DEC-04][dec-04], [DEC-10][dec-10], [DEC-32][dec-32] |
 | Run scripts for Windows, Linux and macOS | [DEC-37][dec-37] |
-| A menu in the run scripts (no file, console input from a keyboard) to type commands, run the test-data files or run the automated tests by number | [DEC-41][dec-41] |
+| A menu in the run scripts (no file, console input from a keyboard) to type commands, run the test-data files, run the automated tests or show the help by number | [DEC-41][dec-41] |
 | Tests at three levels, run by CI (an automated build and test run) on Windows, Linux and macOS | [DEC-31][dec-31], [DEC-33][dec-33] |
 | The challenge deliverables: source code, test data, a short README, a description of the development process, and the AI prompts and artefacts | [DEC-37][dec-37] |
 
