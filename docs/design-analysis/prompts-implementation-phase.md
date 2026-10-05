@@ -418,3 +418,37 @@ The assistant explained that the menu colours only what passes through it: the a
 The assistant proposed a layout: a heading with the file name, "Commands" (the lines read without the echo's `> `, warnings in yellow among them), "Output" (bright cyan), "Expected" on a FAIL, the PASS or FAIL line with the expected file's name, and a summary after all seven; plain ASCII so older consoles show it. The developer answered "yes".
 
 Outcome: in `run.cmd` and `run.sh`, a test-data run in the menu now saves the app's console messages (stderr) apart and shows that layout; choice 8 ends with a summary. The `PASS: <name>` and `FAIL: <name> - <reason>` lines keep their start, so CI-08 is unchanged. DEC-41, solution design page 9, spec 003 (MN-01, T043), the run-script contract, the README and the testing-by-hand page say so. The application is unchanged.
+
+<a id="p200"></a>**P200.** On a help option:
+> I want to add a help command  so that when user type --help it will show the rules on how to interact with the robot.
+>
+> Can u tell what is involve
+
+The assistant pointed out that DEC-04 already names `--help` as one of the arguments that give the how-to-run message and exit code 1, so the change starts with that decision. It listed what follows from it: the decisions on output channels, testing, exit codes and the run scripts; the solution design; the Spec Kit files; `Program`; the tests; the README. It also explained that a `HELP` command typed during a session would be a seventh command, which DEC-06 and DEC-39 rule out.
+
+<a id="p201"></a>**P201.** On what the help shows:
+> I think how to run on show how to run the app but not how to command robot and what each command does
+>
+> But I think we can make help show all of it?
+>
+> How to start application, what each command do to the robot, how to run command 
+> how to exit, what Ctrl+Z do
+
+The assistant drafted a help text taken from the existing decisions: how to start the app, the table, each command, the rules, and how a session ends (EXIT, Ctrl+Z then Enter, Ctrl+D, Ctrl+C).
+
+<a id="p202"></a>**P202.**
+> We still keep existing how to run and leave it the way it is working
+
+The assistant confirmed that every argument other than `--help` keeps the how-to-run message on standard error and exit code 1.
+
+<a id="p203"></a>**P203.** On where help is asked for:
+> Wondering why user need to use run for help. I m thinking they just need to run help?
+>
+> What is the standard behavior?
+
+The assistant explained that help is normally an option of the program being run (`git --help`, `dotnet --help`), so a user types `ToyRobot --help` or, with the run scripts, `run --help`; and that a separate `help` command would clash with the shells' own `help` in cmd, bash and PowerShell. It recommended `--help` on the app and on the run scripts, with no separate `help` command.
+
+<a id="p204"></a>**P204.**
+> ok go ahead, use your recommendations
+
+Outcome: [DEC-04](design-decisions.md#dec-04-standard-input-only) now says that the only argument the app accepts is exactly `--help`: the app prints the help text of [P201](#p201) on standard output, reads no input and exits with code 0. Any other argument, including `-h`, `--HELP` and `--help` with another argument, still gives the how-to-run message and exit code 1. DEC-23 (help text on standard output), DEC-26 (`Program`), DEC-31 (tests), DEC-32 (exit code 0 for help), and DEC-37 (`run --help` and `./run.sh --help` pass `--help` to the app; the README shows how to get help) say so. The solution design, the Spec Kit files, the code and the README follow, in that order.

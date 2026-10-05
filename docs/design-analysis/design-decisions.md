@@ -79,11 +79,56 @@ The table is 5 x 5. Valid positions are X = 0..4 and Y = 0..4.
 
 ### DEC-04 Standard input only
 
-Commands are read from standard input: typed by a person, or redirected from a file or a pipe. The app takes **no arguments**: if any argument is given (a file name, `--help` or anything else), it prints this how-to-run message on standard error and exits with exit code 1:
+Commands are read from standard input: typed by a person, or redirected from a file or a pipe. The app takes **no arguments** other than `--help`. If any other argument is given (a file name, `-h`, `--HELP`, `--help` together with another argument, or anything else), it prints this how-to-run message on standard error and exits with exit code 1:
 
 ```
 How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)
 ```
+
+If the only argument is exactly `--help` (lower case), the app prints this help text on standard output, reads no input and exits with exit code 0:
+
+```
+Toy Robot Simulator - help
+
+HOW TO START
+  Type commands:        ToyRobot
+  Commands from a file: ToyRobot < commands.txt
+                        run commands.txt         (cmd)
+                        .\run.cmd commands.txt   (PowerShell)
+                        ./run.sh commands.txt    (bash, zsh)
+
+THE TABLE
+  5 x 5 units. Positions are X = 0..4 and Y = 0..4.
+  0,0 is the SOUTH WEST corner; NORTH is up (Y + 1), EAST is right (X + 1).
+
+COMMANDS (one per line, upper or lower case)
+  PLACE X,Y,F  Put the robot on the table at X,Y facing F.
+               F is NORTH, SOUTH, EAST or WEST (full word).
+               Example: PLACE 0,0,NORTH
+  MOVE         Move the robot one unit forward in the direction it faces.
+  LEFT         Turn the robot 90 degrees left, without moving it.
+  RIGHT        Turn the robot 90 degrees right, without moving it.
+  REPORT       Show the robot's position and direction, for example:
+                 Output:
+                 0,1,NORTH
+  EXIT         End the session.
+
+RULES
+  - The first valid PLACE puts the robot on the table. Until then
+    MOVE, LEFT, RIGHT and REPORT are ignored.
+  - A PLACE or MOVE that would put the robot off the table is ignored;
+    the robot stays where it was and later commands still work.
+  - An ignored command or a line that is not a valid command shows a
+    warning, and the next line is read.
+
+ENDING A SESSION
+  EXIT                     Ends the session.
+  Ctrl+Z then Enter        End of input on Windows: ends the session.
+  Ctrl+D                   End of input on Linux and macOS: ends the session.
+  Ctrl+C                   Stops the app at once.
+```
+
+The help text is plain ASCII, like all the app's output ([DEC-26][dec-26]). It states the 5 x 5 size that `Program` gives the Table ([DEC-03][dec-03]). It describes [DEC-01][dec-01], [DEC-02][dec-02], [DEC-06][dec-06], [DEC-07][dec-07], [DEC-10][dec-10], [DEC-15][dec-15] to [DEC-21][dec-21] and the run scripts ([DEC-37][dec-37]); if one of them changes, the help text changes with it.
 
 How to feed a file depends on the shell:
 
@@ -95,8 +140,8 @@ How to feed a file depends on the shell:
 
 `ToyRobot` here stands for the built app; its exact path is set in the solution design. In bash and zsh it is run with its path (for example `./ToyRobot`).
 
-- Reason: the challenge says "Input can be from a file, or from standard input, as the developer chooses." Standard input gives files for free, with one code path. The how-to-run message stops the app looking as if it hangs when given a file name.
-- Trade-off: there is no file-name argument, so a file must be redirected; Windows PowerShell has no `<`, so it needs the run scripts or `cmd /c` ([DEC-37][dec-37]).
+- Reason: the challenge says "Input can be from a file, or from standard input, as the developer chooses." Standard input gives files for free, with one code path. The how-to-run message stops the app looking as if it hangs when given a file name. `--help` is the usual way to ask a console program how to use it (as with `git --help` and `dotnet --help`), so a user can learn the commands and rules without reading the README. It is an option of the app, not a command typed in a session: a typed `HELP` would be a seventh command ([DEC-39][dec-39]). Help goes to standard output and exits with code 0 because the user asked for it; the how-to-run message is an error, so it goes to standard error with code 1.
+- Trade-off: there is no file-name argument, so a file must be redirected; Windows PowerShell has no `<`, so it needs the run scripts or `cmd /c` ([DEC-37][dec-37]). The help text repeats rules held in other decisions, so it must be kept in step with them; the tests check it word for word ([DEC-31][dec-31]).
 
 ### DEC-05 One command per line
 
@@ -271,7 +316,7 @@ In the off-table PLACE warning the values are the **parsed** numbers and directi
 
 ### DEC-23 Output channels
 
-Standard output carries **only the REPORT output**: the `Output:` label and the position. Everything else goes to standard error.
+Standard output carries **only the REPORT output** (the `Output:` label and the position) and the help text, which is printed only for `--help`, when no command is read. Everything else goes to standard error.
 
 | What the app prints | When | Channel |
 |---|---|---|
@@ -279,7 +324,8 @@ Standard output carries **only the REPORT output**: the `Output:` label and the 
 | Warnings | Ignored commands ([DEC-22][dec-22]) | Standard error |
 | `> ` prompt | Only when a person is typing ([DEC-24][dec-24]) | Standard error |
 | `> line` echo | Only when input is redirected ([DEC-25][dec-25]) | Standard error |
-| How-to-run message | Any argument given ([DEC-04][dec-04]) | Standard error |
+| Help text | The only argument is `--help` ([DEC-04][dec-04]) | Standard output |
+| How-to-run message | Any other argument given ([DEC-04][dec-04]) | Standard error |
 | `Error: unexpected problem - <exception message>` | An unexpected problem ([DEC-32][dec-32]) | Standard error |
 
 On screen all of these appear together. The split only matters when output is saved or checked: in cmd, bash or zsh, `ToyRobot < commands.txt > results.txt` saves only the REPORT output and `2> warnings.txt` saves everything else. (In Windows PowerShell 5.1, `>` saves files as UTF-16; use cmd or the run scripts when saving output.)
@@ -304,7 +350,7 @@ When input is redirected (a file or a pipe), every line read is echoed to standa
 
 | Component | Responsibility |
 |---|---|
-| `Program` | Thin entry point. If any argument is given, prints the how-to-run message and exits with code 1 ([DEC-04][dec-04]). Otherwise creates `Table(5, 5)` and `RobotOperator(table)` and decides `interactive` from `Console.IsInputRedirected`. For redirected input it reads standard input through its own UTF-8 reader (which also removes a leading byte-order mark); when a person is typing it uses `Console.In`. It creates the Runner with that reader, `Console.Out` and `Console.Error`, runs it, and exits with code 0. It catches any unexpected exception that escapes this work, writes the error line `Error: unexpected problem - <exception message>` on standard error and exits with code 2 ([DEC-32][dec-32]). It does not change the console's encoding settings: on Windows that can fail when there is no console window (for example in CI), and the app's output is plain ASCII, so it needs no change. |
+| `Program` | Thin entry point. If the only argument is `--help`, prints the help text on standard output and exits with code 0; if any other argument is given, prints the how-to-run message on standard error and exits with code 1 ([DEC-04][dec-04]). In both cases it reads no input. Otherwise creates `Table(5, 5)` and `RobotOperator(table)` and decides `interactive` from `Console.IsInputRedirected`. For redirected input it reads standard input through its own UTF-8 reader (which also removes a leading byte-order mark); when a person is typing it uses `Console.In`. It creates the Runner with that reader, `Console.Out` and `Console.Error`, runs it, and exits with code 0. It catches any unexpected exception that escapes this work, writes the error line `Error: unexpected problem - <exception message>` on standard error and exits with code 2 ([DEC-32][dec-32]). It does not change the console's encoding settings: on Windows that can fail when there is no console window (for example in CI), and the app's output is plain ASCII, so it needs no change. |
 | `Runner` | Creates its own CommandParser (the parser has no settings or state, so it is not passed in). Strips a byte-order mark from the start of the first line read (never by reading ahead), reads lines, shows the prompt (interactive) or the echo (redirected), passes each line to the CommandParser, stops on EXIT, sends command objects to RobotOperator, and writes `Output:` plus the position to standard output and warnings to standard error. Never calls `Console` directly. |
 | `CommandParser` | Turns a line into a command object, EXIT, or a failure with the reason used in the warning ([DEC-22][dec-22]). Applies [DEC-08][dec-08]. Checks the **format only**. |
 | `IRobotCommand`, with `PlaceCommand`, `MoveCommand`, `LeftCommand`, `RightCommand`, `ReportCommand` | One class per robot command. Each holds only its own logic: where the robot would go next (PLACE, MOVE, LEFT, RIGHT) or the position to report (REPORT), plus its warning text. `PlaceCommand` also holds X, Y and F. It reaches the robot only through `IRobotOperator`. |
@@ -344,7 +390,7 @@ The Runner stops reading when it receives EXIT; RobotOperator never sees EXIT.
 Three levels:
 1. **Unit tests** for Table, Direction, CommandParser, RobotOperator and each command class.
 2. **Runner whole-flow tests:** the whole application in memory, from the Runner inward (Runner → CommandParser → RobotOperator → commands → Table, and some through `Program.Run`), using a `StringReader`, `StringWriter`s and any table size, without the console app. Standard output and standard error are checked separately and exactly.
-3. **Console end-to-end tests** that start the real built app as a separate process, with real standard input, standard output, standard error and exit codes: run it with redirected input for each test-data file and compare standard output with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after end of input and after EXIT. These exercise the real console, `Console.IsInputRedirected`, the UTF-8 input reader and `Program`. They also run the test data and the run scripts.
+3. **Console end-to-end tests** that start the real built app as a separate process, with real standard input, standard output, standard error and exit codes: run it with redirected input for each test-data file and compare standard output with the expected file; run it with `--help` and check the help text on standard output and exit code 0; run it with any other argument and check the how-to-run message and exit code 1; check exit code 0 after end of input and after EXIT. These exercise the real console, `Console.IsInputRedirected`, the UTF-8 input reader and `Program`. They also run the test data and the run scripts.
 
 In this project, "Runner whole-flow tests" means the in-memory tests that run the whole application from the Runner inward, and "console end-to-end tests" means the tests that run the real built application as a separate process. The Runner whole-flow tests are in `tests/ToyRobot.Tests/RunnerWholeFlow/` (the unit tests are in `tests/ToyRobot.Tests/Unit/`); the console end-to-end tests are the project `tests/ToyRobot.ConsoleEndToEndTests/`.
 
@@ -360,7 +406,8 @@ Must be covered:
 - EXIT before PLACE, mid-file (later lines neither echoed nor run), `EXIT now` exits, `EXITNOW` warns;
 - prompt shown when interactive and not otherwise; echo content with redirected input;
 - an empty input; input starting with a byte-order mark (console end-to-end, on all three systems);
-- the how-to-run message and exit codes (console end-to-end);
+- the how-to-run message and exit codes (console end-to-end), including `-h`, `--HELP` and `--help` with another argument;
+- the help text, word for word, on standard output with nothing on standard error and exit code 0, and no input read (Runner whole-flow through `Program.Run`, and console end-to-end); the run scripts with `--help` (CI, [DEC-33][dec-33]);
 - the unexpected-problem line and exit code 2 ([DEC-32][dec-32]).
 
 ### DEC-32 Never crash
@@ -368,7 +415,7 @@ Must be covered:
 No input, including an empty input or a very large number, makes the app crash.
 - Reason: the challenge requires that invalid moves are ignored and valid commands still work; a crash would stop both.
 
-As a last safeguard, `Program`, the thin entry point, catches any exception that escapes the work it does (the argument check, creating the parts and running the Runner). It writes exactly one line to standard error, `Error: unexpected problem - <exception message>` (where `<exception message>` is the exception's `Message`), and exits with exit code 2. If writing that line itself fails, it still exits with code 2. This is not expected for any input: every bad input has a defined result ([DEC-20][dec-20], [DEC-22][dec-22]) and no component throws for input. It covers faults outside the app's control (for example the console or a pipe closing while the app writes) and defects. Ctrl+C is still not handled ([DEC-10][dec-10]). Exit codes: 0 normal end ([DEC-10][dec-10]), 1 any argument, with the how-to-run message ([DEC-04][dec-04]), 2 unexpected problem.
+As a last safeguard, `Program`, the thin entry point, catches any exception that escapes the work it does (the argument check and the help text, creating the parts and running the Runner). It writes exactly one line to standard error, `Error: unexpected problem - <exception message>` (where `<exception message>` is the exception's `Message`), and exits with exit code 2. If writing that line itself fails, it still exits with code 2. This is not expected for any input: every bad input has a defined result ([DEC-20][dec-20], [DEC-22][dec-22]) and no component throws for input. It covers faults outside the app's control (for example the console or a pipe closing while the app writes) and defects. Ctrl+C is still not handled ([DEC-10][dec-10]). Exit codes: 0 normal end ([DEC-10][dec-10]) or help shown ([DEC-04][dec-04]), 1 any other argument, with the how-to-run message ([DEC-04][dec-04]), 2 unexpected problem.
 - Reason: if something unforeseen happens, the user gets one clear line and a defined exit code instead of a .NET stack trace.
 - Trade-off: a defect shows as a one-line error rather than a full stack trace; the tests still catch it because they check output and exit codes exactly.
 
@@ -408,13 +455,13 @@ Order of precedence: this file, then the solution design, then the Spec Kit file
 - **Run scripts** at the repository root, so a reviewer can start the app without reading the build details: `run.cmd` (Windows: cmd or PowerShell) and `run.sh` (Linux and macOS). Each one:
   - checks that a .NET SDK, version 8 or later, is installed; if not, prints where to get it and exits with code 1;
   - builds the app quietly; if the build fails, shows the build output and exits with its exit code;
-  - with no argument, shows the menu of [DEC-41][dec-41] when console input is a keyboard, and otherwise starts the app with the redirected or piped console input; with one argument, checks the file exists (if not, prints a message and exits with code 1) and feeds it through standard input, so the app itself still takes no arguments ([DEC-04][dec-04]); with more than one argument, prints the script's how-to-run message and exits with code 1;
+  - with no argument, shows the menu of [DEC-41][dec-41] when console input is a keyboard, and otherwise starts the app with the redirected or piped console input; with the one argument `--help`, starts the app with `--help`, so the app shows its help text ([DEC-04][dec-04]); with any other one argument, checks the file exists (if not, prints a message and exits with code 1) and feeds it through standard input, so the app itself still takes no file name ([DEC-04][dec-04]); with more than one argument, prints the script's how-to-run message and exits with code 1;
   - exits with the app's exit code;
-  - writes its own messages (and any build output) to standard error, so standard output carries only the app's REPORT output.
+  - writes its own messages (and any build output) to standard error, so standard output carries only the app's own standard output (the REPORT output, or the help text).
   
   The run scripts first had no demo mode; the menu of [DEC-41][dec-41], added later, offers a typed session, the test-data files and the tests by number. CI runs each script on its own system ([DEC-33][dec-33]).
   - Reason: native on all three systems with no extra installs and no PowerShell execution-policy prompt; the scripts also hide the PowerShell `<` limitation ([DEC-04][dec-04]). A single PowerShell script would need PowerShell 7 on Linux and macOS and can be blocked on Windows.
-- **The README**, at the repository root and kept short (about one screen): what it is; requirements; how to run it with the scripts, in the form for each shell (`run commands.txt` in cmd, `.\run.cmd commands.txt` in PowerShell, `./run.sh commands.txt` in bash or zsh); ready-to-copy commands that run the three challenge examples from the test data with their expected output; the build, test and direct run commands, including the PowerShell form ([DEC-04][dec-04]); the output format with an example ([DEC-21][dec-21], [DEC-23][dec-23]); a few key assumptions with a link to this file; a note that the tests run on Windows, Linux and macOS via GitHub Actions ([DEC-33][dec-33]); "How this would evolve" ([DEC-39][dec-39]); and where the development-process material and AI artefacts are. It is written in stages: a skeleton when the solution is created (with the parts already fixed by these decisions), real commands added as each one works, the CI badge and test-data list once all tests pass, and a final check that follows the README word for word on a fresh clone, in cmd, PowerShell and bash.
+- **The README**, at the repository root and kept short (about one screen): what it is; requirements; how to run it with the scripts, in the form for each shell (`run commands.txt` in cmd, `.\run.cmd commands.txt` in PowerShell, `./run.sh commands.txt` in bash or zsh); how to show the help (`run --help`, `.\run.cmd --help`, `./run.sh --help`, or the app with `--help`); ready-to-copy commands that run the three challenge examples from the test data with their expected output; the build, test and direct run commands, including the PowerShell form ([DEC-04][dec-04]); the output format with an example ([DEC-21][dec-21], [DEC-23][dec-23]); a few key assumptions with a link to this file; a note that the tests run on Windows, Linux and macOS via GitHub Actions ([DEC-33][dec-33]); "How this would evolve" ([DEC-39][dec-39]); and where the development-process material and AI artefacts are. It is written in stages: a skeleton when the solution is created (with the parts already fixed by these decisions), real commands added as each one works, the CI badge and test-data list once all tests pass, and a final check that follows the README word for word on a fresh clone, in cmd, PowerShell and bash.
 - A description of the development process and decisions.
 - AI prompts and artefacts: `CLAUDE.md` (the project instructions given to the AI assistant), the design-phase prompt log ([prompts-design-phase.md](prompts-design-phase.md)), the Spec Kit files, and an implementation-phase prompt log.
 - Development-process material: the handwritten analysis documents (Brainstorm, FR, NFR, HLD), presented as the initial analysis; the clarification documents (`docs/design-analysis/clarifications/*.pdf`) that answered the review findings; this design analysis folder; the solution design document with its sequence diagrams (main flow and the unhappy paths: commands before PLACE, invalid PLACE, blocked MOVE, bad line); and the test-flow diagram.
@@ -482,10 +529,12 @@ The README's "How this would evolve" section describes how multiple robots, a co
 
 Other assumptions, stated in the README: positions 0..4 with (0,0) at the SOUTH WEST corner; invalid or blocked commands are ignored with a warning; commands are case-insensitive with full direction words.
 
+[dec-01]: #dec-01-table-size-and-valid-positions
 [dec-02]: #dec-02-origin-and-directions
 [dec-03]: #dec-03-table-size-is-a-constructor-parameter
 [dec-04]: #dec-04-standard-input-only
 [dec-06]: #dec-06-commands
+[dec-07]: #dec-07-case-insensitive
 [dec-08]: #dec-08-how-a-line-is-read
 [dec-09]: #dec-09-a-leading--is-not-part-of-a-command
 [dec-10]: #dec-10-ending-a-session
