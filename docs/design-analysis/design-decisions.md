@@ -224,8 +224,8 @@ MOVE, LEFT, RIGHT and REPORT are ignored with a warning, for example `Warning: M
 
 ### DEC-20 Bad lines
 
-A line that is not a valid command ([DEC-08][dec-08]) is ignored with a warning, and processing continues. Typed and redirected input behave the same way. Bad lines include: an unknown command word, a line that is empty or only whitespace, PLACE without exactly three comma-separated values, X or Y that is not a whole number, an invalid direction, and extra values after MOVE, LEFT, RIGHT or REPORT. The exact warning for each is in [DEC-22][dec-22].
-- X and Y must fit in a C# `int` (up to about 2.1 billion). A larger value, for example `PLACE 99999999999,0,NORTH`, cannot be read as a number, so it is a bad line. Numbers that do fit, including negative ones such as `PLACE -1,0,NORTH`, are read normally and rejected by the Table as off the table ([DEC-15][dec-15]).
+A line that is not a valid command ([DEC-08][dec-08]) is ignored with a warning, and processing continues. Typed and redirected input behave the same way. Bad lines include: an unknown command word, a line that is empty or only whitespace, PLACE without exactly three comma-separated values, X or Y that is not a whole number, X or Y that is too large to read, an invalid direction, and extra values after MOVE, LEFT, RIGHT or REPORT. The exact warning for each is in [DEC-22][dec-22].
+- X and Y must fit in a C# `int` (up to about 2.1 billion). A value written as a whole number (an optional sign and digits, as in [DEC-08][dec-08]) that does not fit, in either direction, for example `PLACE 99999999999,0,NORTH` or `PLACE -99999999999,0,NORTH`, cannot be read, so it is a bad line, and its warning says `X is too large` (or `Y is too large`), meaning too large to read. Anything not written as a whole number, such as `A` or `1.5`, keeps `must be a whole number`. Numbers that do fit, including negative ones such as `PLACE -1,0,NORTH`, are read normally and rejected by the Table as off the table ([DEC-15][dec-15]).
 - If the input starts with a UTF-8 byte-order mark (as some editors save files), it is removed: the UTF-8 reader that `Program` uses for redirected input removes it ([DEC-26][dec-26]), and the Runner also strips it from the start of the first line read, so in-memory tests behave the same. Nothing reads ahead, so the first prompt is never delayed.
 - Reason: a bad line must not crash the app or stop the following commands. Using the standard number check keeps the parser simple, with no special number type for values that can never be on the table anyway.
 
@@ -256,8 +256,10 @@ Every warning is one line on standard error, starting with `Warning: `. For bad 
 | Unknown command (including `> MOVE`, `EXITNOW`, `PLACE0,0,NORTH`) | `Warning: 'HELLO' ignored - unknown command` |
 | Empty or whitespace-only line | `Warning: blank line ignored` |
 | PLACE without exactly three comma-separated values | `Warning: 'PLACE 1,2' ignored - expected PLACE X,Y,F` |
-| X is not a whole number (or too large) | `Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
-| Y is not a whole number (or too large) | `Warning: 'PLACE 0,B,NORTH' ignored - Y must be a whole number` |
+| X is not a whole number | `Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
+| X is written as a whole number but is too large to read (in either direction) | `Warning: 'PLACE 9999999999,0,NORTH' ignored - X is too large` |
+| Y is not a whole number | `Warning: 'PLACE 0,B,NORTH' ignored - Y must be a whole number` |
+| Y is written as a whole number but is too large to read (in either direction) | `Warning: 'PLACE 0,9999999999,NORTH' ignored - Y is too large` |
 | Invalid direction | `Warning: 'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST` |
 | Extra values after MOVE, LEFT, RIGHT or REPORT | `Warning: 'move now' ignored - MOVE takes no values` |
 | Off-table PLACE ([DEC-15][dec-15]) | `Warning: PLACE 9,9,NORTH ignored - position is off the table` |
