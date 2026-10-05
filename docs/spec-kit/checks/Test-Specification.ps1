@@ -20,7 +20,8 @@
                     used the same way in all three specs.
   5 DEC-31 coverage every case of DEC-31's "Must be covered" list is matched inside a test task.
   6 Analyze         not scriptable; run /speckit-analyze separately.
-  7 No code         git diff 9722151..HEAD has nothing under src/ or tests/.
+  7 No code         the specification phase (git diff f9e10c0..a374aaa: from the commit that adds the
+                    Spec Kit brief to the commit that adds this script) has nothing under src/ or tests/.
 
   Exit code 0 only when checks 1 to 5 and 7 all pass.
 #>
@@ -1070,15 +1071,19 @@ Write-Host '  NOTE: not scriptable. Run /speckit-analyze for each spec separatel
 # =============================================================================================
 # Check 7: No code yet
 # =============================================================================================
-Start-Check 'Check 7: No code (git diff --name-only 9722151 HEAD has nothing under src/ or tests/)'
-$diff = & git -C $root diff --name-only 9722151 HEAD 2>&1
+# The specification phase runs from the commit that adds the Spec Kit brief (f9e10c0) to the
+# commit that adds this script (a374aaa); the code is added after it.
+$specStart = 'f9e10c0'
+$specEnd = 'a374aaa'
+Start-Check "Check 7: No code (git diff --name-only $specStart $specEnd has nothing under src/ or tests/)"
+$diff = & git -C $root diff --name-only $specStart $specEnd 2>&1
 if ($LASTEXITCODE -ne 0) { Add-Issue 'git' ('git diff failed: ' + ($diff -join ' ')) }
 else {
     $code = @($diff | Where-Object { $_ -match '^(src|tests)/' })
-    foreach ($c in $code) { Add-Issue $c 'file under src/ or tests/ changed since 9722151' }
-    Write-Host ('  {0} files changed since 9722151, {1} under src/ or tests/' -f @($diff).Count, $code.Count)
+    foreach ($c in $code) { Add-Issue $c "file under src/ or tests/ changed in the specification phase ($specStart..$specEnd)" }
+    Write-Host ('  {0} files changed in the specification phase, {1} under src/ or tests/' -f @($diff).Count, $code.Count)
 }
-End-Check 'no file under src/ or tests/ changed since 9722151'
+End-Check 'no file under src/ or tests/ changed in the specification phase'
 
 # =============================================================================================
 Write-Host ''

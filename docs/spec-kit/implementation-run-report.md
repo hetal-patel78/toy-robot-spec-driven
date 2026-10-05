@@ -412,7 +412,7 @@ Branch `impl`, in the session's worktree (the app allows this session to edit on
 |---|---|---|---|
 | 001-robot-rules | Done: T001 to T058 | Unit: 337 passing, 0 failing (`ToyRobot.Tests`); console end-to-end project empty, as planned | Round 1 clean |
 | 002-console-session | Done: T001 to T051 (with T020a) | Unit and Runner whole-flow: 430 passing (includes 001's 337); console end-to-end: 17 passing; 0 failing, in Debug and Release | Round 1 clean |
-| 003-delivery | Done: T001 to T037 except T032 and the typed-session part of T035 (left for the developer) | Unit and Runner whole-flow: 430; console end-to-end: 25 (adds [TD-02][td-02] test-data presence and [BS-01][bs-01] build settings, and runs [E2E-01][e2e-01] over the six test-data pairs); 0 failing | Round 1 clean |
+| 003-delivery | Done: T001 to T037 except T032 and the typed-session part of T035 (left for the developer; both done later by the developer, [P190][p190]) | Unit and Runner whole-flow: 430; console end-to-end: 25 (adds [TD-02][td-02] test-data presence and [BS-01][bs-01] build settings, and runs [E2E-01][e2e-01] over the six test-data pairs); 0 failing | Round 1 clean |
 
 **Totals at the finish:** 455 tests, all passing: 430 in `ToyRobot.Tests` (unit and Runner whole-flow), 25 in
 `ToyRobot.ConsoleEndToEndTests`. `dotnet build` gives 0 warnings and 0 errors.
@@ -426,7 +426,7 @@ Notes from spec 001:
 Notes from spec 002:
 - T052 (follow the quickstart by hand, including a typed session ended with Ctrl+Z / Ctrl+D) is left
   unchecked: a typed session needs a real console. The redirected-input, channel and how-to-run-message parts were
-  run by hand from bash and were correct. Left for the developer.
+  run by hand from bash and were correct. Left for the developer; done later by the developer on Windows ([P190][p190]).
 - The console end-to-end tests start the built executable (`ToyRobot.exe` on Windows, `ToyRobot` elsewhere) for
   the configuration under test; they passed here in Debug and Release.
 - After the main review, the byte-order mark in `Runner.cs` and one Runner whole-flow test was changed from an
@@ -472,7 +472,7 @@ finding `run.cmd` in the current folder; it was cleared for these runs. A normal
 
 - Confirm the "Decided in the run" list: done ([P158][p158] to [P160][p160]).
 - Review the code.
-- Check the README, and follow it word for word on a fresh clone in cmd, PowerShell and bash ([DEC-37][dec-37]).
+- Check the README, and follow it word for word on a fresh clone in cmd, PowerShell and bash ([DEC-37][dec-37]): done by the developer on Windows in cmd and PowerShell, 5 October 2026 ([P190][p190]); the bash commands are run through `run.sh` in CI on Linux and macOS.
 - Run a typed session by hand (spec 002 T052): done on Windows by the developer, ended with Ctrl+Z then Enter
   after the fix for [P161][p161]; Ctrl+D on Linux or macOS was not tried by hand.
 - Read the README's "how this was built" section and adjust the wording if wanted.
@@ -529,6 +529,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | [docs/testing-by-hand.md](../testing-by-hand.md): a "Start-up checks" section (page 7.7 by hand): exit codes in each shell, the application with an argument, the run scripts' wrong-argument cases, exit code 0 and why exit code 2 is checked only by tests | Developer's request ([P187][p187]) | the section, after "Run the test data" | Every message and exit code from a real run on Windows (cmd and Git Bash); links checked |
 | Run scripts: the how-to-run message (more than one argument) gives a real command, `run testdata\challenge-example-1.txt` / `./run.sh testdata/challenge-example-1.txt`, instead of `run.cmd [commands.txt]` / `./run.sh [commands.txt]` | Developer's request ([P188][p188]): the script name and the bracketed placeholder were misleading | `run.cmd` and `run.sh`; then the testing-by-hand page; then spec 003's research and tasks notes | Two-file case run in cmd and Git Bash: new message, exit code 1, empty console output (stdout); CI-02 unchanged; links checked |
 | Testing by hand: the typed-session examples give the commands without `> `, so they can be pasted, then what the app prints | Developer's finding ([P189][p189]): pasting the examples with `> ` gave `> MOVE`-style lines, which are ignored as unknown commands | "Start a typed session"; "A normal session"; the ignored-commands note; "Blocked at the edge"; the note in "Run the test data" | Each block of commands run through the built application gives the output shown; links checked |
+| Final check before finishing: spec check 7 checks this repository's specification phase; README lists the resources consulted and the developer's fresh-clone check; T052, T032 and T035 ticked | Final review ([P190][p190]): check 7 named a commit not in this repository; the challenge asks for resources consulted; the open items were done by the developer | the check script; then the README; then specs 002 and 003 tasks; then this report | Fresh clone: 496 tests pass, seven test-data files match; check script: 6 of 6 scripted checks pass; links checked |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -683,6 +684,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p187]: ../design-analysis/prompts-implementation-phase.md#p187
 [p188]: ../design-analysis/prompts-implementation-phase.md#p188
 [p189]: ../design-analysis/prompts-implementation-phase.md#p189
+[p190]: ../design-analysis/prompts-implementation-phase.md#p190
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

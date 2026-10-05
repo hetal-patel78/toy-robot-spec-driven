@@ -342,3 +342,16 @@ Outcome: the run scripts' how-to-run message (more than one argument) is now a c
 > testing by hand
 
 Outcome: in [docs/testing-by-hand.md](../testing-by-hand.md), "A normal session" and "Blocked at the edge" now give the commands as a block without `> `, which can be pasted as it is, followed by what the app prints (for "Blocked at the edge", a table of each line and what it prints). The typed-session instructions say to type only the command, not the `> `; the ignored-commands table explains with its `> MOVE` row why; the "Run the test data" blocks say their `> ` lines are the app's echo. Each block of commands was run through the built application and gives the output shown. No decision or code changed.
+
+<a id="p190"></a>**P190.** Before finishing:
+> I have tested everything and about to finish do u want to verify it once again that we did implemented correctly and nthing is missed
+
+Outcome: the assistant cloned the repository fresh from GitHub (all 496 tests pass; all seven test-data files give their expected output through `run.sh`), compared the delivery with the challenge statement, and searched the repository for stale content. Found and fixed: check 7 of `docs/spec-kit/checks/Test-Specification.ps1` compared against a commit that is not in this repository, so it failed with a git error; it now checks the specification phase of this repository (from the commit that adds the Spec Kit brief to the commit that adds the script), and all six scripted checks pass. Found and asked: the challenge asks for "resources consulted", which no file listed; the README status still said the fresh-clone check was to be done; three tasks were still open for the developer. The developer's answers:
+> control Z does not exits the console but it exist the session of the run command in the cmd console which is the correct behavior i believe
+
+> resource consulted
+> the challenge statement, GitHub Spec Kit docs,
+> I alreadt know below and so need to consult
+> Claude Code, Microsoft .NET or xUnit docs
+
+and, to the assistant's questions, "I tested in powershell and cmd" and "Yes, all three". The README now lists the resources consulted and says the developer followed it on a fresh clone in cmd and PowerShell; spec 002 T052 and spec 003 T032 and T035 are ticked with what was done; the run report says the same. No decision or application code changed.
