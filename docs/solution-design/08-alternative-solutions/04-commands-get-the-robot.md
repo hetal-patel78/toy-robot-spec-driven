@@ -10,6 +10,8 @@ How to read this page: see [page 8](../08-alternative-solutions.md#how-to-read-t
 
 This is the textbook form of the Command pattern. As in the chosen design, each command is its own class (`PlaceCommand`, `MoveCommand`, `LeftCommand`, `RightCommand`, `ReportCommand`). The difference is what a command is given when it runs: the Robot itself and the Table, instead of the narrow `IRobotOperator` interface. There is no RobotOperator holding the shared rules, so each command checks everything itself and changes the robot directly.
 
+**Compared with the chosen design:** RobotOperator and `IRobotOperator` are removed, and the commands do their work themselves. In the chosen design a command is given only `IRobotOperator`, and RobotOperator checks that the robot is on the table, asks the Table and replaces the state (see [7.1 PLACE then REPORT](../07-logical-flow/01-place-then-report.md) and [7.2 MOVE blocked at the edge](../07-logical-flow/02-move-blocked-at-the-edge.md)).
+
 The diagram is the same for every command. The line `MOVE` is used as the example; for `LEFT` the parser would return a `LeftCommand` instead, and its `Execute` would turn the robot.
 
 ```mermaid

@@ -245,3 +245,11 @@ Outcome: the assistant offered three scopes: folder and project, folder only wit
 <a id="p174"></a>**P174.** On the scope of the renaming: **[Selected: Folder + project (Recommended)]**
 
 Outcome: a decision change confirmed by the developer (CLAUDE.md). In order: [DEC-31](design-decisions.md#dec-31-testing) (the two levels are named "Runner whole-flow tests" and "console end-to-end tests" and defined once, with their folder and project); solution design pages 3, 5, 9, 10, 11 and 12 (folder layout, test levels, glossary); the Spec Kit files in `specs/` (paths, project names, namespaces and level names, and the new task T059 in spec 002); the code (`git mv` of `tests/ToyRobot.Tests/WholeFlow/` to `tests/ToyRobot.Tests/RunnerWholeFlow/` and of `tests/ToyRobot.EndToEndTests/` to `tests/ToyRobot.ConsoleEndToEndTests/`, with the project file, namespaces, `ToyRobot.sln` and the CI workflow); the specification check script; the README (the table of test levels); the run report. Totals after the change: 470 tests in `ToyRobot.Tests` and 25 in `ToyRobot.ConsoleEndToEndTests`, all passing, in Debug and Release. Done by a Sonnet 5.5 agent.
+
+<a id="p175"></a>**P175.** On solution design page 8.4:
+> I think this is incorrect
+> 04-commands-get-the-robot.md under 08-alternative-solutions
+>
+> this is the chose design but it is missing robotoperator
+
+Outcome: page 8.4 describes an alternative that was not built; leaving out RobotOperator and `IRobotOperator` is the difference it shows. So that it cannot be read as the chosen design, the developer chose to add one paragraph, "Compared with the chosen design", that says what is removed and links to the chosen flow on pages 7.1 and 7.2. No decision or code changed.
