@@ -52,7 +52,7 @@ Shown by `run` (cmd), `.\run.cmd` (PowerShell) or `./run.sh` (bash, zsh) with no
 | 1 | the app with the script's console input | the typed session, then "Typed session ended." |
 | 2 | the test-data menu | the test-data menu |
 | 3 | `dotnet test` on `ToyRobot.sln` with `--nologo`, no console input | the test results |
-| 4 | the app with `--help`, no console input | the app's help text (no colour), then the main menu again |
+| 4 (menu line `4  Show help (commands, rules, how to end a session)`) | the app with `--help`, no console input | the app's help text (no colour), then the main menu again |
 | 0 | — | nothing; exit code 0 |
 | anything else | — | "Not a choice: <choice>" |
 

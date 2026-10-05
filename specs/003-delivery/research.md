@@ -29,7 +29,7 @@ Phase 0 of the plan. The Technical Context had no open items: the technology is 
   - Exit with the application's exit code (`exit /b %ERRORLEVEL%`; `exit $?`). In `run.cmd` the application is started on a line outside any parenthesised block (`goto` labels for the no-argument and file cases, not `if`/`else` blocks), and `exit /b %ERRORLEVEL%` is the next line, so the code is the application's.
   - The same rule applies to the CI steps that run `run.cmd` (spec 003 tasks T015, T017, T018, T019): each exit code is saved on the line straight after the command, outside any block; a loop over names calls a subroutine (`call :run <name>`) or uses `setlocal EnableDelayedExpansion` and `!ERRORLEVEL!`.
 - **Rationale**: [DEC-37][dec-37] and page 9 steps 3 and 4; the order SDK check, build, arguments is the order [DEC-37][dec-37] and page 9 list. Wording of the messages is not fixed (page 12 question A).
-- **Alternatives considered**: checking the arguments before the build (a different order from [DEC-37][dec-37] and page 9); passing the file name to the application (the application takes no arguments, [DEC-04][dec-04]).
+- **Alternatives considered**: checking the arguments before the build (a different order from [DEC-37][dec-37] and page 9); passing the file name to the application (the application takes no file name, [DEC-04][dec-04]).
 
 ## R-04 Script channels on success
 

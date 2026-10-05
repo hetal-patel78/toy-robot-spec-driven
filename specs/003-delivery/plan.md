@@ -38,7 +38,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 |---|---|---|
 | I. Clean Code and SOLID | No new component; scripts each do the four [NFR-08][nfr-08] steps in order, nothing else; page 6 names used only to refer to Program and the built application | Pass |
 | II. Three Test Levels, Tests First | The three levels run in CI on all three systems; [TD-02][td-02] is written before the test data, the CI script checks before the scripts, the README check before the README; each phase ends with its tests passing | Pass |
-| III. Never Crash | The scripts never pass an argument to the application; every script error path has a defined message on stderr and exit code, and a CI check ([CI-02][ci-02], [CI-04][ci-04], [CI-05][ci-05]) | Pass |
+| III. Never Crash | The only argument the scripts pass to the application is `--help` ([DEC-04][dec-04]); every script error path has a defined message on stderr and exit code, and a CI check ([CI-02][ci-02], [CI-04][ci-04], [CI-05][ci-05]) | Pass |
 | IV. Cross-Platform | CI on `windows-latest`, `ubuntu-latest`, `macos-latest`; `.gitattributes`; `run.sh` executable; line-by-line comparison | Pass |
 | V. No Over-Engineering | Only standard checkout and SDK steps; no demo mode in the run scripts at first (the menu of [DEC-41][dec-41] was added later at the developer's request), no PowerShell script, no extra tool; scripts hold only what [DEC-37][dec-37] lists | Pass |
 | VI. Standard Output for REPORT Output Only | Scripts write nothing of their own to stdout; CI checks stdout is empty in every error case and equals the expected file otherwise | Pass |
@@ -121,3 +121,4 @@ No constitution violations. Nothing to justify.
 [sk-02]: ../001-robot-rules/spec.md#sk-02
 [td-01]: spec.md#td-01
 [td-02]: spec.md#td-02
+[dec-04]: ../../docs/design-analysis/design-decisions.md#dec-04-standard-input-only

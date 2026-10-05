@@ -28,6 +28,9 @@ Console messages (stderr) show the progress lines `Checking for a .NET SDK, vers
 | Missing file | `run testdata\no-such-file.txt` | `./run.sh testdata/no-such-file.txt` | 1 | empty |
 | A folder | `run testdata` | `./run.sh testdata` | 1 | empty |
 | Two arguments | `run a.txt b.txt` | `./run.sh a.txt b.txt` | 1 | empty |
+| `--HELP` (help is case-sensitive) | `run --HELP` | `./run.sh --HELP` | 1 | empty |
+| Help | `run --help` | `./run.sh --help` | 0 | the help text; stderr only the first two progress lines |
+| Menu choice 4 | `run`, then `4`, then `0` | `./run.sh`, then `4`, then `0` | 0 | the menu, the help text, the menu again |
 | No `dotnet` | `cmd /c "set PATH=%SystemRoot%\System32&& run testdata\challenge-example-1.txt"` | `PATH=/nonexistent /bin/bash ./run.sh testdata/challenge-example-1.txt` | 1 | empty |
 | Typed session | `run`, then type `EXIT` and Enter | `./run.sh`, then `EXIT` | 0 | empty; stderr shows the progress lines, then `> ` |
 | No argument, redirected | `run < testdata\challenge-example-1.txt` | `./run.sh < testdata/challenge-example-1.txt` | 0 | `Output:`, `0,1,NORTH` |
