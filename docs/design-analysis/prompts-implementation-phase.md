@@ -167,3 +167,20 @@ Outcome: on Windows the console gives Ctrl+Z then Enter to the app as a line hol
 > ask other agent to implement the fix and use Sonnet 5.5
 
 Outcome: a decision change confirmed by the developer, so it was made in the order the chain asks: [DEC-10](design-decisions.md#dec-10-ending-a-session) (a line that is exactly the single character U+001A ends the input like the end of a file, typed or redirected, with no warning and exit code 0); then the solution design pages (functional requirement FR-16, the components page, the exit flow page, the glossary); then spec 002 (FR-16, two acceptance scenarios, an edge case, task T058); then the tests, written first and failing (2 of the 462 tests failed; the other 460 passed); then the Runner. All 462 tests pass (437 + 25); spec checks 1 to 5 pass. Done by a Sonnet 5.5 agent.
+
+<a id="p163"></a>**P163.** After the developer ran a typed session by hand and asked for bad cases to try:
+> can u update the read to show how to test directly in the command line as also add commands
+
+Outcome: a "Try it by typing" section was drafted in the README (P164 moved it to its own page).
+
+<a id="p164"></a>**P164.** On the draft README section:
+> actually add a subpage other wise it will polluste readme unless u are sure it will not
+
+Outcome: the section is its own page, [docs/try-it-by-typing.md](../try-it-by-typing.md): how to start a typed session in cmd, PowerShell and bash, a table of the commands, a normal session (challenge example 3), a table of commands that are ignored with the exact warning each prints, and a session blocked at the edge. The README links to it (P165). Every line on the page was checked by running the same commands through the built application; no behaviour changed.
+
+<a id="p165"></a>**P165.** On where the README links to the new page:
+> it should be part of run it right?
+>
+> Also the  Where to look table is missing the prompt-review section i.e. the prompt I supplied when I was reviewing the changes
+
+Outcome: the link is a sentence at the end of the README's "Run it" section, after how to end a typed session, and a row in "Where to look"; there is no separate section. The "Where to look" row for [prompts-review.md](prompts-review.md) was already there under "Questions asked while reviewing the delivered work"; it now reads "Prompts used while reviewing the delivered work (questions and answers)", in line with the rows for the other two prompt logs.

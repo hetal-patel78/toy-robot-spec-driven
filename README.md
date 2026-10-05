@@ -21,7 +21,7 @@ Run the commands from the repository root. The scripts build the app quietly and
 
 While they work, the scripts show what they are doing on the console (checking .NET, building, then running); only the application's REPORT output goes to console output (stdout).
 
-When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
+When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/try-it-by-typing.md](docs/try-it-by-typing.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
 
 ## The three challenge examples
 Copy and run; each prints the two lines shown.
@@ -86,6 +86,7 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | What | Location |
 |---|---|
 | The challenge | [docs/challenge/README.md](docs/challenge/README.md) |
+| Trying the application by hand: commands, a normal session, ignored commands and their warnings | [docs/try-it-by-typing.md](docs/try-it-by-typing.md) |
 | Design analysis overview | [docs/design-analysis/README.md](docs/design-analysis/README.md) |
 | Design decisions (the single source of truth) | [docs/design-analysis/design-decisions.md](docs/design-analysis/design-decisions.md) |
 | Handwritten initial analysis | [docs/design-analysis/handwritten/](docs/design-analysis/handwritten/) (PDFs) |
@@ -93,7 +94,7 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | Instructions for the AI assistant | [CLAUDE.md](CLAUDE.md) |
 | Prompts used in the design phase | [docs/design-analysis/prompts-design-phase.md](docs/design-analysis/prompts-design-phase.md) |
 | Prompts used in the implementation phase | [docs/design-analysis/prompts-implementation-phase.md](docs/design-analysis/prompts-implementation-phase.md) |
-| Questions asked while reviewing the delivered work, with the answers | [docs/design-analysis/prompts-review.md](docs/design-analysis/prompts-review.md) |
+| Prompts used while reviewing the delivered work (questions and answers) | [docs/design-analysis/prompts-review.md](docs/design-analysis/prompts-review.md) |
 | Spec Kit constitution and specifications | [.specify/memory/constitution.md](.specify/memory/constitution.md), [specs/](specs/) |
 | Solution design | [docs/solution-design/README.md](docs/solution-design/README.md) |
 
