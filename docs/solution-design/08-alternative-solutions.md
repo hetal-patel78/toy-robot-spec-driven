@@ -1,6 +1,6 @@
 # 8. Alternative solutions
 
-Six other ways the application could have been built, and why each was not chosen.
+Five other ways the application could have been built, and why each was not chosen.
 
 ## The chosen design, in one line
 
@@ -35,7 +35,6 @@ Each of these keeps the chosen components and changes how one part of them works
 |---|---|---|---|---|
 | 8.4 | [Each command is given the Robot and the Table](08-alternative-solutions/04-commands-get-the-robot.md) | The textbook Command pattern: each command checks every rule and changes the Robot itself | Repeats the shared rules in each command and hands the robot out | [DEC-13][dec-13], [DEC-14][dec-14], [DEC-27][dec-27], [DEC-34][dec-34] |
 | 8.5 | [A separate validator before the parser](08-alternative-solutions/05-separate-validator.md) | One step checks the line, a second step builds the command object | The line is read twice by two sets of rules that must agree | [DEC-08][dec-08], [DEC-26][dec-26], [DEC-28][dec-28] |
-| 8.6 | [The Robot checks the table itself](08-alternative-solutions/06-robot-checks-the-table.md) | The Robot knows the Table and refuses moves off it | Mixes rules into the Robot and makes more robots harder later | [DEC-13][dec-13], [DEC-14][dec-14], [DEC-28][dec-28], [DEC-38][dec-38] |
 
 ---
 
@@ -51,4 +50,3 @@ Back to the [solution design overview](README.md).
 [dec-29]: ../design-analysis/design-decisions.md#dec-29-the-runner-receives-everything-it-uses
 [dec-34]: ../design-analysis/design-decisions.md#dec-34-readable-code-solid
 [dec-36]: ../design-analysis/design-decisions.md#dec-36-development-approach-design-first-then-spec-driven-with-github-spec-kit
-[dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later

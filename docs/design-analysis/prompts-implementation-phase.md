@@ -253,3 +253,11 @@ Outcome: a decision change confirmed by the developer (CLAUDE.md). In order: [DE
 > this is the chose design but it is missing robotoperator
 
 Outcome: page 8.4 describes an alternative that was not built; leaving out RobotOperator and `IRobotOperator` is the difference it shows. So that it cannot be read as the chosen design, the developer chose to add one paragraph, "Compared with the chosen design", that says what is removed and links to the chosen flow on pages 7.1 and 7.2. No decision or code changed.
+
+<a id="p176"></a>**P176.** On solution design page 8:
+> I suggest we remove
+> https://github.com/hetal-patel78/toy-robot-spec-driven/blob/main/docs/solution-design/08-alternative-solutions/06-robot-checks-the-table.md
+>
+> as to many alternative can lead to confusions
+
+Outcome: alternative 8.6 (the Robot checks the table itself) removed, so page 8 has five alternatives: three other overall designs and two other choices within the chosen design. Page 8's introduction and table, the overview page and item 8 of the solution-design brief now list five. The rule it illustrated stays in the decisions: the Table checks positions and the Robot only holds its state ([DEC-28](design-decisions.md#dec-28-the-parser-checks-format-the-table-checks-position)). No decision or code changed.
