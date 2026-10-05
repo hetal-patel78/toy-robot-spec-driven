@@ -476,3 +476,8 @@ Outcome: `/speckit-constitution` amended principle VI: standard output carries o
 > "Help colour": Plain text (Recommended)
 
 Outcome: `run --help` and menu choice 4 write no "Running the application" line, start the app with empty console input (`/dev/null`, `nul`), and show the help text without colour. DEC-37 and DEC-41 say so; spec 003's decision on `--help` in the run scripts, NFR-08, MN-01 and CI-09 already did.
+
+<a id="p209"></a>**P209.** On `/speckit-implement` and the constitution's list of strings copied exactly:
+> yes go ahead and add it to the constitution too
+
+Outcome: constitution 1.1.1 (PATCH): the help text is in the list of strings that tests compare and that are copied character for character. Then `/speckit-implement` for spec 002 tasks T060 to T065 and spec 003 tasks T044 to T047.

@@ -1,6 +1,8 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.1 → 1.1.0 (MINOR: principle VI widened; standard output also carries the help text for
+- Version change: 1.1.0 → 1.1.1 (PATCH: wording only; the help text added to the strings copied character
+  for character)
+- Earlier: 1.0.1 → 1.1.0 (MINOR: principle VI widened; standard output also carries the help text for
   --help, after the developer confirmed the DEC-04 and DEC-23 change)
 - Modified principles: VI. Standard Output for REPORT Output Only (title kept; rule widened)
 - Earlier: 1.0.0 → 1.0.1 (PATCH: wording only; the message for an argument is called the how-to-run
@@ -83,7 +85,7 @@ written only when no command is read, so it is never mixed with REPORT output.
 
 - Order of precedence ([DEC-36][dec-36]): `docs/design-analysis/design-decisions.md`, then the solution design in
   `docs/solution-design/`, then the Spec Kit files. A later document MUST NOT contradict an earlier one.
-- Strings that tests compare (warnings, the how-to-run message, the REPORT format, the prompt and the echo) and
+- Strings that tests compare (warnings, the how-to-run message, the help text, the REPORT format, the prompt and the echo) and
   exit codes are copied character for character from design-decisions.md, never reworded.
 - The technical choices are fixed by the solution design (pages 5 and 9): C# on .NET 8 with
   `RollForward` = `LatestMajor`, xUnit, GitHub Actions on Windows, Linux and macOS, and the run scripts
@@ -107,7 +109,7 @@ Amendments follow semantic versioning: MAJOR for removing or redefining a princi
 principle or materially expanding guidance, PATCH for wording. Every plan's Constitution Check and every
 code review verifies compliance with these principles.
 
-**Version**: 1.1.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
+**Version**: 1.1.1 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
 
 [dec-04]: ../../docs/design-analysis/design-decisions.md#dec-04-standard-input-only
 [dec-21]: ../../docs/design-analysis/design-decisions.md#dec-21-report-format
