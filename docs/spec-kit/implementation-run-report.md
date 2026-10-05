@@ -464,6 +464,10 @@ finding `run.cmd` in the current folder; it was cleared for these runs. A normal
 
 **CI (step 11):** the GitHub Actions workflow `CI` builds, tests and runs the scripts on `windows-latest`, `ubuntu-latest` and `macos-latest` on every push; new runs are on the repository's [Actions page](https://github.com/hetal-patel78/toy-robot-spec-driven/actions); the runs listed below ran before this repository was published, so their pages are not public.
 
+| Run | Commit | Result |
+|---|---|---|
+| 37263429044 | `fe55715` (the code as finished) | Pass on `windows-latest`, `ubuntu-latest` and `macos-latest` |
+
 ## 8. Left for the developer
 
 - Confirm the "Decided in the run" list: done ([P158][p158] to [P160][p160]).
