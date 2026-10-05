@@ -469,3 +469,10 @@ Outcome: specs 002 and 003 edited in place, as for the earlier changes. Spec 002
 > Yes
 
 Outcome: `/speckit-constitution` amended principle VI: standard output carries only the REPORT output, and the help text when the application is started with `--help`. Version 1.0.1 to 1.1.0 (MINOR). No other principle changed.
+
+<a id="p208"></a>**P208.** Answers to three questions on `--help` in the run scripts, raised by the analysis of spec 003 (each the recommended option):
+> "Running line": Skip it (Recommended)
+> "Help input": Empty input (Recommended)
+> "Help colour": Plain text (Recommended)
+
+Outcome: `run --help` and menu choice 4 write no "Running the application" line, start the app with empty console input (`/dev/null`, `nul`), and show the help text without colour. DEC-37 and DEC-41 say so; spec 003's decision on `--help` in the run scripts, NFR-08, MN-01 and CI-09 already did.
