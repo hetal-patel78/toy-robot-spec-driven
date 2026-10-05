@@ -88,7 +88,7 @@ The solution is tested on all three systems through the [CI workflow](https://gi
 | `long-session` | one long session mixing every kind of line: commands before PLACE, PLACE off the table, MOVE blocked at two corners, bad and blank lines, lower case and spaces, a full turn and four REPORTs |
 
 ## How this would evolve
-Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-38][dec-38], [DEC-39][dec-39] in the design decisions).
+Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-38][dec-38], [DEC-39][dec-39] in the design decisions). A new command, such as BACK, is a new class plus one line in the parser; nothing else changes ([DEC-27][dec-27]).
 
 ## How it was built
 The developer's brainstorm, the design analysis ([design-decisions.md](docs/design-analysis/design-decisions.md)) and the solution design ([docs/solution-design/](docs/solution-design/README.md)) came first. The GitHub Spec Kit specification (constitution, specs, plans and tasks) and the code were then generated from them with Claude Code and GitHub Spec Kit. The result is checked by tests at three levels (unit, Runner whole-flow and console end-to-end) and by CI on Windows, Linux and macOS. The prompts are in the [design-phase log](docs/design-analysis/prompts-design-phase.md) and the [implementation-phase log](docs/design-analysis/prompts-implementation-phase.md); the Spec Kit brief and inputs are in [docs/spec-kit/](docs/spec-kit/), and the decisions taken while writing the specification and code, with all check, test and CI results, are in the [Spec Kit run report](docs/spec-kit/implementation-run-report.md). Every decision taken in the run is listed there and was confirmed by the developer.
@@ -109,5 +109,6 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | Spec Kit constitution and specifications | [.specify/memory/constitution.md](.specify/memory/constitution.md), [specs/](specs/) |
 | Solution design | [docs/solution-design/README.md](docs/solution-design/README.md) |
 
+[dec-27]: docs/design-analysis/design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-38]: docs/design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: docs/design-analysis/design-decisions.md#dec-39-not-included

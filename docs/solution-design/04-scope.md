@@ -27,7 +27,7 @@ What this solution includes, and what it leaves out on purpose, with the reason 
 | A file name as an argument | Console input already covers files: a file can be redirected to it. | [DEC-04][dec-04], [DEC-39][dec-39] |
 | Direction abbreviations (N, S, E, W) | Not asked for by the challenge. | [DEC-06][dec-06], [DEC-39][dec-39] |
 | A menu for choosing commands | It would multiply the PLACE combinations and the test scope. Commands are typed. | [DEC-35][dec-35], [DEC-39][dec-39] |
-| A BACK command, and obstacles on the table | Not asked for by the challenge. | [DEC-39][dec-39] |
+| Commands other than the six (for example BACK or JUMP), and obstacles on the table | Not asked for by the challenge. Any other command word is ignored with the warning "unknown command". The design makes adding a command a local change: a new class and one line in the CommandParser. | [DEC-27][dec-27], [DEC-39][dec-39] |
 | A logging library, a dependency injection container (a library that connects the parts of a program), and a Dockerfile (a recipe for packaging the program in a container) | Too heavy for a console application of this size. | [DEC-39][dec-39] |
 | A log file for results and warnings | The challenge says printing to the console is enough. Redirecting console output (stdout) and console messages (stderr) already saves the REPORT result and the warnings separately. A log file would add choices about its location, permissions, overwriting or appending, and paths on each system, plus tests. | [DEC-23][dec-23], [DEC-39][dec-39] |
 | Accepting a leading `>` in input | The `>` in the challenge examples is read as a prompt, so `> MOVE` is a bad line. This may change if assumption [A1](12-assumptions.md) proves wrong. | [DEC-09][dec-09] |
@@ -61,4 +61,5 @@ Back to the [solution design overview](README.md).
 [dec-35]: ../design-analysis/design-decisions.md#dec-35-typed-commands-only
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
+[dec-27]: ../design-analysis/design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-39]: ../design-analysis/design-decisions.md#dec-39-not-included

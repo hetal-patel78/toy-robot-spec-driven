@@ -300,3 +300,10 @@ Outcome: [docs/testing-by-hand.md](../testing-by-hand.md) has a new section, "Ru
 > Skipping test case with duplicate ID '6b7841cd7136e51afff0015228e03bb106117512' ('ToyRobot.Tests.Unit.CommandParserTests.Parse_never_throws_and_always_returns_one_of_the_three_cases(line: "PLACE -2147483649,0,NORTH")' ...
 
 Outcome: the "never throws" theory in `tests/ToyRobot.Tests/Unit/CommandParserTests.cs` takes every line of the failure table and a few extra lines. When "X is too large" was added, `PLACE -2147483649,0,NORTH` went into the failure table but also stayed in the extra lines, so xUnit saw the same case twice and skipped one. The extra copy is removed; the line is still tested once by the theory and once, with its exact warning, by the failure table. The number of tests run is unchanged (470 + 26); the warning is gone. No decision or application code changed.
+
+<a id="p184"></a>**P184.** On the out-of-scope list:
+> also this sound like we are only saying back command is out of scope we should say anyother command?
+>
+> Also how easy it will be to add support for new commands?
+
+Outcome: the assistant agreed that naming only BACK suggested it was the one command considered, and explained that a new command is a new class plus one line in the CommandParser, with RobotOperator, the Runner, the Table and the Robot unchanged ([DEC-27](design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules)). The developer approved ("yes") the wording: "commands other than the six (for example BACK)" in the scope page, [DEC-39](design-decisions.md#dec-39-not-included) and the solution-design overview, each saying any other command word is ignored as an unknown command; and one sentence in the README's "How this would evolve" on adding a command. Wording only; no decision or code changed.
