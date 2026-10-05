@@ -1,7 +1,10 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.0.1 (PATCH: wording only; the message for an argument is called the how-to-run message, DEC-04)
-- Earlier: template (unversioned) → 1.0.0 (first ratified constitution)
+- Version change: 1.0.1 → 1.1.0 (MINOR: principle VI widened; standard output also carries the help text for
+  --help, after the developer confirmed the DEC-04 and DEC-23 change)
+- Modified principles: VI. Standard Output for REPORT Output Only (title kept; rule widened)
+- Earlier: 1.0.0 → 1.0.1 (PATCH: wording only; the message for an argument is called the how-to-run
+  message, DEC-04); template (unversioned) → 1.0.0 (first ratified constitution)
 - Principles defined (template placeholders → titles):
   PRINCIPLE_1 → I. Clean Code and SOLID
   PRINCIPLE_2 → II. Three Test Levels, Tests First
@@ -69,10 +72,12 @@ Rationale: unrequested features add code, tests and risk without value for the c
 
 ### VI. Standard Output for REPORT Output Only
 
-Standard output MUST carry only the REPORT output ([DEC-21][dec-21], [DEC-23][dec-23]). Everything else the application
-writes (the prompt, the echo, warnings and the how-to-run message) goes to standard error.
+Standard output MUST carry only the REPORT output, and the help text when the application is started with
+`--help` ([DEC-04][dec-04], [DEC-21][dec-21], [DEC-23][dec-23]). Everything else the application writes (the
+prompt, the echo, warnings and the how-to-run message) goes to standard error.
 
-Rationale: the REPORT output stays clean for saving or comparing, with no extra code.
+Rationale: the REPORT output stays clean for saving or comparing, with no extra code. The help text is
+written only when no command is read, so it is never mixed with REPORT output.
 
 ## Source of Truth and Technical Baseline
 
@@ -102,8 +107,9 @@ Amendments follow semantic versioning: MAJOR for removing or redefining a princi
 principle or materially expanding guidance, PATCH for wording. Every plan's Constitution Check and every
 code review verifies compliance with these principles.
 
-**Version**: 1.0.1 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
+**Version**: 1.1.0 | **Ratified**: 2026-10-05 | **Last Amended**: 2026-10-05
 
+[dec-04]: ../../docs/design-analysis/design-decisions.md#dec-04-standard-input-only
 [dec-21]: ../../docs/design-analysis/design-decisions.md#dec-21-report-format
 [dec-23]: ../../docs/design-analysis/design-decisions.md#dec-23-output-channels
 [dec-31]: ../../docs/design-analysis/design-decisions.md#dec-31-testing

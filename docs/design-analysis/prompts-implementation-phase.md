@@ -459,3 +459,13 @@ Outcome: [DEC-04](design-decisions.md#dec-04-standard-input-only) now says that 
 The assistant recommended a new menu choice, 4 "Show help", which starts the app with `--help` and then shows the menu again. It advised against printing the help with every menu, because the help is about 40 lines and the menu comes back after every choice. Choices 1, 2, 3 and 0 keep their numbers. The developer answered "Yes that is what I meant did not explain exactly how I was visioning it".
 
 Outcome: [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts) has choice 4, CI checks it through `TOYROBOT_MENU`, and the reason is recorded; DEC-37 lists the help among the menu's choices. Solution design pages 3, 4 and 9 say so. Spec 003 and the run scripts follow.
+
+<a id="p206"></a>**P206.** Approving the Spec Kit prompt the assistant proposed ("Update specs 002-console-session and 003-delivery for --help from DEC-04, DEC-23, DEC-26, DEC-31, DEC-32, DEC-37 and DEC-41 and solution design FR-17, FR-18, NFR-08 and the menu's choice 4: run /speckit-specify (or edit the spec in place where the skill allows), /speckit-plan, /speckit-tasks, then /speckit-analyze, and stop for my review before /speckit-implement."):
+> Go
+
+Outcome: specs 002 and 003 edited in place, as for the earlier changes. Spec 002: FR-17 for any argument other than `--help`, FR-18 with the help text, User Story 4 scenario 2, User Story 6, E2E-02 and E2E-08 on other arguments, E2E-10, SG-01, SC-008, the plan, contract, data model and quickstart, and tasks T060 to T065. Spec 003: scenarios 6b and 6c, NFR-08 and NFR-09, MN-01 choice 4, CI-08, CI-09, SC-008, SC-009, the contracts, data model and research, and tasks T044 to T047. `/speckit-analyze` was run on both. The assistant found that constitution principle VI ("standard output MUST carry only the REPORT output") contradicts DEC-23 and proposed an amendment.
+
+<a id="p207"></a>**P207.** On the constitution amendment:
+> Yes
+
+Outcome: `/speckit-constitution` amended principle VI: standard output carries only the REPORT output, and the help text when the application is started with `--help`. Version 1.0.1 to 1.1.0 (MINOR). No other principle changed.

@@ -48,7 +48,7 @@ Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 | III. Never Crash | The Runner handles every parse result and outcome; nothing is thrown for any input; [NFR-01][nfr-01] tests at both levels (empty input, a number too large, every kind of bad line, BOM). Program's last safeguard turns an unexpected exception into one error line and exit code 2 ([PG-02][pg-02], [DEC-32][dec-32]), tested in memory ([SG-01][sg-01]). | Pass |
 | IV. Cross-Platform | No platform-specific code in the application; the console end-to-end tests start `ToyRobot.exe` or `ToyRobot` by platform; CRLF and LF input are both tested ([WF-03][wf-03], [E2E-07][e2e-07]); CI runs all levels on three systems (spec 003). | Pass |
 | V. No Over-Engineering | Only the BCL and xUnit; no options, no configuration, no extra commands or messages; the table size stays a constructor argument set by Program. | Pass |
-| VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`, and the help text for `--help` to `Console.Out` (DEC-23 lists it on standard output; see the note on principle VI below). Every test checks the two channels separately. | Pass |
+| VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`, and the help text for `--help` to `Console.Out` (DEC-23 lists it on standard output; constitution 1.1.0, principle VI). Every test checks the two channels separately. | Pass |
 
 No violations; Complexity Tracking is empty.
 
