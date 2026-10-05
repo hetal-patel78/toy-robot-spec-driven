@@ -224,6 +224,16 @@ Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `To
 
 ---
 
+## Phase 10: Ctrl+Z line ends the input (DEC-10)
+
+**Goal**: a line that is exactly the single character Ctrl+Z (U+001A), as the Windows console gives Ctrl+Z then Enter, ends the input like the end of a file ([FR-16][fr-16]; [DEC-10][dec-10]).
+
+**Independent Test**: whole-flow tests in memory, typed and redirected.
+
+- [x] T058 [US2] Write the tests first in `tests/ToyRobot.Tests/WholeFlow/EndOfSessionTests.cs` (spec.md User Story 2 scenario 6 and User Story 3 scenario 4; [FR-16][fr-16]; [DEC-10][dec-10]), feeding `PLACE 0,0,NORTH`, `REPORT`, `"\u001A"`, `MOVE`, `REPORT`: with `interactive: false` stdout is `Output:` / `0,0,NORTH` and stderr only the two echo lines; with `interactive: true` stdout is the same and stderr is `> > > `. Confirm they fail (red), then add the check to `Runner.Run` in `src/ToyRobot/Runner.cs`, next to the end-of-input check, so that a line equal to `"\u001A"` returns before the echo and before parsing; run `dotnet build` and `dotnet test` from the repository root: all pass.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Dependencies on other specs

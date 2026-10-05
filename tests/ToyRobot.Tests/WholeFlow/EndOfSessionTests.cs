@@ -2,9 +2,27 @@ using static ToyRobot.Tests.WholeFlow.SessionHarness;
 
 namespace ToyRobot.Tests.WholeFlow;
 
-// Ending a session with EXIT: FR-15, FR-14; DEC-10, DEC-25, DEC-30.
+// Ending a session with EXIT or a Ctrl+Z line: FR-15, FR-16, FR-14; DEC-10, DEC-25, DEC-30.
 public class EndOfSessionTests
 {
+    [Fact]
+    public void A_Ctrl_Z_line_ends_the_input_when_redirected()
+    {
+        var (stdout, stderr) = Run(Lines("PLACE 0,0,NORTH", "REPORT", "\u001A", "MOVE", "REPORT"));
+
+        Assert.Equal(Lines("Output:", "0,0,NORTH"), stdout);
+        Assert.Equal(Lines("> PLACE 0,0,NORTH", "> REPORT"), stderr);
+    }
+
+    [Fact]
+    public void A_Ctrl_Z_line_ends_the_input_when_typing()
+    {
+        var (stdout, stderr) = Run(Lines("PLACE 0,0,NORTH", "REPORT", "\u001A", "MOVE", "REPORT"), interactive: true);
+
+        Assert.Equal(Lines("Output:", "0,0,NORTH"), stdout);
+        Assert.Equal("> > > ", stderr);
+    }
+
     [Fact]
     public void EXIT_with_text_after_it_ends_session()
     {

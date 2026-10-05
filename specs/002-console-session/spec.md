@@ -203,6 +203,18 @@ A person or a file ends the session with EXIT, or simply by running out of input
    ```
    **Exit code:** 0 (the session continues after `EXITNOW` and ends at the end of the input). The same holds with `EXITING` in place of `EXITNOW`, in the echo and in the warning.
 
+6. **[FR-16; DEC-10]** **Given** input redirected from a file (`interactive` = false). **When** the input lines are `PLACE 0,0,NORTH`, `REPORT`, then a line holding only the single character Ctrl+Z (U+001A, as the Windows console gives Ctrl+Z then Enter), then `MOVE`, `REPORT`. **Then console output (stdout):**
+   ```text
+   Output:
+   0,0,NORTH
+   ```
+   **Console messages (stderr):**
+   ```text
+   > PLACE 0,0,NORTH
+   > REPORT
+   ```
+   (the Ctrl+Z line is not echoed and gives no warning; the lines after it are not read). **Exit code:** 0
+
 ---
 
 ### User Story 3 - Type commands at the prompt (Priority: P2)
@@ -235,6 +247,13 @@ A person starts the application without redirecting input and types commands. Be
    > EXIT
    ```
    (no prompt before any read; each `> ` is the echo of the line read). **Exit code:** 0
+
+4. **[FR-13, FR-16; DEC-10, DEC-24]** **Given** a person is typing on Windows. **When** the input lines are `PLACE 0,0,NORTH`, `REPORT`, then a line holding only the single character Ctrl+Z (U+001A), then `MOVE`, `REPORT`. **Then console output (stdout):**
+   ```text
+   Output:
+   0,0,NORTH
+   ```
+   **Console messages (stderr):** `> > > ` (one prompt before each of the three reads; no warning for the Ctrl+Z line; the lines after it are not read). **Exit code:** 0
 
 ---
 
@@ -347,6 +366,7 @@ Whatever the input holds, the application keeps going: every bad line gets its w
 - A blank line is echoed as `> ` (`>` and a space) before its warning ([DEC-25][dec-25]).
 - EXIT is echoed with redirected input like every other line; lines after it are not read ([DEC-10][dec-10], [DEC-25][dec-25]).
 - When a typed session ends with Ctrl+Z / Ctrl+D, the last `> ` prompt stays on screen; this is expected ([DEC-10][dec-10]).
+- A line that is exactly the single character Ctrl+Z (U+001A) ends the input like the end of a file, typed or redirected: it is not echoed, gives no warning, and nothing after it is read ([DEC-10][dec-10]). The Windows console gives Ctrl+Z then Enter as this line.
 - Ctrl+C is not handled by the application: the standard behaviour applies (it stops at once with the non-zero exit code set by the system) ([DEC-10][dec-10]). There is no test for it.
 
 ## Requirements *(mandatory)*
@@ -364,7 +384,7 @@ Whatever the input holds, the application keeps going: every bad line gets its w
 - **FR-13**<a id="fr-13"></a> ([DEC-10][dec-10], [DEC-24][dec-24]): When a person is typing (`interactive` = true), the Runner MUST write the prompt `> ` (`>` and a space, no line break) to console messages (stderr) before each line is read, including the read that finds the end of the input, and MUST NOT echo typed lines. With redirected input (`interactive` = false) there is no prompt.
 - **FR-14**<a id="fr-14"></a> ([DEC-08][dec-08], [DEC-25][dec-25]): With redirected input (`interactive` = false), the Runner MUST echo every line read to console messages (stderr), before it is processed, as `> ` followed by the line with whitespace of any kind removed from both ends (after the byte-order mark is removed from the first line). This includes bad lines, blank lines (echoed as `> `) and the EXIT line; lines after EXIT are not read, so they are not echoed.
 - **FR-15**<a id="fr-15"></a> ([DEC-10][dec-10], [DEC-30][dec-30]): When the CommandParser returns EXIT (the command word is EXIT in any case; spec 001, [FR-10a][fr-10a]), the Runner MUST stop at once: the session ends with exit code 0, even before PLACE; anything after EXIT on its line is ignored, later lines are not read, and EXIT gives no output of its own. RobotOperator never receives EXIT. `EXITNOW` is an unknown command (spec 001, [FR-10][fr-10]).
-- **FR-16**<a id="fr-16"></a> ([DEC-10][dec-10], [DEC-32][dec-32]): The session MUST end at the end of the input with exit code 0. A typing user ends input with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). Empty input MUST NOT cause an error: with redirected empty input both console output (stdout) and console messages (stderr) are empty.
+- **FR-16**<a id="fr-16"></a> ([DEC-10][dec-10], [DEC-32][dec-32]): The session MUST end at the end of the input with exit code 0. A typing user ends input with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). A line that is exactly the single character Ctrl+Z (U+001A), which is how the Windows console gives Ctrl+Z then Enter, MUST end the input in the same way, whether the input is typed or redirected: the Runner returns, the line is not echoed and gives no warning, and nothing after it is read or run. Empty input MUST NOT cause an error: with redirected empty input both console output (stdout) and console messages (stderr) are empty.
 - **FR-17**<a id="fr-17"></a> ([DEC-04][dec-04], [DEC-26][dec-26]): If the application is started with any argument (a file name, `--help` or anything else), Program MUST NOT read input; it MUST write this how-to-run message as one line to console messages (stderr), write nothing to console output (stdout), and stop with exit code 1:
   ```text
   How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)
@@ -375,7 +395,7 @@ Whatever the input holds, the application keeps going: every bad line gets its w
 
 - **RN-01 Runner**<a id="rn-01"></a> ([DEC-26][dec-26], [DEC-27][dec-27], [DEC-29][dec-29], [DEC-30][dec-30]; supports [FR-08][fr-08], [FR-11][fr-11] to [FR-16][fr-16]): The Runner MUST be created as `Runner(TextReader input, TextWriter output, TextWriter error, RobotOperator robotOperator, bool interactive)`, where `output` is console output (stdout) and `error` is console messages (stderr), and MUST create its own CommandParser. Its method `Run()` runs the session and returns nothing; it returns to its caller at EXIT or at the end of the input. `Run()` repeats, for each line, in this order:
   1. If `interactive`, write `> ` to `error` ([FR-13][fr-13]).
-  2. Read a line. If there is none (end of input), return ([FR-16][fr-16]).
+  2. Read a line. If there is none (end of input), or the line is exactly the single character Ctrl+Z (U+001A), return ([FR-16][fr-16]).
   3. If this is the first line, remove a byte-order mark from its start ([FR-11][fr-11]).
   4. If not `interactive`, write `> ` and the line without whitespace at either end to `error` ([FR-14][fr-14]).
   5. Pass the line to the CommandParser:

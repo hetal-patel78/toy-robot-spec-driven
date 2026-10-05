@@ -118,7 +118,7 @@ Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `To
 - Fields: the five constructor arguments, a `CommandParser` it creates, and a flag that says whether the first line has been read.
 - `Run()`, for each line (page 6, steps 1 to 5):
   1. if `interactive`, `error.Write("> ")` (no line break, [FR-13][fr-13]);
-  2. `var line = input.ReadLine()`; if `null`, return ([FR-16][fr-16]);
+  2. `var line = input.ReadLine()`; if `null`, or the line is exactly `"\u001A"` (Ctrl+Z as the Windows console gives it), return ([FR-16][fr-16]);
   3. on the first line only, if it starts with the byte-order mark character U+FEFF (C# `(char)0xFEFF`), remove that one character ([FR-11][fr-11]);
   4. if not `interactive`, `error.WriteLine("> " + line.Trim())` ([FR-14][fr-14]);
   5. parse the line (not trimmed by the Runner; the parser trims, page 6) and act on the parse result: a failure (`ParseResult.Failure`, `Reason`) → `error.WriteLine("Warning: " + reason)`; EXIT (`ParseResult.Exit`) → return ([FR-15][fr-15]); a command object (`ParseResult.CommandObject`) → pass it to RobotOperator (`RobotOperator.Run`) and act on the outcome: the position text (`Outcome.PositionText`) → `output.WriteLine("Output:")` then `output.WriteLine(text)` ([FR-12][fr-12]); a warning (`Outcome.Warning`) → `error.WriteLine("Warning: " + text)`; done with nothing to show (`Outcome.Done`) → nothing.

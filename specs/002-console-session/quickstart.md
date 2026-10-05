@@ -21,7 +21,7 @@ The application path (page 5) after `dotnet build` is `src/ToyRobot/bin/Debug/ne
 | Only REPORT on stdout ([FR-12][fr-12]) | `ToyRobot < commands.txt > results.txt` | `results.txt` holds `Output:` and `0,1,NORTH`; the screen shows only the echo lines |
 | How-to-run message ([FR-17][fr-17]) | `ToyRobot --help` | stderr `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)`; stdout empty; exit code 1 |
 | Typing ([FR-13][fr-13]) | `ToyRobot`, then type `MOVE`, Enter, `EXIT`, Enter | `> `, then `Warning: MOVE ignored - robot is not on the table`, then `> `; exit code 0 |
-| End of input when typing ([FR-16][fr-16]) | `ToyRobot`, then Ctrl+Z, Enter (Windows) or Ctrl+D (Linux, macOS) | the last `> ` stays on screen; exit code 0 |
+| End of input when typing ([FR-16][fr-16]) | `ToyRobot`, then Ctrl+Z, Enter (Windows) or Ctrl+D (Linux, macOS) | the last `> ` stays on screen; exit code 0 (on Windows the console gives Ctrl+Z as a line holding only U+001A, which the Runner treats as the end of input) |
 
 Check the exit code with `echo %ERRORLEVEL%` (cmd), `echo $?` (bash, zsh) or `$LASTEXITCODE` (PowerShell).
 

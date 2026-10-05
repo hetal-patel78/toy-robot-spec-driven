@@ -21,7 +21,7 @@ The Runner creates its own CommandParser ([DEC-26][dec-26]).
 Returns nothing. For each line, in this order (page 6):
 
 1. If `interactive`: write `> ` to `error`.
-2. Read one line from `input`. If there is none: return.
+2. Read one line from `input`. If there is none, or the line is exactly the single character U+001A (Ctrl+Z): return.
 3. If it is the first line: remove one U+FEFF at its start, if present.
 4. If not `interactive`: write `> ` + the line trimmed with `Trim()`, as a line, to `error`.
 5. Parse the line with the CommandParser:
@@ -38,7 +38,7 @@ Returns nothing. For each line, in this order (page 6):
 - Never uses `Console` ([DEC-26][dec-26], [DEC-29][dec-29]).
 - Never passes EXIT or a failure to RobotOperator ([DEC-27][dec-27], [DEC-30][dec-30]).
 - Knows no robot rule and no table size (page 6).
-- Writes nothing for EXIT and nothing at the end of the input; with empty input it writes nothing at all when `interactive` = false, and exactly `> ` when `interactive` = true.
+- Writes nothing for EXIT and nothing at the end of the input (a line that is only U+001A counts as the end of the input: no echo, no warning); with empty input it writes nothing at all when `interactive` = false, and exactly `> ` when `interactive` = true.
 
 [dec-03]: ../../../docs/design-analysis/design-decisions.md#dec-03-table-size-is-a-constructor-parameter
 [dec-20]: ../../../docs/design-analysis/design-decisions.md#dec-20-bad-lines
