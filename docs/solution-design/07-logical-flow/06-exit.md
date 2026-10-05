@@ -35,7 +35,7 @@ The numbers match the arrows in the diagram.
 5. The Runner stops and hands control back to Program. RobotOperator never sees EXIT. The lines after EXIT are not read, so they are neither echoed nor run.
 6. Program stops with exit code 0, which tells the shell everything went normally.
 
-When the input simply runs out (the end of the file, or Ctrl+Z / Ctrl+D when typing), the Runner follows the same path from step 5.
+When the input simply runs out (the end of the file, or Ctrl+Z / Ctrl+D when typing), the Runner follows the same path from step 5. The Windows console gives Ctrl+Z then Enter as a line that holds only the character Ctrl+Z (U+001A), not as the end of the input; the Runner treats that line as the end of the input too, so nothing after it is read or run and no warning is written ([DEC-10][dec-10]).
 
 ---
 

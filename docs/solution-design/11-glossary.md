@@ -42,7 +42,7 @@ In alphabetical order.
 | **Current state** | Where the robot is and which way it faces now; nothing while the robot is not on the table. Commands read it through `CurrentState`. |
 | **DEC-nn** | A decision in [design-decisions.md][dd], for example [DEC-15][dec-15]. That file is the source of truth. |
 | **Echo** | With redirected input, each line read is written back to console messages (stderr) as `> ` and the line, so a file run reads like a typed session ([DEC-25][dec-25]). |
-| **End of input** | The input has no more lines: the end of a file, or Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS) when typing. It ends the session with exit code 0 ([DEC-10][dec-10]). |
+| **End of input** | The input has no more lines: the end of a file, or Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS) when typing. A line holding only the character Ctrl+Z (U+001A), as the Windows console gives it, counts as the end of input too. It ends the session with exit code 0 ([DEC-10][dec-10]). |
 | **End-to-end test** | A test that starts the built application as a separate program and checks its real console output (stdout) and exit code ([DEC-31][dec-31]). |
 | **EXIT** | Ends the session at once with exit code 0. Handled by the Runner, never by RobotOperator ([DEC-10][dec-10], [DEC-30][dec-30]). |
 | **Exit code** | The number a program returns to the system when it stops: 0 means success, 1 means it was used incorrectly, 2 means an unexpected problem ([DEC-32][dec-32]). |

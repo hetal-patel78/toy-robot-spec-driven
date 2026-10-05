@@ -143,6 +143,7 @@ A line such as `> MOVE` is a bad line (unknown command).
 ### DEC-10 Ending a session
 
 A session ends at end of input (Ctrl+Z then Enter on Windows, Ctrl+D on Linux and macOS) or with `EXIT`. Either way the exit code is 0.
+- A line that is exactly the single character Ctrl+Z (U+001A) ends the input like the end of a file: the session ends, nothing after it is read or run, no warning is written, and the exit code is 0. The Windows console gives Ctrl+Z then Enter as this line instead of the end of input. It applies to typed and redirected input alike.
 - EXIT works at any point, including before the robot is placed.
 - With redirected input, EXIT stops the remaining lines; they are not read, echoed or run.
 - If the command word is EXIT ([DEC-08][dec-08]), the app exits and anything after it is ignored (`EXIT now` exits). `EXITNOW` and `EXITING` are not EXIT: unknown command.

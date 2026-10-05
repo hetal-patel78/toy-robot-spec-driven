@@ -36,7 +36,7 @@ It does not change the console's encoding: on Windows that can fail when there i
 
 For each line:
 1. If `interactive`, write `> ` to `error` ([DEC-24][dec-24]).
-2. Read a line. If there is none (end of input), return ([DEC-10][dec-10]).
+2. Read a line. If there is none (end of input), or the line is exactly the single character Ctrl+Z (U+001A, how the Windows console gives Ctrl+Z then Enter), return ([DEC-10][dec-10]).
 3. If this is the first line, remove a byte-order mark from its start. Nothing is read ahead, so the first prompt is never delayed ([DEC-20][dec-20]).
 4. If not `interactive`, write `> ` and the line, with whitespace removed from both ends, to `error` ([DEC-25][dec-25]).
 5. Pass the line to the CommandParser.
