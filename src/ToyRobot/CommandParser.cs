@@ -84,12 +84,12 @@ public sealed class CommandParser
 
         if (!TryReadWholeNumber(parts[0], out var x))
         {
-            return new ParseResult.Failure($"'{trimmed}' ignored - X must be a whole number");
+            return new ParseResult.Failure($"'{trimmed}' ignored - X {WholeNumberProblem(parts[0])}");
         }
 
         if (!TryReadWholeNumber(parts[1], out var y))
         {
-            return new ParseResult.Failure($"'{trimmed}' ignored - Y must be a whole number");
+            return new ParseResult.Failure($"'{trimmed}' ignored - Y {WholeNumberProblem(parts[1])}");
         }
 
         var name = parts[2].Trim();
@@ -100,6 +100,16 @@ public sealed class CommandParser
         }
 
         return new ParseResult.CommandObject(new PlaceCommand(x, y, facing));
+    }
+
+    // A part that cannot be read but is only an optional sign and digits is a whole number that
+    // does not fit in an int, in either direction (DEC-20, DEC-22).
+    private static string WholeNumberProblem(string part)
+    {
+        var text = part.Trim();
+        var digits = text.Length > 0 && (text[0] == '-' || text[0] == '+') ? text[1..] : text;
+        var isWholeNumber = digits.Length > 0 && digits.All(c => c is >= '0' and <= '9');
+        return isWholeNumber ? "is too large" : "must be a whole number";
     }
 
     private static bool TryReadWholeNumber(string part, out int value) =>

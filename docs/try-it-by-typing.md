@@ -52,6 +52,7 @@ Type these in a new session, in this order. Each prints its warning and the sess
 | an empty line | `Warning: blank line ignored` |
 | `PLACE 1,2` | `Warning: 'PLACE 1,2' ignored - expected PLACE X,Y,F` |
 | `PLACE A,0,NORTH` | `Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
+| `PLACE 9999999999,0,NORTH` | `Warning: 'PLACE 9999999999,0,NORTH' ignored - X is too large` |
 | `PLACE 1,2,UP` | `Warning: 'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST` |
 | `PLACE 1,2,N` | `Warning: 'PLACE 1,2,N' ignored - F must be NORTH, SOUTH, EAST or WEST` |
 | `move now` | `Warning: 'move now' ignored - MOVE takes no values` |

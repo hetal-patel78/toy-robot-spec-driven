@@ -190,3 +190,24 @@ Outcome: the link is a sentence at the end of the README's "Run it" section, aft
 > https://github.com/hetal-patel78/toy-robot-spec-driven/tree/main/docs/design-analysis/handwritten/images
 
 Outcome: the row links to the page images first, with the PDFs alongside; after the assistant asked, the developer chose "Yes, both, then push", so the Clarifications row does the same.
+
+<a id="p167"></a>**P167.** While testing by hand:
+> when i enter > place 9999999999999999999,0,east
+> Warning: 'place 9999999999999999999,0,east' ignored - X must be a whole number
+>
+> i think it need to be our of range correct?
+
+Outcome: the behaviour matched [DEC-20](design-decisions.md#dec-20-bad-lines) (the developer's choice of option A, [P35](prompts-design-phase.md#p35) in the design-phase log) and [DEC-22](design-decisions.md#dec-22-warning-wording); the assistant offered keeping it, a clearer "X is too large" message (still a bad line), or treating it as off the table.
+
+<a id="p168"></a>**P168.** On the options:
+> X is too large and also  when i enter 
+> > place 9999999999999999999,111111111111111111111111111,east
+> Warning: 'place 9999999999999999999,111111111111111111111111111,east' ignored - X must be a whole number
+>
+> it only give me message for X
+
+Outcome: chose the clearer message; the assistant explained that only the first problem on a line is reported ([DEC-22](design-decisions.md#dec-22-warning-wording), spec 001) and asked whether to change that.
+
+<a id="p169"></a>**P169.** On reporting several problems on one line: **[Selected: First problem only (Recommended)]**
+
+Outcome: a decision change confirmed by the developer (CLAUDE.md). In order: [DEC-20](design-decisions.md#dec-20-bad-lines) and [DEC-22](design-decisions.md#dec-22-warning-wording) (a number written as a whole number but too large to read, in either direction, is still a bad line and gets `X is too large` or `Y is too large`; anything not written as a whole number keeps `must be a whole number`; only the first problem on a line is reported, as before); then the solution design pages that list the warnings and the parse failures; then spec 001 and the other specs that list the texts (scenarios, edge cases, contract, research, task T059) and the check script; then the tests, written first (22 failed); then `CommandParser`; then the try-it page. 495 tests pass (470 unit and whole-flow, 25 end-to-end). Done by a Sonnet 5.5 agent.
