@@ -365,3 +365,9 @@ Outcome: the assistant found no recorded reason: spec 001's plan listed every cl
 > and also update the specs and all the relevant places
 
 The application files are now grouped by job, with namespaces following the folders (the rule specs 001 and 002 already used for the tests): `Domain/` (Table, Direction, RobotState, Robot, IRobotOperator, RobotOperator), `Commands/` (IRobotCommand, the five command classes, Outcome), `Parsing/` (ParseResult, CommandParser) and `Session/` (Runner); Program stays at the project root. Files moved with `git mv`; each file has the `using` directives it needs, and the unit-test project has them as global usings. A new design-rules test checks each public type's namespace (497 tests pass). Spec 001 (decision "source folders", plan, contract, data model, tasks with T060), spec 002 (namespaces, plan), every task and spec that names a source file path, solution design page 5's folder layout, and the README (test counts, a "Source code" row) follow. No type, member or behaviour changed.
+
+<a id="p192"></a>**P192.** After [P189](#p189):
+> ur testing by hand  still show >
+> https://github.com/hetal-patel78/toy-robot-spec-driven/blob/main/docs/testing-by-hand.md
+
+Outcome: P189 had removed the `> ` from the typed-session examples but left it in "Run the test data", whose blocks showed the app's echo of each file line. That section now gives, for each of the seven test-data files, the lines of the file (which can be pasted into a typed session as they are) and then what the app prints for them (warnings and reports, without the echoed lines); exit-mid-file says to stop at `EXIT` when typing. Every block was produced from the files and a real run of the built application. The only `> ` left on the page describes the prompt and the ignored `> MOVE` example. No decision or code changed.

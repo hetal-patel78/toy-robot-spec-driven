@@ -101,15 +101,22 @@ Each file in `testdata/` can be run the same way, from the repository root:
 | PowerShell | `.\run.cmd testdata\long-session.txt` |
 | bash, zsh (Linux, macOS) | `./run.sh testdata/long-session.txt` |
 
-After the script's three progress lines (checking .NET, building, running), the console shows each line of the file as `> ` and the line, then any warning or report for it. Only the `Output:` lines and the positions are console output (stdout); the expected file next to each input file (`<name>.expected.txt`) holds exactly those lines. What each file shows on the console (the `> ` lines are the app echoing the file, not lines to type; to type a file by hand, paste the lines of the file itself):
+After the script's three progress lines (checking .NET, building, running), the app echoes each line of the file as `> ` and the line, then prints any warning or report for it. Only the `Output:` lines and the positions are console output (stdout); the expected file next to each input file (`<name>.expected.txt`) holds exactly those lines.
+
+For each file below: the lines of the file, which can also be pasted into a typed session as they are, and then what the app prints for them (warnings and reports, in order; the echoed lines are left out).
 
 ### challenge-example-1
 Challenge example 1.
 
+Lines in `testdata/challenge-example-1.txt`:
 ```
-> PLACE 0,0,NORTH
-> MOVE
-> REPORT
+PLACE 0,0,NORTH
+MOVE
+REPORT
+```
+
+Printed:
+```
 Output:
 0,1,NORTH
 ```
@@ -117,10 +124,15 @@ Output:
 ### challenge-example-2
 Challenge example 2.
 
+Lines in `testdata/challenge-example-2.txt`:
 ```
-> PLACE 0,0,NORTH
-> LEFT
-> REPORT
+PLACE 0,0,NORTH
+LEFT
+REPORT
+```
+
+Printed:
+```
 Output:
 0,0,WEST
 ```
@@ -128,101 +140,125 @@ Output:
 ### challenge-example-3
 Challenge example 3.
 
+Lines in `testdata/challenge-example-3.txt`:
 ```
-> PLACE 1,2,EAST
-> MOVE
-> MOVE
-> LEFT
-> MOVE
-> REPORT
+PLACE 1,2,EAST
+MOVE
+MOVE
+LEFT
+MOVE
+REPORT
+```
+
+Printed:
+```
 Output:
 3,3,NORTH
 ```
 
 ### bom-challenge-example-1
-Challenge example 1 in a file that starts with a byte-order mark: the mark is removed, so the result is the same as example 1.
+Challenge example 1 in a file that starts with a byte-order mark (an invisible marker, not shown below): the mark is removed, so the result is the same as example 1.
 
+Lines in `testdata/bom-challenge-example-1.txt`:
 ```
-> PLACE 0,0,NORTH
-> MOVE
-> REPORT
+PLACE 0,0,NORTH
+MOVE
+REPORT
+```
+
+Printed:
+```
 Output:
 0,1,NORTH
 ```
 
 ### exit-mid-file
-`EXIT` in the middle of the file: the `MOVE` and `REPORT` after it are not read.
+`EXIT` in the middle of the file: the `MOVE` and `REPORT` after it are not read. When typing, stop at `EXIT`: the session ends there, so any lines pasted after it would go to the shell instead.
 
+Lines in `testdata/exit-mid-file.txt`:
 ```
-> PLACE 0,0,NORTH
-> REPORT
+PLACE 0,0,NORTH
+REPORT
+EXIT
+MOVE
+REPORT
+```
+
+Printed:
+```
 Output:
 0,0,NORTH
-> EXIT
 ```
 
 ### empty
-An empty file: nothing is shown and the exit code is 0.
+An empty file: nothing is printed and the exit code is 0.
 
-(nothing)
+`testdata/empty.txt` has no lines.
+
+Printed: nothing.
 
 ### long-session
-One long session mixing every kind of line: commands before PLACE, PLACE off the table, MOVE blocked at two corners, bad and blank lines, lower case and spaces, a full turn and four REPORTs.
+One long session mixing every kind of line: commands before PLACE, PLACE off the table, MOVE blocked at two corners, an unknown command, a PLACE with values missing, a blank line, lower case and a line starting with spaces, a full turn, a negative PLACE and four REPORTs.
 
+Lines in `testdata/long-session.txt`:
 ```
-> MOVE
+MOVE
+REPORT
+PLACE 5,5,NORTH
+PLACE 0,0,NORTH
+LEFT
+MOVE
+REPORT
+RIGHT
+MOVE
+MOVE
+MOVE
+MOVE
+MOVE
+RIGHT
+MOVE
+MOVE
+MOVE
+MOVE
+MOVE
+REPORT
+JUMP
+PLACE 2,2
+
+place 2,2,south
+  move
+MOVE
+MOVE
+RIGHT
+RIGHT
+RIGHT
+RIGHT
+LEFT
+MOVE
+REPORT
+PLACE -1,0,NORTH
+REPORT
+```
+
+Printed:
+```
 Warning: MOVE ignored - robot is not on the table
-> REPORT
 Warning: REPORT ignored - robot is not on the table
-> PLACE 5,5,NORTH
 Warning: PLACE 5,5,NORTH ignored - position is off the table
-> PLACE 0,0,NORTH
-> LEFT
-> MOVE
 Warning: MOVE ignored - next position is off the table so robot stays at 0,0,WEST
-> REPORT
 Output:
 0,0,WEST
-> RIGHT
-> MOVE
-> MOVE
-> MOVE
-> MOVE
-> MOVE
 Warning: MOVE ignored - next position is off the table so robot stays at 0,4,NORTH
-> RIGHT
-> MOVE
-> MOVE
-> MOVE
-> MOVE
-> MOVE
 Warning: MOVE ignored - next position is off the table so robot stays at 4,4,EAST
-> REPORT
 Output:
 4,4,EAST
-> JUMP
 Warning: 'JUMP' ignored - unknown command
-> PLACE 2,2
 Warning: 'PLACE 2,2' ignored - expected PLACE X,Y,F
-> 
 Warning: blank line ignored
-> place 2,2,south
-> move
-> MOVE
-> MOVE
 Warning: MOVE ignored - next position is off the table so robot stays at 2,0,SOUTH
-> RIGHT
-> RIGHT
-> RIGHT
-> RIGHT
-> LEFT
-> MOVE
-> REPORT
 Output:
 3,0,EAST
-> PLACE -1,0,NORTH
 Warning: PLACE -1,0,NORTH ignored - position is off the table
-> REPORT
 Output:
 3,0,EAST
 ```
