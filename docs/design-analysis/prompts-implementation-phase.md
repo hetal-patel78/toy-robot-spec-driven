@@ -290,3 +290,8 @@ Outcome: a seventh test-data pair, `testdata/long-session.txt` and `long-session
 > Copy and run; each prints the two lines shown
 
 Outcome: the README section is now "Run the test data": the ready-to-copy cmd, PowerShell and bash commands and the expected console output (stdout) for all seven test-data files, the three challenge examples first. The table names each file; the "Test data" section still says what each file shows. Spec 003 is unchanged: its README requirements ([NFR-09](../../specs/003-delivery/spec.md#nfr-09), [SC-004](../../specs/003-delivery/spec.md#sc-004)) ask for at least the three challenge examples. No decision or code changed.
+
+<a id="p182"></a>**P182.** After the README listed every test-data file:
+> yes push it also do the same for testing by hand
+
+Outcome: [docs/testing-by-hand.md](../testing-by-hand.md) has a new section, "Run the test data": the command in each shell, then for each of the seven test-data files what the console shows, line by line (each line echoed, then its warning or report). Every block was produced by running the file through the built application; the reports in each block are exactly the file's expected output. No decision or code changed.
