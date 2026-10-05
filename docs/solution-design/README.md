@@ -32,7 +32,7 @@ Numbered [FR-01][fr-01] onwards. They cover the table, how a line is read, each 
 Numbered [NFR-01][nfr-01] onwards: never crash, works on Windows, Linux and macOS, runs on .NET 8 or a later version, readable code, testable without the console, and run scripts for each system. Each one says how it is checked.
 
 **4. [Scope](04-scope.md)**
-In scope: one robot, a 5 x 5 table, the six commands, typed and redirected input, warnings and run scripts. Out of scope, each with its reason: more than one robot, a configurable table size, a file-name argument, direction abbreviations, a menu, commands other than the six (such as BACK) and obstacles, a log file, and heavy frameworks ([DEC-38][dec-38], [DEC-39][dec-39]).
+In scope: one robot, a 5 x 5 table, the six commands (the five robot commands and EXIT), typed and redirected input, warnings and run scripts. Out of scope, each with its reason: more than one robot, a configurable table size, a file-name argument, direction abbreviations, a menu, any other command (such as BACK) and obstacles, a log file, and heavy frameworks ([DEC-38][dec-38], [DEC-39][dec-39]).
 
 ### How it is built (pages 5–9)
 

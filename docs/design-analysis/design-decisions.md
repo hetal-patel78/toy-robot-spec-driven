@@ -437,7 +437,7 @@ Multiple robots are not built. The design keeps a future change local to the Com
 | File-name argument | Standard input covers files ([DEC-04][dec-04]) |
 | Direction abbreviations | Not asked for by the challenge ([DEC-06][dec-06]) |
 | Menu interface | [DEC-35][dec-35] |
-| Commands other than the six (for example BACK), obstacles | Not asked for by the challenge; any other command word is an unknown command ([DEC-20][dec-20]). A new command is a new class and one line in the parser ([DEC-27][dec-27]) |
+| Commands other than the six (the five robot commands and EXIT), for example BACK; obstacles | Not asked for by the challenge; any other command word is an unknown command ([DEC-20][dec-20]). A new command is a new class and one line in the parser ([DEC-27][dec-27]) |
 | Logging framework, dependency injection container, Dockerfile | Too heavy for a console app of this size |
 | Log file for results and warnings | The challenge says "standard output is sufficient". Redirection already saves the REPORT output and warnings separately with no code ([DEC-23][dec-23]). A log file would add decisions about location, permissions, overwrite or append and cross-platform paths, plus tests. If ever needed, only `Program` changes: it passes the Runner a writer that writes to both the console and a file ([DEC-29][dec-29]). |
 

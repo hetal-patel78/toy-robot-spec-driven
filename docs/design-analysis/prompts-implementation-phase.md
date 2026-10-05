@@ -307,3 +307,8 @@ Outcome: the "never throws" theory in `tests/ToyRobot.Tests/Unit/CommandParserTe
 > Also how easy it will be to add support for new commands?
 
 Outcome: the assistant agreed that naming only BACK suggested it was the one command considered, and explained that a new command is a new class plus one line in the CommandParser, with RobotOperator, the Runner, the Table and the Robot unchanged ([DEC-27](design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules)). The developer approved ("yes") the wording: "commands other than the six (for example BACK)" in the scope page, [DEC-39](design-decisions.md#dec-39-not-included) and the solution-design overview, each saying any other command word is ignored as an unknown command; and one sentence in the README's "How this would evolve" on adding a command. Wording only; no decision or code changed.
+
+<a id="p185"></a>**P185.** After [P184](#p184):
+> current command 6 or 5?
+
+Outcome: the assistant answered six command words: the five robot commands of the challenge (PLACE, MOVE, LEFT, RIGHT, REPORT) and EXIT ([DEC-10](design-decisions.md#dec-10-ending-a-session), [DEC-30](design-decisions.md#dec-30-exit-is-handled-by-the-runner)), which the Runner handles and RobotOperator never sees. On the developer's "yes update it and push", "the six" now says "(the five robot commands and EXIT)" in the scope page, [DEC-39](design-decisions.md#dec-39-not-included) and the solution-design overview. Wording only; no decision or code changed.
