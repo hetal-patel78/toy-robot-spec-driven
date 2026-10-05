@@ -93,7 +93,7 @@ toy-robot-spec-driven/
 │       ├── Session/              Runner
 │       ├── Parsing/              CommandParser and its parse result
 │       ├── Commands/             the command interface, one class per command, and the outcome
-│       └── Domain/               Table, Direction, RobotState, Robot and RobotOperator
+│       └── Domain/               Table, Direction, RobotState, Robot, RobotOperator and IRobotOperator
 ├── tests/
 │   ├── ToyRobot.Tests/           Unit/ (unit tests) and RunnerWholeFlow/ (Runner whole-flow tests, in memory)
 │   └── ToyRobot.ConsoleEndToEndTests/   console end-to-end tests of the built application
@@ -101,8 +101,8 @@ toy-robot-spec-driven/
 ├── docs/                         challenge, design analysis, solution design
 ├── .github/workflows/            the CI workflow (page 9)
 ├── ToyRobot.sln                  the solution file that groups the three projects
-├── run.cmd                       run script for Windows (cmd and PowerShell); with no file, a menu (page 9)
-├── run.sh                        run script for Linux and macOS; with no file, a menu
+├── run.cmd                       run script for Windows (cmd and PowerShell); with no file at a keyboard, a menu (page 9)
+├── run.sh                        run script for Linux and macOS; with no file at a keyboard, a menu
 ├── .gitattributes                line-ending rules
 └── README.md                     the README
 ```

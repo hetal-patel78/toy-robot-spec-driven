@@ -8,7 +8,7 @@
 
 ## Summary
 
-This spec builds the two components that turn spec 001's robot rules into a console application: the **Runner** (runs one session over a reader and two writers) and **Program** (the thin entry point). It also plans the Runner whole-flow tests in memory (level 2 of [DEC-31][dec-31]) and the console end-to-end tests of the built application (level 3). It owns [FR-08][fr-08], [FR-11][fr-11] to [FR-17][fr-17], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05] and [NFR-06][nfr-06].
+This spec builds the two components that turn spec 001's robot rules into a console application: the **Runner** (runs one session over a reader and two writers) and **Program** (the thin entry point). It also plans the Runner whole-flow tests in memory (level 2 of [DEC-31][dec-31]) and the console end-to-end tests of the built application (level 3). It owns [FR-08][fr-08], [FR-11][fr-11] to [FR-18][fr-18], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05] and [NFR-06][nfr-06].
 
 Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 - `Runner(TextReader input, TextWriter output, TextWriter error, RobotOperator robotOperator, bool interactive)` with one method, `Run()`, which follows page 6's five steps for each line: prompt (interactive), read, remove a byte-order mark from the first line, echo (redirected), parse and dispatch. It creates its own CommandParser and never touches `Console`.

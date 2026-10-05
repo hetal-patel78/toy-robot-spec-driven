@@ -196,6 +196,7 @@ Found by the developer on Windows: menu choice 4 printed the whole help and then
 - [x] T049 [US1] In `run.sh` (LF, executable) and `run.cmd` (CRLF) ([MN-01][mn-01]; [DEC-04][dec-04], [DEC-41][dec-41]): choice 4 opens the help menu of [MN-01][mn-01]; topics 1 to 5 run the application with `--help` and no console input and write the lines from the one starting with the topic's heading to the line before the next blank line; 6 writes all of it; 0 goes back; any other choice writes `Not a choice: <choice>`; the end of the input ends `run.sh`, and three empty choices end `run.cmd`, as in the other menus. `run.cmd` numbers the lines with `findstr /n "^"`, so blank lines are kept, and writes each through a `for` variable, so `<` in the help stays text. The CI-08 commands now pass, and so do CI-01 to CI-09 run locally.
 - [x] T050 [US3] README ("Run it": choice 4 opens a help menu) and `docs/testing-by-hand.md` (the menu, the help) ([NFR-09][nfr-09]; [DEC-37][dec-37], [DEC-41][dec-41]).
 - [x] T051 Run `dotnet build ToyRobot.sln` (0 warnings) and `dotnet test ToyRobot.sln`; run by hand `./run.sh`, then `4`, each topic 1 to 6, `z`, `0`, `0`, with and without `NO_COLOR` ([NFR-08][nfr-08]; [DEC-31][dec-31]).
+- [x] T052 [US1] Final review fixes (developer request 2026-10-06; [MN-01][mn-01], [CI-08][ci-08]; [DEC-41][dec-41]): in `run.cmd` a menu choice is only compared and shown with delayed expansion, so typed `&`, `"` or line feeds can no longer run as cmd syntax or stop the script (anything other than 0 to 8 is "Not a choice"); `del` of the build log is silenced, so a locked log file cannot put its path on console output (stdout); in `run.sh` the help topics remove a carriage return at the end of a line (Git Bash); [CI-08][ci-08] on Linux and macOS runs `/bin/bash ./run.sh`, so macOS checks bash 3.2. Checked by hand on Windows: `x & echo INJECTED`, `a"b`, LF-only input, help topic 1 in Git Bash; all tests pass.
 
 ---
 
@@ -218,7 +219,9 @@ Found by the developer on Windows: menu choice 4 printed the whole help and then
 | US2 sc. 3: line endings, executable `run.sh` | [CI-06][ci-06] (line endings, test first T013a, then T003; mode, test first T019a, then T022; review T026); [CI-01][ci-01] runs `./run.sh` directly | T013a, T003, T019a, T022, T026, T025 |
 | US3 sc. 1, 2: README works word for word; badge and link | README check | T029 to T032 |
 | US4 sc. 1: `net8.0` and `RollForward` = `LatestMajor` | [BS-01][bs-01]; review | T033, T034 |
-| [TD-01][td-01], [TD-02][td-02]: six pairs present, byte-order mark kept | [TD-02][td-02]; spec 002 [E2E-01][e2e-01] | T004, T011 |
+| [TD-01][td-01], [TD-02][td-02]: seven pairs present, byte-order mark kept | [TD-02][td-02]; spec 002 [E2E-01][e2e-01] | T004, T011 |
+| [CI-07][ci-07]: progress lines on console messages (stderr) | [CI-07][ci-07] | T038 |
+| [MN-01][mn-01], [SC-008][sc-008]: the menu, the test-data menu, the help menu and a wrong choice | [CI-08][ci-08] | T041 to T043, T048, T049, T052 |
 
 ## Dependencies & execution order
 
@@ -316,3 +319,4 @@ US1 example:
 [td-01]: spec.md#td-01
 [td-02]: spec.md#td-02
 [ci-09]: spec.md#ci-09
+[sc-008]: spec.md#sc-008

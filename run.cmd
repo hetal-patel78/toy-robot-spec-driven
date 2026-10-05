@@ -22,7 +22,7 @@ set "log=%TEMP%\toyrobot-build-%RANDOM%%RANDOM%.log"
 dotnet build "%~dp0src\ToyRobot\ToyRobot.csproj" -c Release --nologo < NUL > "%log%" 2>&1
 set "rc=%ERRORLEVEL%"
 if not "%rc%"=="0" goto :buildfailed
-del "%log%"
+del "%log%" >nul 2>&1
 set "app=%~dp0src\ToyRobot\bin\Release\net8.0\ToyRobot.exe"
 
 rem 3. Arguments: none, --help, or one existing file.
@@ -61,7 +61,7 @@ exit /b %ERRORLEVEL%
 
 :buildfailed
 type "%log%" 1>&2
-del "%log%"
+del "%log%" >nul 2>&1
 exit /b %rc%
 
 :howtorun
@@ -115,7 +115,7 @@ if "%choice%"=="1" goto :typed
 if "%choice%"=="2" goto :files
 if "%choice%"=="3" goto :tests
 if "%choice%"=="4" goto :showhelp
-echo Not a choice: %choice%
+if not "%choice%"=="?" echo Not a choice: %choice%
 goto :menu
 
 :files
@@ -144,14 +144,25 @@ if "%choice%"=="5" call :file exit-mid-file & goto :files
 if "%choice%"=="6" call :file empty & goto :files
 if "%choice%"=="7" call :file long-session & goto :files
 if "%choice%"=="8" goto :all
-echo Not a choice: %choice%
+if not "%choice%"=="?" echo Not a choice: %choice%
 goto :files
 
 :choose
 rem Reads one choice. An empty line, or the end of redirected input, shows the menu again; three in a row end the menu.
+rem What was typed is only compared and shown with delayed expansion, so no character in it can act as cmd syntax;
+rem anything other than one of the digits 0 to 8 is reported here as not a choice and becomes "?".
 set "choice="
 set /p "choice=Choose: "
-if defined choice (set "empties=0" & exit /b 0)
+if not defined choice goto :chooseempty
+set "empties=0"
+setlocal EnableDelayedExpansion
+set "safe=?"
+for %%v in (0 1 2 3 4 5 6 7 8) do if "!choice!"=="%%v" set "safe=%%v"
+if "!safe!"=="?" echo(Not a choice: !choice!
+endlocal & set "choice=%safe%"
+exit /b 0
+
+:chooseempty
 set /a empties+=1
 if %empties% GEQ 3 set "endmenu=1"
 exit /b 0
@@ -203,7 +214,7 @@ if "%choice%"=="3" call :helptopic "COMMANDS" & goto :showhelp
 if "%choice%"=="4" call :helptopic "RULES" & goto :showhelp
 if "%choice%"=="5" call :helptopic "ENDING A SESSION" & goto :showhelp
 if "%choice%"=="6" call :helptopic "" & goto :showhelp
-echo Not a choice: %choice%
+if not "%choice%"=="?" echo Not a choice: %choice%
 goto :showhelp
 
 :helptopic

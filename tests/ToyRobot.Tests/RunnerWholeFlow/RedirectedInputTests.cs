@@ -51,7 +51,7 @@ public class RedirectedInputTests
     [Fact]
     public void Echo_removes_whitespace_of_any_kind_from_both_ends_only()
     {
-        var (stdout, stderr) = Run(Lines("  \tPLACE 0 , 0 , NORTH ", " HELLO there\t", " \t ", "REPORT"));
+        var (stdout, stderr) = Run(Lines("  \tPLACE 0 , 0 , NORTH\u00A0", "\u00A0HELLO there\t", " \t\u00A0", "REPORT"));
 
         Assert.Equal(Lines("Output:", "0,0,NORTH"), stdout);
         Assert.Equal(

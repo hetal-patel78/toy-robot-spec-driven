@@ -358,7 +358,7 @@ public class RobotRulesScenarioTests
     [Fact]
     public void US4_5_Tabs_and_non_breaking_spaces_count_as_whitespace()
     {
-        var driver = Run("\tplace 0, 0\t,north ", "REPORT");
+        var driver = Run("\tplace\u00A00,\u00A00\t,north\u00A0", "REPORT");
 
         Assert.Equal(new[] { "0,0,NORTH" }, driver.Positions);
         Assert.Empty(driver.Warnings);

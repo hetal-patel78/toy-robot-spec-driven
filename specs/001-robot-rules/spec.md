@@ -13,7 +13,7 @@
 - **Source of truth**: `docs/design-analysis/design-decisions.md` (DEC-nn), then the solution design in `docs/solution-design/` (pages 2, 3, 5, 6, 7.1 to 7.5 and 10). Where this spec and those documents differ, those documents win ([DEC-36][dec-36]).
 - **Owned by this spec**: [FR-01][fr-01], [FR-02][fr-02], [FR-03][fr-03], [FR-04][fr-04], [FR-05][fr-05], [FR-06][fr-06], [FR-07][fr-07], [FR-09][fr-09], [FR-10][fr-10] and [NFR-07][nfr-07]; the solution and project skeleton.
 - **Components specified here** (names and members exactly as on page 6): Table, Direction, RobotState, Robot, `IRobotCommand` with `PlaceCommand`, `MoveCommand`, `LeftCommand`, `RightCommand` and `ReportCommand`, `IRobotOperator`, RobotOperator and CommandParser.
-- **Referred to, owned elsewhere** (not restated here): Runner and Program, and [FR-08][fr-08], [FR-11][fr-11] to [FR-17][fr-17], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05], [NFR-06][nfr-06] (spec 002-console-session); [NFR-02][nfr-02], [NFR-03][nfr-03], [NFR-08][nfr-08], [NFR-09][nfr-09] (spec 003-delivery).
+- **Referred to, owned elsewhere** (not restated here): Runner and Program, and [FR-08][fr-08], [FR-11][fr-11] to [FR-18][fr-18], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05], [NFR-06][nfr-06] (spec 002-console-session); [NFR-02][nfr-02], [NFR-03][nfr-03], [NFR-08][nfr-08], [NFR-09][nfr-09] (spec 003-delivery).
 
 ## Clarifications
 
@@ -845,3 +845,4 @@ All of these are covered by the scenarios above or follow directly from the rule
 [ut-02]: #ut-02
 [ut-03]: #ut-03
 [ut-04]: #ut-04
+[fr-18]: ../../docs/solution-design/02-functional-requirements.md#fr-18

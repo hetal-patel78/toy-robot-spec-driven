@@ -148,6 +148,7 @@ help_topic() {
   local line inside=0
   printf '\n'
   while IFS= read -r line; do
+    line=${line%$'\r'}
     if [ -z "$1" ]; then
       printf '%s\n' "$line"
     elif [ "$inside" -eq 1 ]; then

@@ -66,7 +66,7 @@ public class CommandParserTests
     // ---- User Story 4 (FR-09, FR-10, FR-10a; DEC-06 to DEC-10, DEC-20, DEC-22) ----
 
     private const string Tab = "\t";
-    private const string Nbsp = " ";
+    private const string Nbsp = "\u00A0";
 
     public static TheoryData<string, string> FailureRows => new()
     {
@@ -150,7 +150,7 @@ public class CommandParserTests
     [InlineData("PLACE     0,0,NORTH", 0, 0, "NORTH")]
     [InlineData("place 0 , 0 , north", 0, 0, "NORTH")]
     [InlineData("PLACE 01,+1,EAST", 1, 1, "EAST")]
-    [InlineData("\tplace 0, 0\t,north ", 0, 0, "NORTH")]
+    [InlineData("\tplace\u00A00,\u00A00\t,north\u00A0", 0, 0, "NORTH")]
     [InlineData("PLACE\t1,2,EAST", 1, 2, "EAST")]
     [InlineData("Place 1,1,East", 1, 1, "EAST")]
     public void Parse_reads_valid_PLACE_lines_with_any_whitespace_and_case(string line, int x, int y, string facingName)

@@ -386,7 +386,7 @@ jobs:
         shell: bash
         run: |
           rc=0
-          printf '2\n1\n8\nx\n0\n4\n3\n6\nz\n0\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          printf '2\n1\n8\nx\n0\n4\n3\n6\nz\n0\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 /bin/bash ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
           echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
 
       - name: CI-08 Menu check

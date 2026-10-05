@@ -9,7 +9,7 @@ In the order a line meets them. Full descriptions are on page [6](06-components.
 | Name | Meaning |
 |---|---|
 | **[Program](06-components.md#program)** | The entry point. Checks the arguments (shows the help text for `--help`, the how-to-run message for any other argument), chooses the input reader, creates the Table, RobotOperator and the Runner, starts the Runner and returns the exit code. A last safeguard turns an unexpected exception into one error line and exit code 2 ([DEC-26][dec-26], [DEC-32][dec-32]). |
-| **[Runner](06-components.md#runner)** | Runs the session: reads each line, shows the prompt or the echo, passes the line to the CommandParser and the command object to RobotOperator, and writes every result and warning. The only component that writes text ([DEC-26][dec-26]). |
+| **[Runner](06-components.md#runner)** | Runs the session: reads each line, shows the prompt or the echo, passes the line to the CommandParser and the command object to RobotOperator, and writes every result and warning. The only component that writes during a session; Program writes only the help text, the how-to-run message and the error line ([DEC-26][dec-26]). |
 | **[CommandParser](06-components.md#commandparser)** | Turns one line into a command object, EXIT, or a failure with its reason. Checks the format only, never the table ([DEC-28][dec-28]). |
 | **[IRobotCommand](06-components.md#command-classes)** | The small interface every command class implements: `Name`, `NeedsRobotOnTable` and `Execute` ([DEC-27][dec-27]). |
 | **[PlaceCommand, MoveCommand, LeftCommand, RightCommand, ReportCommand](06-components.md#command-classes)** | The command classes, one per robot command. Each holds only its own logic and its own warning text ([DEC-27][dec-27]). |
@@ -68,7 +68,8 @@ In alphabetical order.
 | **Release build** | The optimised build of the application, which the run scripts use (page [5](05-high-level-design.md#folder-layout-and-the-built-application)). |
 | **Replace** | The only way the robot changes: a new RobotState takes the place of the old one, after the Table has checked it ([DEC-13][dec-13]). |
 | **RollForward** | A project setting that lets the application, built for .NET 8, run on a newer installed .NET version ([DEC-37][dec-37]). |
-| **Run scripts** | `run.cmd` (Windows) and `run.sh` (Linux, macOS): check .NET, build, and start the application, optionally with a file ([DEC-37][dec-37]). |
+| **Run scripts** | `run.cmd` (Windows) and `run.sh` (Linux, macOS): check .NET and build; then show the [menu](#menu) (no file, console input from a keyboard), read redirected console input, show the help (`--help`) or run the commands in a file ([DEC-37][dec-37], [DEC-41][dec-41]). |
+| **Menu**<a id="menu"></a> | What the run scripts show when started with no file at a keyboard: 1 type commands, 2 the test-data menu (each file with PASS or FAIL against its expected output), 3 the automated tests, 4 the help menu of topics, 0 quit. The environment variable `TOYROBOT_MENU` shows it with redirected input (CI uses this); `NO_COLOR` turns its colours off ([DEC-41][dec-41]). |
 | **Runner whole-flow test** | A test that runs the whole application in memory, from the Runner inward (Runner, CommandParser, RobotOperator, the command classes and Table, some through Program's `Run` method), without the console. Lives in the folder `tests/ToyRobot.Tests/RunnerWholeFlow/` ([DEC-31][dec-31]). |
 | **SOLID** | Five principles of object-oriented design. Those used here: each class has one job (single responsibility); new behaviour is added with new classes (open/closed); parts depend on small interfaces ([DEC-34][dec-34]). |
 | **Spec Kit** | GitHub's tool for spec-driven development. The next step after this document: constitution, specification, plan and tasks ([DEC-36][dec-36]). |
@@ -110,3 +111,4 @@ Back to the [solution design overview](README.md).
 [dec-34]: ../design-analysis/design-decisions.md#dec-34-readable-code-solid
 [dec-36]: ../design-analysis/design-decisions.md#dec-36-development-approach-design-first-then-spec-driven-with-github-spec-kit
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts

@@ -27,7 +27,7 @@ Questions about how to write this document, raised with the outline and answered
 | # | Question | Answer |
 |---|---|---|
 | A | The run scripts' messages are not worded in any decision. Should page 3 fix their wording? | No. The run scripts are a non-functional requirement checked by their exit codes and console output (stdout); the message wording is not fixed ([NFR-08][nfr-08], [DEC-37][dec-37]). |
-| B | Where do the folder layout and the test framework go, as no decision names them? | The layout on page [5](05-high-level-design.md#folder-layout-and-the-built-application): `src/ToyRobot/`, `tests/ToyRobot.Tests/`, `tests/ToyRobot.ConsoleEndToEndTests/` and `testdata/`; the tests use xUnit. |
+| B | Where do the folder layout and the test framework go, as no decision names them? | The layout on page [5](05-high-level-design.md#folder-layout-and-the-built-application): `src/ToyRobot/`, `tests/ToyRobot.Tests/`, `tests/ToyRobot.ConsoleEndToEndTests/` and `testdata/`; the tests use xUnit. Decisions added later now fix the folders: [DEC-40][dec-40] the source folders inside `src/ToyRobot/`, and [DEC-31][dec-31] the test levels and their folders; xUnit and the build path are still this document's choice. |
 | C | The brief says pages 1–4 name no technology. May they name the chosen platform? | Yes: pages 1–4 may name C#, .NET 8, a console application, Windows, Linux and macOS, and CI on all three, but no design details such as component names. |
 
 The full history of these and every other instruction is in the [design-phase prompt log](../design-analysis/prompts-design-phase.md).
@@ -43,3 +43,5 @@ Back to the [solution design overview](README.md).
 [dec-23]: ../design-analysis/design-decisions.md#dec-23-output-channels
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
 [nfr-08]: 03-non-functional-requirements.md#nfr-08
+[dec-40]: ../design-analysis/design-decisions.md#dec-40-source-folders
+[dec-31]: ../design-analysis/design-decisions.md#dec-31-testing

@@ -27,7 +27,7 @@ Links each requirement to the decisions it comes from, the components that imple
 | [FR-09](02-functional-requirements.md) Any letter case; whitespace ignored | [DEC-07][dec-07], [DEC-08][dec-08] | CommandParser, Runner (echo) | ✓ | ✓ | |
 | [FR-10](02-functional-requirements.md) Bad lines ignored with one warning | [DEC-06][dec-06], [DEC-08][dec-08], [DEC-09][dec-09], [DEC-20][dec-20], [DEC-22][dec-22] | CommandParser, Runner | ✓ | ✓ | |
 | [FR-11](02-functional-requirements.md) Byte-order mark ignored | [DEC-20][dec-20] | Program (UTF-8 reader), Runner (first line) | | ✓ | ✓ |
-| [FR-12](02-functional-requirements.md) Console output (stdout) carries only the REPORT result | [DEC-23][dec-23] | Runner, Program | | ✓ | ✓ |
+| [FR-12](02-functional-requirements.md) Console output (stdout) carries only the REPORT result, or the help text | [DEC-23][dec-23] | Runner, Program | | ✓ | ✓ |
 | [FR-13](02-functional-requirements.md) Prompt when typing, none when redirected | [DEC-24][dec-24] | Runner, Program (decides `interactive`) | | ✓ | |
 | [FR-14](02-functional-requirements.md) Echo of each line when redirected | [DEC-25][dec-25] | Runner | | ✓ | |
 | [FR-15](02-functional-requirements.md) EXIT ends the session | [DEC-10][dec-10] | CommandParser, Runner, Program | ✓ | ✓ | ✓ |
@@ -54,7 +54,7 @@ These are mostly proved by how the tests run, or by a review, rather than by one
 | [NFR-05](03-non-functional-requirements.md) Testable without the console | [DEC-03][dec-03], [DEC-29][dec-29], [DEC-31][dec-31] | Runner (given its input and outputs), Table (size in the constructor) | Runner whole-flow tests, including a 2 x 2 table |
 | [NFR-06](03-non-functional-requirements.md) Tested at three levels | [DEC-31][dec-31] | `ToyRobot.Tests`, `ToyRobot.ConsoleEndToEndTests` | CI runs all three levels; the test list is compared with [DEC-31][dec-31] |
 | [NFR-07](03-non-functional-requirements.md) Readable code (SOLID) | [DEC-34][dec-34], [DEC-40][dec-40] | All components | Code review against page [6](06-components.md) |
-| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`, with the menu | CI runs each system's script with a challenge example and with `--help`; the error cases are checked by their exit codes |
+| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`, with the menu | CI runs each system's script with a challenge example, with `--help`, and its menu with `TOYROBOT_MENU` set; the error cases are checked by their exit codes |
 | [NFR-09](03-non-functional-requirements.md) Short README | [DEC-37][dec-37] | The README | Following the README word for word on a fresh copy, in cmd, PowerShell and bash |
 
 ---

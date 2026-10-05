@@ -379,9 +379,9 @@ public class RobotRulesAsConsoleTextTests
     public void US4_5_Tabs_and_non_breaking_spaces_count_as_whitespace()
     {
         Expect(
-            Text("\tplace 0, 0\t,north ", "REPORT"),
+            Text("\tplace\u00A00,\u00A00\t,north\u00A0", "REPORT"),
             Text("Output:", "0,0,NORTH"),
-            Text("> place 0, 0\t,north", "> REPORT"));
+            Text("> place\u00A00,\u00A00\t,north", "> REPORT"));
     }
 
     [Fact]

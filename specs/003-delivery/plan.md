@@ -6,7 +6,7 @@
 
 ## Summary
 
-This spec delivers what lets a reviewer run, check and trust the application on any system: the run scripts `run.cmd` and `run.sh` ([NFR-08][nfr-08]), the six test-data pairs in `testdata/` including the three challenge examples ([TD-01][td-01]), the GitHub Actions workflow that builds and tests on `windows-latest`, `ubuntu-latest` and `macos-latest` and checks the scripts there ([NFR-02][nfr-02], [CI-01][ci-01] to [CI-06][ci-06]), `.gitattributes` ([NFR-02a][nfr-02a]), the README ([NFR-09][nfr-09]), and two tests in the console end-to-end test project: [TD-02][td-02] (the test data is all there) and [BS-01][bs-01] (the project file targets .NET 8 and rolls forward, [NFR-03][nfr-03]). It writes no application code: Program, Runner and every other component on page 6 come from specs 001 and 002 and are only started, through the built application, by the scripts and CI.
+This spec delivers what lets a reviewer run, check and trust the application on any system: the run scripts `run.cmd` and `run.sh` ([NFR-08][nfr-08]), the seven test-data pairs in `testdata/` including the three challenge examples ([TD-01][td-01]), the GitHub Actions workflow that builds and tests on `windows-latest`, `ubuntu-latest` and `macos-latest` and checks the scripts there ([NFR-02][nfr-02], [CI-01][ci-01] to [CI-09][ci-09]), `.gitattributes` ([NFR-02a][nfr-02a]), the README ([NFR-09][nfr-09]), and two tests in the console end-to-end test project: [TD-02][td-02] (the test data is all there) and [BS-01][bs-01] (the project file targets .NET 8 and rolls forward, [NFR-03][nfr-03]). It writes no application code: Program, Runner and every other component on page 6 come from specs 001 and 002 and are only started, through the built application, by the scripts and CI.
 
 Technical approach (research.md): each script captures the output of its .NET check and of a `Release` build of `src/ToyRobot/ToyRobot.csproj`, shows it only if the build fails, then starts the built application at the page 5 path with the file (if any) redirected to its console input (stdin). CI runs every script path, including the error paths, with exit-code and line-by-line console output (stdout) checks, on all three systems.
 
@@ -26,7 +26,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 
 **Performance Goals**: none set by the sources
 
-**Constraints**: console output (stdout) carries only the application's REPORT result ([DEC-23][dec-23]): the scripts write their own messages (progress lines, errors) and any build output (only when the build fails) to console messages (stderr) and nothing to console output (stdout); exit codes exactly as [NFR-08][nfr-08]; no PowerShell script, no other tool or library ([DEC-37][dec-37], [DEC-39][dec-39]); nothing is deleted (brief rule 12)
+**Constraints**: console output (stdout) carries only the application's REPORT result ([DEC-23][dec-23]): the scripts write their own messages (progress lines, errors) and any build output (only when the build fails) to console messages (stderr) and nothing of their own to console output (stdout), except the menu's lines ([MN-01][mn-01], added later); exit codes exactly as [NFR-08][nfr-08]; no PowerShell script, no other tool or library ([DEC-37][dec-37], [DEC-39][dec-39]); nothing is deleted (brief rule 12)
 
 **Scale/Scope**: 2 scripts, 12 test-data files, 1 workflow, 1 `.gitattributes`, 1 `.gitignore` checked (created by spec 001, research [R-11][r-11]), 1 README changed in place, 1 test file in the console end-to-end project
 
@@ -41,7 +41,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 | III. Never Crash | The only argument the scripts pass to the application is `--help` ([DEC-04][dec-04]); every script error path has a defined message on stderr and exit code, and a CI check ([CI-02][ci-02], [CI-04][ci-04], [CI-05][ci-05]) | Pass |
 | IV. Cross-Platform | CI on `windows-latest`, `ubuntu-latest`, `macos-latest`; `.gitattributes`; `run.sh` executable; line-by-line comparison | Pass |
 | V. No Over-Engineering | Only standard checkout and SDK steps; no demo mode in the run scripts at first (the menu of [DEC-41][dec-41] was added later at the developer's request), no PowerShell script, no extra tool; scripts hold only what [DEC-37][dec-37] lists | Pass |
-| VI. Standard Output for REPORT Output Only | Scripts write nothing of their own to stdout; CI checks stdout is empty in every error case and equals the expected file otherwise | Pass |
+| VI. Standard Output for REPORT Output Only | Scripts write nothing of their own to stdout, except the menu's lines (MN-01, added later); CI checks stdout is empty in every error case and equals the expected file otherwise | Pass |
 
 Post-design re-check (after research.md, data-model.md, contracts/, quickstart.md): all six still pass. The `.gitignore` ([R-11][r-11], created by spec 001 and checked here) adds no behaviour; it keeps build output out of the repository.
 
@@ -122,3 +122,5 @@ No constitution violations. Nothing to justify.
 [td-01]: spec.md#td-01
 [td-02]: spec.md#td-02
 [dec-04]: ../../docs/design-analysis/design-decisions.md#dec-04-standard-input-only
+[ci-09]: spec.md#ci-09
+[mn-01]: spec.md#mn-01

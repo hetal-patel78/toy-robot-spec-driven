@@ -5,7 +5,7 @@
 A C# .NET 8 console application for the classic "Toy Robot" coding challenge, built to learn spec-driven development with GitHub Spec Kit and Claude Code: a robot moving on a 5 x 5 table, driven by `PLACE`, `MOVE`, `LEFT`, `RIGHT` and `REPORT` commands.
 
 ## Status
-**Finished.** The application, the run scripts, the tests and the CI workflow are in place. The developer followed this README word for word on a fresh clone on Windows, in cmd and PowerShell, and ran typed sessions by hand (5 October 2026); the bash commands are run through the run scripts in CI on Linux and macOS.
+**Finished.** The application, the run scripts, the tests and the CI workflow are in place. The developer followed this README word for word on a fresh clone on Windows, in cmd and PowerShell, and ran typed sessions by hand (5 October 2026), then tried the menu by hand at a keyboard. Every command and output in this README was run again on Windows on 6 October 2026, after the menu and `--help` were added; the bash commands are run through the run scripts in CI on Linux and macOS.
 
 ## Requirements
 - A .NET SDK, version 8 or later: <https://dotnet.microsoft.com/download>. The app also runs where only a later major version of .NET is installed.
@@ -40,9 +40,9 @@ Commands piped or redirected into the script (`run < commands.txt` in cmd) are r
 
 To show the help (how to start the app, the table, each command and its rules, and how to end a session) without the menu: `run --help` (cmd), `.\run.cmd --help` (PowerShell) or `./run.sh --help` (bash, zsh), or the app itself with `--help`.
 
-While they work, the scripts show what they are doing on the console (checking .NET, building, then running); only the application's REPORT output goes to console output (stdout).
+While they work, the scripts show what they are doing on the console (checking .NET, building, then running); when commands run, only the application's REPORT output goes to console output (stdout) (the help text and the menu's own lines are console output too).
 
-When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/testing-by-hand.md](docs/testing-by-hand.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
+When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/testing-by-hand.md](docs/testing-by-hand.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, a session blocked at the edge, the test-data files, and start-up checks (help, wrong arguments, exit codes).
 
 ## Run the test data
 Copy and run; each prints the console output (stdout) shown. Or start `run` and choose 2. The first three are the challenge examples; what each file shows is under [Test data](#test-data).
@@ -121,7 +121,7 @@ The solution is tested on all three systems through the [CI workflow](https://gi
 | `long-session` | one long session mixing every kind of line: commands before PLACE, PLACE off the table, MOVE blocked at two corners, bad and blank lines, lower case and spaces, a full turn and four REPORTs |
 
 ## How this would evolve
-Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-38][dec-38], [DEC-39][dec-39] in the design decisions). A new command, such as BACK, is a new class plus one line in the parser; nothing else changes ([DEC-27][dec-27]).
+Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-39][dec-39] in the design decisions): more robots would change only the CommandParser and RobotOperator ([DEC-38][dec-38]); the table size is already a constructor parameter ([DEC-03][dec-03]); obstacles would be one more check before the robot's state is replaced, next to the Table check ([DEC-13][dec-13]). A new command, such as BACK, is a new class in `Commands/` plus a few lines in the parser and a line in the help text; no existing command class changes ([DEC-27][dec-27], [DEC-04][dec-04]).
 
 ## How it was built
 The developer's brainstorm, the design analysis ([design-decisions.md](docs/design-analysis/design-decisions.md)) and the solution design ([docs/solution-design/](docs/solution-design/README.md)) came first. The GitHub Spec Kit specification (constitution, specs, plans and tasks) and the code were then generated from them with Claude Code and GitHub Spec Kit. The result is checked by tests at three levels (unit, Runner whole-flow and console end-to-end) and by CI on Windows, Linux and macOS. The prompts are in the [design-phase log](docs/design-analysis/prompts-design-phase.md) and the [implementation-phase log](docs/design-analysis/prompts-implementation-phase.md); the Spec Kit brief and inputs are in [docs/spec-kit/](docs/spec-kit/), and the decisions taken while writing the specification and code, with all check, test and CI results, are in the [Spec Kit run report](docs/spec-kit/implementation-run-report.md). Every decision taken in the run is listed there and was confirmed by the developer. Resources consulted: the challenge statement and the GitHub Spec Kit documentation; Claude Code, .NET and xUnit were used from existing experience.
@@ -146,3 +146,6 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 [dec-27]: docs/design-analysis/design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-38]: docs/design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: docs/design-analysis/design-decisions.md#dec-39-not-included
+[dec-03]: docs/design-analysis/design-decisions.md#dec-03-table-size-is-a-constructor-parameter
+[dec-04]: docs/design-analysis/design-decisions.md#dec-04-standard-input-only
+[dec-13]: docs/design-analysis/design-decisions.md#dec-13-state-is-replaced-never-changed-in-place

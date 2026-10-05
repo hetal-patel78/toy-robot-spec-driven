@@ -59,7 +59,7 @@ For the other inputs in a row, the quote holds that line instead. The warning qu
 
 | Requirement | Acceptance criterion | Decisions |
 |---|---|---|
-| **FR-12**<br><a id="fr-12"></a>Console output (stdout) must carry only the REPORT result (`Output:` and the position), or the help text when started with `--help` ([FR-18][fr-18]). Warnings, the prompt, the echo and the how-to-run message must go to console messages (stderr). | **Given** the [FR-07][fr-07] input in `commands.txt`.<br>**When** run in cmd, bash or zsh as `ToyRobot < commands.txt > results.txt`.<br>**Then** `results.txt` holds exactly:<br>`Output:`<br>`0,0,NORTH`<br>and the screen shows only the console messages (stderr) of FR-07. | [DEC-23][dec-23] |
+| **FR-12**<br><a id="fr-12"></a>Console output (stdout) must carry only the REPORT result (`Output:` and the position), or the help text when started with `--help` ([FR-18][fr-18]). Warnings, the prompt, the echo, the how-to-run message and the error line of an unexpected problem ([NFR-01][nfr-01]) must go to console messages (stderr). | **Given** the [FR-07][fr-07] input in `commands.txt`.<br>**When** run in cmd, bash or zsh as `ToyRobot < commands.txt > results.txt`.<br>**Then** `results.txt` holds exactly:<br>`Output:`<br>`0,0,NORTH`<br>and the screen shows only the console messages (stderr) of FR-07. | [DEC-23][dec-23] |
 | **FR-13**<br><a id="fr-13"></a>When a person is typing, the prompt `> ` must be written to console messages (stderr) before each line is read, and typed lines must not be echoed. With redirected input there is no prompt. | **Given** a person is typing.<br>**When** they type `MOVE`, then `EXIT`, pressing Enter after each.<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr)** (`⏎` marks a line break):<br>`> Warning: MOVE ignored - robot is not on the table⏎> ` | [DEC-24][dec-24] |
 | **FR-14**<br><a id="fr-14"></a>With redirected input, every line read must be echoed to console messages (stderr), before it is processed, as `> ` and the line without whitespace at either end. This includes bad lines, blank lines and EXIT; lines after EXIT are not read, so they are not echoed. | **When** the lines are: `MOVE` with spaces before and after it, an empty line, `EXIT`, `REPORT`.<br>**Then console output (stdout):** (empty)<br>**Console messages (stderr):**<br>`> MOVE`<br>`Warning: MOVE ignored - robot is not on the table`<br>`> ` (`>` and a space)<br>`Warning: blank line ignored`<br>`> EXIT` | [DEC-25][dec-25] |
 
@@ -74,7 +74,7 @@ For the other inputs in a row, the quote holds that line instead. The warning qu
 
 ### Help text
 
-The exact help text of [FR-18][fr-18], from [DEC-04][dec-04]. It is plain ASCII. It repeats the rules of [FR-01][fr-01] to [FR-07][fr-07], [FR-15][fr-15] and [FR-16][fr-16]; if one of them changes, the help text changes with it.
+The exact help text of [FR-18][fr-18], from [DEC-04][dec-04]. It is plain ASCII. It repeats the rules of [FR-01][fr-01] to [FR-10][fr-10], [FR-15][fr-15] and [FR-16][fr-16], and how to start the run scripts ([NFR-08][nfr-08]); if one of them changes, the help text changes with it.
 
 ```text
 Toy Robot Simulator - help
@@ -155,3 +155,7 @@ Back to the [solution design overview](README.md).
 [fr-15]: #fr-15
 [fr-16]: #fr-16
 [fr-18]: #fr-18
+[nfr-01]: 03-non-functional-requirements.md#nfr-01
+[nfr-08]: 03-non-functional-requirements.md#nfr-08
+[fr-08]: #fr-08
+[fr-09]: #fr-09

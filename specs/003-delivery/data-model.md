@@ -22,10 +22,12 @@ Steps, in this order; each failing step ends the script:
 |---|---|---|---|---|
 | 1 | .NET SDK check (`dotnet --list-sdks`, major version 8 or more) | nothing shown | where to get the .NET SDK | 1 |
 | 2 | Build `src/ToyRobot/ToyRobot.csproj`, `Release`, output captured, no console input | nothing shown | the captured build output | the build's |
-| 3a | No argument | start the application with the script's console input | — | — |
+| 3a | No argument, console input from a keyboard (or `TOYROBOT_MENU` set) | show the menu (MN-01) | — | 0 when the menu ends |
+| 3a1 | No argument, console input redirected or piped | start the application with the script's console input | — | — |
 | 3a2 | One argument, exactly `--help` | start the application with `--help` and no console input | — | — |
 | 3b | One argument, an existing file | start the application with the file on its console input (stdin) | — | — |
 | 3c | One argument, missing or a folder | — | file not found | 1 |
+| 3c1 | One argument containing `*` or `?` (`run.cmd`) | — | the file name must not contain `*` or `?` | 1 |
 | 3d | More than one argument | — | the script's how-to-run message | 1 |
 | 4 | Application ends | — | — | the application's |
 

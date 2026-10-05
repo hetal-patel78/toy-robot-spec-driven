@@ -2,7 +2,7 @@
 
 This document explains how the Toy Robot Simulator is built. It turns the design decisions into requirements, components, flows and tests.
 
-- **What the system does** is decided in [design-decisions.md][dd] ([DEC-01][dec-01] to [DEC-39][dec-39]). That file is the source of truth. This document adds detail on **how**; it never changes a decision. Where the two differ, design-decisions.md wins ([DEC-36][dec-36]).
+- **What the system does** is decided in [design-decisions.md][dd] ([DEC-01][dec-01] to [DEC-41][dec-41]). That file is the source of truth. This document adds detail on **how**; it never changes a decision. Where the two differ, design-decisions.md wins ([DEC-36][dec-36]).
 - **Order of precedence:** design-decisions.md, then this document, then the Spec Kit files written from it ([DEC-36][dec-36]).
 - Every requirement, component and design point cites the decision it comes from, for example [DEC-15][dec-15].
 
@@ -32,7 +32,7 @@ Numbered [FR-01][fr-01] onwards. They cover the table, how a line is read, each 
 Numbered [NFR-01][nfr-01] onwards: never crash, works on Windows, Linux and macOS, runs on .NET 8 or a later version, readable code, testable without the console, and run scripts for each system. Each one says how it is checked.
 
 **4. [Scope](04-scope.md)**
-In scope: one robot, a 5 x 5 table, the six commands (the five robot commands and EXIT), typed and redirected input, warnings and run scripts. Out of scope, each with its reason: more than one robot, a configurable table size, a file-name argument, direction abbreviations, a menu, any other command (such as BACK) and obstacles, a log file, and heavy frameworks ([DEC-38][dec-38], [DEC-39][dec-39]).
+In scope: one robot, a 5 x 5 table, the six commands (the five robot commands and EXIT), typed and redirected input, warnings, `--help`, and run scripts with a menu for trying the application. Out of scope, each with its reason: more than one robot, a configurable table size, a file-name argument, direction abbreviations, a menu for choosing robot commands, any other command (such as BACK) and obstacles, a log file, and heavy frameworks ([DEC-38][dec-38], [DEC-39][dec-39]).
 
 ### How it is built (pages 5–9)
 
@@ -108,3 +108,4 @@ A1 records how a reviewer is assumed to check the solution. Its default keeps th
 [dec-39]: ../design-analysis/design-decisions.md#dec-39-not-included
 [fr-01]: 02-functional-requirements.md#fr-01
 [nfr-01]: 03-non-functional-requirements.md#nfr-01
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts
