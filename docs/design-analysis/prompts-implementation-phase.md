@@ -481,3 +481,8 @@ Outcome: `run --help` and menu choice 4 write no "Running the application" line,
 > yes go ahead and add it to the constitution too
 
 Outcome: constitution 1.1.1 (PATCH): the help text is in the list of strings that tests compare and that are copied character for character. Then `/speckit-implement` for spec 002 tasks T060 to T065 and spec 003 tasks T044 to T047.
+
+<a id="p210"></a>**P210.** On pushing the `--help` change to `main`:
+> U can direct push once ci is green
+
+Outcome: once CI run 50 was green on Windows, Linux and macOS (the Windows job waited about 30 minutes for a GitHub runner), `main` was fast-forwarded to the working branch and pushed.
