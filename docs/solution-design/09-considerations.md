@@ -120,11 +120,11 @@ Started with no file and with console input from a keyboard (`run`, `.\run.cmd` 
 | Choice | What it does |
 |---|---|
 | 1 | A typed session; the menu comes back after EXIT or the end of input |
-| 2 | The test-data menu: 1 to 7 run one file and show its console output (stdout), then PASS or FAIL against the expected file; 8 runs all seven, then says how many passed; 0 goes back |
+| 2 | The test-data menu: 1 to 7 run one file and show its commands with any warnings, its console output (stdout), then PASS or FAIL against the expected file; 8 runs all seven, then shows a summary and how many passed; 0 goes back |
 | 3 | All automated tests (`dotnet test`) |
 | 0 | Quit |
 
-The .NET check and the build run once, before the menu. Console input that is redirected or piped is still read as commands, without the menu: `run.sh` asks whether its console input is a terminal; `run.cmd` uses `timeout`, which fails at once when console input is redirected. The environment variable `TOYROBOT_MENU` shows the menu even then, so CI can test it. PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `run.sh` uses colours only when it writes to a terminal; `run.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does.
+The .NET check and the build run once, before the menu. Console input that is redirected or piped is still read as commands, without the menu: `run.sh` asks whether its console input is a terminal; `run.cmd` uses `timeout`, which fails at once when console input is redirected. The environment variable `TOYROBOT_MENU` shows the menu even then, so CI can test it. Each file run shows a heading with the file name; "Commands" with the lines read (the app's echo, without its `> `) and any warnings among them; "Output" with the app's console output (stdout); on a FAIL because the output differs, "Expected" with the expected file; then the PASS or FAIL line. Choice 8 ends with a summary of the seven PASS or FAIL lines. PASS is shown in green, FAIL in red, warnings in yellow, the app's console output in bright cyan and headings in bold, so the result stands out. `run.sh` uses colours only when it writes to a terminal; `run.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does.
 
 ## Extensibility
 

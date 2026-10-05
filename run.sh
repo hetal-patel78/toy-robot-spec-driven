@@ -49,23 +49,52 @@ app="$dir/src/ToyRobot/bin/Release/net8.0/ToyRobot"
 # Its own lines are console output (stdout).
 files=(challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session)
 
-# $1 is a test-data name: run testdata/$1.txt, show its console output (stdout) and compare it with testdata/$1.expected.txt.
+# Shows the lines of file $1, indented, in colour $2; "(nothing)" when it has none.
+show_lines() {
+  if [ ! -s "$1" ]; then
+    printf '   (nothing)\n'
+    return
+  fi
+  local line
+  while IFS= read -r line || [ -n "$line" ]; do
+    printf '   %s%s%s\n' "$2" "${line%$'\r'}" "$reset"
+  done < "$1"
+}
+
+# $1 is a test-data name: run testdata/$1.txt and show its commands with any warnings (console messages, stderr),
+# its output (console output, stdout) and PASS or FAIL against testdata/$1.expected.txt.
 run_file() {
-  printf '\n%s=== %s ===%s\n' "$bold" "$1" "$reset"
-  "$app" < "$dir/testdata/$1.txt" > "$out"
+  local expected="$dir/testdata/$1.expected.txt" line
+  printf '\n%s---------------- %s ----------------%s\n' "$bold" "$1" "$reset"
+  "$app" < "$dir/testdata/$1.txt" > "$out" 2> "$err"
   local rc=$?
-  printf -- '--- console output (stdout):\n'
-  printf '%s' "$bright"
-  cat "$out"
-  printf '%s' "$reset"
-  if ! diff <(tr -d '\r' < "$out") <(tr -d '\r' < "$dir/testdata/$1.expected.txt") > /dev/null; then
-    printf '%sFAIL: %s - console output differs from testdata/%s.expected.txt%s\n' "$red" "$1" "$1" "$reset"
+  printf '%sCommands%s  (testdata/%s.txt)\n' "$bold" "$reset" "$1"
+  # The app echoes each line it reads as "> line"; that prefix is dropped. Other lines are warnings, shown in yellow.
+  if [ ! -s "$err" ]; then
+    printf '   (none)\n'
+  fi
+  while IFS= read -r line || [ -n "$line" ]; do
+    line=${line%$'\r'}
+    case "$line" in
+      '> '*) printf '   %s\n' "${line#> }" ;;
+      *) printf '   %s%s%s\n' "$yellow" "$line" "$reset" ;;
+    esac
+  done < "$err"
+  printf '%sOutput%s\n' "$bold" "$reset"
+  show_lines "$out" "$bright"
+  if ! diff <(tr -d '\r' < "$out") <(tr -d '\r' < "$expected") > /dev/null; then
+    printf '%sExpected%s\n' "$bold" "$reset"
+    show_lines "$expected" ''
+    printf '%sFAIL: %s - output differs from testdata/%s.expected.txt%s\n' "$red" "$1" "$1" "$reset"
+    summary+=("FAIL: $1 - output differs")
     failed=$((failed + 1))
   elif [ "$rc" -ne 0 ]; then
     printf '%sFAIL: %s - exit code %d, expected 0%s\n' "$red" "$1" "$rc" "$reset"
+    summary+=("FAIL: $1 - exit code $rc")
     failed=$((failed + 1))
   else
-    printf '%sPASS: %s%s\n' "$green" "$1" "$reset"
+    printf '%sPASS: %s - matches testdata/%s.expected.txt%s\n' "$green" "$1" "$1" "$reset"
+    summary+=("PASS: $1")
   fi
 }
 
@@ -80,7 +109,7 @@ choose() {
 
 # The test-data menu; returns 1 when the menu ends, 0 to go back to the main menu.
 files_menu() {
-  local i f
+  local i f line
   while true; do
     printf '\n%sToy Robot - choose a test-data file%s (shows what the app prints, then PASS or FAIL against the expected output)\n\n' "$bold" "$reset"
     for i in "${!files[@]}"; do
@@ -94,8 +123,15 @@ files_menu() {
       [1-7]) run_file "${files[$((choice - 1))]}" ;;
       8)
         failed=0
+        summary=()
         for f in "${files[@]}"; do run_file "$f"; done
-        printf '\n'
+        printf '\n%sSummary%s\n' "$bold" "$reset"
+        for line in "${summary[@]}"; do
+          case "$line" in
+            PASS*) printf '   %s%s%s\n' "$green" "$line" "$reset" ;;
+            *) printf '   %s%s%s\n' "$red" "$line" "$reset" ;;
+          esac
+        done
         if [ "$failed" -eq 0 ]; then printf '%sAll 7 files PASS%s\n' "$green" "$reset"; else printf '%s%d of 7 files FAIL%s\n' "$red" "$failed" "$reset"; fi
         ;;
       '') ;;
@@ -106,13 +142,14 @@ files_menu() {
 
 menu() {
   out=$(mktemp) || exit 1
-  trap 'rm -f "$out"' EXIT
+  err=$(mktemp) || exit 1
+  trap 'rm -f "$out" "$err"' EXIT
   failed=0
-  # Colours: PASS green, FAIL red, the app's console output bright cyan; only when the menu writes to a terminal
-  # and NO_COLOR is not set, so saved or piped output stays plain.
-  green='' red='' bright='' bold='' reset=''
+  # Colours: PASS green, FAIL red, warnings yellow, the app's console output bright cyan, headings bold; only when the
+  # menu writes to a terminal and NO_COLOR is not set, so saved or piped output stays plain.
+  green='' red='' yellow='' bright='' bold='' reset=''
   if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
-    green=$'\e[92m' red=$'\e[91m' bright=$'\e[1;96m' bold=$'\e[1m' reset=$'\e[0m'
+    green=$'\e[92m' red=$'\e[91m' yellow=$'\e[93m' bright=$'\e[1;96m' bold=$'\e[1m' reset=$'\e[0m'
   fi
   while true; do
     printf '\n%sToy Robot - choose what to run%s\n\n' "$bold" "$reset"

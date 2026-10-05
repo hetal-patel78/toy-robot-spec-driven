@@ -406,3 +406,15 @@ Outcome: in `menu.cmd` and `menu.sh`, PASS lines are green, FAIL lines red and t
 The assistant pointed out that `run` with no file also reads redirected console input (`run < commands.txt`, checked by CI-03), so the menu should appear only when console input is a keyboard, and proposed keeping the automated tests as a third choice. The developer answered "ye go ahead and for this one u can remove" (the separate menu scripts).
 
 Outcome: [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts) is now "Menu in the run scripts": `run.cmd` and `run.sh` with no argument at a keyboard show a menu (1 type commands, 2 the test-data menu with the seven files and all seven, 3 the automated tests, 0 quit); redirected or piped console input is still read as commands. `run.sh` tests for a terminal; `run.cmd` uses `timeout /t 0`, which fails when console input is redirected; `TOYROBOT_MENU` shows the menu anyway, for CI-08. `menu.cmd` and `menu.sh` are removed. DEC-37, the solution design (pages 3, 4, 5, 9, 10), spec 003 (scenario 5, NFR-08 steps, MN-01, CI-06, CI-08, SC-007, SC-008, a new decision, T042), both contracts, the plan, research, the README and the testing-by-hand page say so. The application is unchanged.
+
+<a id="p198"></a>**P198.** On the menu of [P197](#p197):
+> why the warning not showing any color?
+
+The assistant explained that the menu colours only what passes through it: the app writes warnings to console messages (stderr) straight to the screen. It offered to save them in a test-data run and show warnings in yellow, keeping the application unchanged.
+
+<a id="p199"></a>**P199.** Then, with a pasted test-data run from the menu:
+> how can we make report look even better
+
+The assistant proposed a layout: a heading with the file name, "Commands" (the lines read without the echo's `> `, warnings in yellow among them), "Output" (bright cyan), "Expected" on a FAIL, the PASS or FAIL line with the expected file's name, and a summary after all seven; plain ASCII so older consoles show it. The developer answered "yes".
+
+Outcome: in `run.cmd` and `run.sh`, a test-data run in the menu now saves the app's console messages (stderr) apart and shows that layout; choice 8 ends with a summary. The `PASS: <name>` and `FAIL: <name> - <reason>` lines keep their start, so CI-08 is unchanged. DEC-41, solution design page 9, spec 003 (MN-01, T043), the run-script contract, the README and the testing-by-hand page say so. The application is unchanged.

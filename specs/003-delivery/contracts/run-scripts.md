@@ -56,12 +56,12 @@ Shown by `run` (cmd), `.\run.cmd` (PowerShell) or `./run.sh` (bash, zsh) with no
 
 | Test-data menu choice | Runs | Writes (console output, stdout) |
 |---|---|---|
-| 1 to 7 | the app with `testdata/<name>.txt` as its console input | "=== <name> ===", "--- console output (stdout):", the app's console output, then "PASS: <name>" or "FAIL: <name> - <reason>" |
-| 8 | choices 1 to 7 in order | as above for each, then "All 7 files PASS" or "<n> of 7 files FAIL" |
+| 1 to 7 | the app with `testdata/<name>.txt` as its console input; its console output (stdout) and console messages (stderr) saved apart | "---------------- <name> ----------------"; "Commands  (testdata/<name>.txt)" and each line of the app's console messages, indented, the echo without "> " (or "(none)"); "Output" and the app's console output, indented (or "(nothing)"); then "PASS: <name> - matches testdata/<name>.expected.txt", or "Expected" with the expected file and "FAIL: <name> - output differs from testdata/<name>.expected.txt", or "FAIL: <name> - exit code <n>, expected 0" (`run.cmd` writes the paths with `\`) |
+| 8 | choices 1 to 7 in order | as above for each, then "Summary" with one "PASS: <name>" or "FAIL: <name> - <reason>" line per file, then "All 7 files PASS" or "<n> of 7 files FAIL" |
 | 0 | — | the main menu again |
 | anything else | — | "Not a choice: <choice>" |
 
-Colours: "PASS" lines green, "FAIL" lines red, the app's console output bright cyan; `run.sh` only when writing to a terminal; none when `NO_COLOR` is set. The script's own messages stay on console messages (stderr). The end of the input ends `run.sh` (exit code 0); `run.cmd` ends after three empty choices in a row (exit code 0).
+Colours: "PASS" lines green, "FAIL" lines red, warning lines yellow, the app's console output bright cyan, headings bold; `run.sh` only when writing to a terminal; none when `NO_COLOR` is set. The script's own messages stay on console messages (stderr). The end of the input ends `run.sh` (exit code 0); `run.cmd` ends after three empty choices in a row (exit code 0).
 
 [ci-01]: ../spec.md#ci-01
 [ci-08]: ../spec.md#ci-08

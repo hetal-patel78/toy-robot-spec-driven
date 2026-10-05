@@ -77,13 +77,16 @@ exit /b 0
 rem The menu (DEC-41): type commands, run a test-data file (its console output compared with the expected file), or run the tests.
 :menustart
 set "out=%TEMP%\toyrobot-menu-%RANDOM%%RANDOM%.out"
+set "err=%out%.err"
+set "sum=%out%.sum"
 set "empties=0"
-rem Colours (Windows 10 or later): PASS green, FAIL red, the app's console output bright cyan. Set NO_COLOR to turn them off.
-set "green=" & set "red=" & set "bright=" & set "bold=" & set "reset="
+rem Colours (Windows 10 or later): PASS green, FAIL red, warnings yellow, the app's console output bright cyan, headings bold.
+rem Set NO_COLOR to turn them off.
+set "green=" & set "red=" & set "yellow=" & set "bright=" & set "bold=" & set "reset="
 if defined NO_COLOR goto :menu
 rem The escape character comes from a prompt that shows it ($E); there is no other built-in way to get it in cmd.
 for /f "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do set "ESC=%%b"
-set "green=%ESC%[92m" & set "red=%ESC%[91m" & set "bright=%ESC%[1;96m" & set "bold=%ESC%[1m" & set "reset=%ESC%[0m"
+set "green=%ESC%[92m" & set "red=%ESC%[91m" & set "yellow=%ESC%[93m" & set "bright=%ESC%[1;96m" & set "bold=%ESC%[1m" & set "reset=%ESC%[0m"
 
 :menu
 echo.
@@ -144,8 +147,12 @@ exit /b 0
 
 :all
 set "failed=0"
+if exist "%sum%" del "%sum%"
 for %%f in (challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session) do call :file %%f
 echo.
+echo %bold%Summary%reset%
+for /f "usebackq tokens=1,*" %%a in ("%sum%") do if "%%a"=="PASS:" (echo    %green%%%a %%b%reset%) else (echo    %red%%%a %%b%reset%)
+del "%sum%"
 if "%failed%"=="0" (echo %green%All 7 files PASS%reset%) else (echo %red%%failed% of 7 files FAIL%reset%)
 goto :files
 
@@ -163,34 +170,55 @@ dotnet test "%~dp0ToyRobot.sln" --nologo < nul
 goto :menu
 
 :quit
-if exist "%out%" del "%out%"
+for %%t in ("%out%" "%err%" "%sum%") do if exist %%t del %%t
 exit /b 0
 
 :file
-rem %1 is a test-data name: run testdata\%1.txt, show its console output (stdout) and compare it with testdata\%1.expected.txt.
+rem %1 is a test-data name: run testdata\%1.txt and show its commands with any warnings (console messages, stderr),
+rem its output (console output, stdout) and PASS or FAIL against testdata\%1.expected.txt.
 echo.
-echo %bold%=== %1 ===%reset%
-rem The file run gets its console input from the file only, so it cannot read the menu's own input.
-"%app%" < "%~dp0testdata\%1.txt" > "%out%"
+echo %bold%---------------- %1 ----------------%reset%
+rem The run gets its console input from the file only, so it cannot read the menu's own input.
+"%app%" < "%~dp0testdata\%1.txt" > "%out%" 2> "%err%"
 set "rc=%ERRORLEVEL%"
-echo --- console output (stdout):
-rem The colour is switched on before the app's output and off after it, so the file itself stays plain.
-if defined bright echo|set /p "=%bright%"
-type "%out%"
-if defined reset echo|set /p "=%reset%"
+echo %bold%Commands%reset%  (testdata\%1.txt)
+rem The app echoes each line it reads as "> line"; that prefix is dropped. Other lines are warnings, shown in yellow.
+set "lines="
+for /f "usebackq tokens=1,* delims= " %%a in ("%err%") do (
+  set "lines=1"
+  if "%%a"==">" (echo(   %%b) else (echo(   %yellow%%%a %%b%reset%)
+)
+if not defined lines echo    (none)
+echo %bold%Output%reset%
+call :show "%out%" "%bright%"
 rem fc reads console input too, so it gets < nul.
 fc "%out%" "%~dp0testdata\%1.expected.txt" < nul > nul 2>&1
 if errorlevel 1 goto :filediff
 if not "%rc%"=="0" goto :filecode
-echo %green%PASS: %1%reset%
+echo %green%PASS: %1 - matches testdata\%1.expected.txt%reset%
+>>"%sum%" echo PASS: %1
 exit /b 0
 
 :filediff
-echo %red%FAIL: %1 - console output differs from testdata\%1.expected.txt%reset%
+echo %bold%Expected%reset%
+call :show "%~dp0testdata\%1.expected.txt" ""
+echo %red%FAIL: %1 - output differs from testdata\%1.expected.txt%reset%
+>>"%sum%" echo FAIL: %1 - output differs
 set /a failed+=1
 exit /b 0
 
 :filecode
 echo %red%FAIL: %1 - exit code %rc%, expected 0%reset%
+>>"%sum%" echo FAIL: %1 - exit code %rc%
 set /a failed+=1
+exit /b 0
+
+:show
+rem Shows the lines of file %1, indented, in colour %2; "(nothing)" when it has none.
+set "lines="
+for /f "usebackq delims=" %%l in (%1) do (
+  set "lines=1"
+  echo(   %~2%%l%reset%
+)
+if not defined lines echo    (nothing)
 exit /b 0

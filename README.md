@@ -31,7 +31,7 @@ Toy Robot - choose what to run
 ```
 
 - **1** starts a typed session; when it ends, the menu comes back.
-- **2** lists the seven test-data files, and all seven together. Each shows what the app prints, then PASS (green) or FAIL (red) against its expected output.
+- **2** lists the seven test-data files, and all seven together. Each shows the commands read (warnings in yellow), what the app printed, and PASS (green) or FAIL (red) against its expected output; a FAIL also shows the expected output. All seven together end with a summary.
 - **3** runs all the automated tests.
 
 Commands piped or redirected into the script (`run < commands.txt` in cmd) are read as commands, without the menu.
