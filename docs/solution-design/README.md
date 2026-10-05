@@ -46,7 +46,7 @@ One section for each component: Program, Runner, CommandParser, the command clas
 A flowchart of how one line is processed, and sequence diagrams for seven scenarios: valid PLACE then REPORT, MOVE blocked at the edge, commands before a valid PLACE, a bad line, PLACE off the table, EXIT, and start-up.
 
 **8. [Alternative solutions](08-alternative-solutions.md)**
-Five alternatives that were considered and not chosen, each on its own page with a sequence diagram, pros, cons, the decision it relates to and the trade-off the chosen design accepts. Three are other overall designs (everything in one class, commands as data with all rules in RobotOperator, an event-based design with a pure reducer); two are other choices within the chosen design (each command given the Robot and the Table, and a separate validator before the parser).
+Four alternatives that were considered and not chosen, each on its own page with a sequence diagram, pros, cons, the decision it relates to and the trade-off the chosen design accepts. Three are other overall designs (everything in one class, commands as data with all rules in RobotOperator, an event-based design with a pure reducer); one is another choice within the chosen design (a separate validator before the parser).
 
 **9. [Considerations](09-considerations.md)**
 Error handling, the two output streams and exit codes, the testing strategy (three levels, with a test-flow diagram, using xUnit), cross-platform checks with GitHub Actions, the run scripts, and how a new command, more robots, a configurable table or a log file could be added later (none is built). Also assumptions, the trade-offs the design accepts, risks and known limitations.

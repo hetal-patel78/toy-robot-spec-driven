@@ -1,4 +1,4 @@
-# 8.5 A separate validator before the parser
+# 8.4 A separate validator before the parser
 
 What the application would look like if one step checked each line and a second step built the command object, and why it was not built that way.
 

@@ -1,6 +1,6 @@
 # 8. Alternative solutions
 
-Five other ways the application could have been built, and why each was not chosen.
+Four other ways the application could have been built, and why each was not chosen.
 
 ## The chosen design, in one line
 
@@ -27,14 +27,13 @@ Each of these would replace the whole chosen design with a different way of buil
 | 8.2 | [Commands as data, with all rules in RobotOperator](08-alternative-solutions/02-commands-as-data.md) | Commands hold only data; one class holds every rule for every command | One class with many jobs that changes with every new command | [DEC-14][dec-14], [DEC-27][dec-27], [DEC-34][dec-34] |
 | 8.3 | [Event-based design with a pure reducer](08-alternative-solutions/03-event-based-reducer.md) | Each command becomes an event; a function works out the new state | More parts than a five-command application needs | [DEC-12][dec-12], [DEC-13][dec-13], [DEC-27][dec-27], [DEC-36][dec-36] |
 
-## Other choices within the chosen design
+## Another choice within the chosen design
 
-Each of these keeps the chosen components and changes how one part of them works.
+This keeps the chosen components and changes how one part of them works.
 
 | # | Alternative | In one line | Why not, in short | Decisions |
 |---|---|---|---|---|
-| 8.4 | [Each command is given the Robot and the Table](08-alternative-solutions/04-commands-get-the-robot.md) | The textbook Command pattern: each command checks every rule and changes the Robot itself | Repeats the shared rules in each command and hands the robot out | [DEC-13][dec-13], [DEC-14][dec-14], [DEC-27][dec-27], [DEC-34][dec-34] |
-| 8.5 | [A separate validator before the parser](08-alternative-solutions/05-separate-validator.md) | One step checks the line, a second step builds the command object | The line is read twice by two sets of rules that must agree | [DEC-08][dec-08], [DEC-26][dec-26], [DEC-28][dec-28] |
+| 8.4 | [A separate validator before the parser](08-alternative-solutions/04-separate-validator.md) | One step checks the line, a second step builds the command object | The line is read twice by two sets of rules that must agree | [DEC-08][dec-08], [DEC-26][dec-26], [DEC-28][dec-28] |
 
 ---
 
