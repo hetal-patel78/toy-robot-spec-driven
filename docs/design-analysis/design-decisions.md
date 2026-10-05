@@ -408,11 +408,11 @@ Order of precedence: this file, then the solution design, then the Spec Kit file
 - **Run scripts** at the repository root, so a reviewer can start the app without reading the build details: `run.cmd` (Windows: cmd or PowerShell) and `run.sh` (Linux and macOS). Each one:
   - checks that a .NET SDK, version 8 or later, is installed; if not, prints where to get it and exits with code 1;
   - builds the app quietly; if the build fails, shows the build output and exits with its exit code;
-  - with no argument, starts the app for typing; with one argument, checks the file exists (if not, prints a message and exits with code 1) and feeds it through standard input, so the app itself still takes no arguments ([DEC-04][dec-04]); with more than one argument, prints the script's how-to-run message and exits with code 1;
+  - with no argument, shows the menu of [DEC-41][dec-41] when console input is a keyboard, and otherwise starts the app with the redirected or piped console input; with one argument, checks the file exists (if not, prints a message and exits with code 1) and feeds it through standard input, so the app itself still takes no arguments ([DEC-04][dec-04]); with more than one argument, prints the script's how-to-run message and exits with code 1;
   - exits with the app's exit code;
   - writes its own messages (and any build output) to standard error, so standard output carries only the app's REPORT output.
   
-  The run scripts have no demo mode of their own; the menu scripts of [DEC-41][dec-41], added later, list the test-data files, a typed session and the tests by number. CI runs each script on its own system ([DEC-33][dec-33]).
+  The run scripts first had no demo mode; the menu of [DEC-41][dec-41], added later, offers a typed session, the test-data files and the tests by number. CI runs each script on its own system ([DEC-33][dec-33]).
   - Reason: native on all three systems with no extra installs and no PowerShell execution-policy prompt; the scripts also hide the PowerShell `<` limitation ([DEC-04][dec-04]). A single PowerShell script would need PowerShell 7 on Linux and macOS and can be blocked on Windows.
 - **The README**, at the repository root and kept short (about one screen): what it is; requirements; how to run it with the scripts, in the form for each shell (`run commands.txt` in cmd, `.\run.cmd commands.txt` in PowerShell, `./run.sh commands.txt` in bash or zsh); ready-to-copy commands that run the three challenge examples from the test data with their expected output; the build, test and direct run commands, including the PowerShell form ([DEC-04][dec-04]); the output format with an example ([DEC-21][dec-21], [DEC-23][dec-23]); a few key assumptions with a link to this file; a note that the tests run on Windows, Linux and macOS via GitHub Actions ([DEC-33][dec-33]); "How this would evolve" ([DEC-39][dec-39]); and where the development-process material and AI artefacts are. It is written in stages: a skeleton when the solution is created (with the parts already fixed by these decisions), real commands added as each one works, the CI badge and test-data list once all tests pass, and a final check that follows the README word for word on a fresh clone, in cmd, PowerShell and bash.
 - A description of the development process and decisions.
@@ -435,20 +435,19 @@ The application's files are grouped by job in `src/ToyRobot/`, and the namespace
 A new command is a new class in `Commands/` plus one line in the CommandParser ([DEC-27][dec-27]). The tests follow the same rule: their folders and namespaces match (`Unit/`, `RunnerWholeFlow/` and the console end-to-end project).
 - Reason: a reader, or a tool continuing the work, finds each component by its job, and the folders show the parts of the design ([DEC-26][dec-26], [DEC-34][dec-34]). Added after the implementation at the developer's request; until then all the files were directly in `src/ToyRobot/`.
 
-### DEC-41 Menu scripts
+### DEC-41 Menu in the run scripts
 
-Two menu scripts at the repository root, next to the run scripts: `menu.cmd` (Windows: cmd or PowerShell) and `menu.sh` (Linux and macOS). Each lists what can be run and runs the choice by number:
+Started with no file and with console input from a keyboard, the run scripts of [DEC-37][dec-37] (`run.cmd`, `run.sh`) show a menu and run the choice by number:
 
 | Choice | What it does |
 |---|---|
-| 1 to 7 | Runs one test-data file through the run script, shows its console output (stdout), and says PASS when it matches the file's expected output and the exit code is 0, otherwise FAIL with the reason |
-| 8 | Does 1 to 7 one after another, then says how many passed |
-| 9 | Starts a typed session through the run script; after EXIT or the end of input, the menu comes back |
-| 10 | Runs all automated tests (`dotnet test`) |
+| 1 | Starts a typed session; after EXIT or the end of input, the menu comes back |
+| 2 | Shows the test-data menu: 1 to 7 run one test-data file, show its console output (stdout), and say PASS when it matches the file's expected output and the exit code is 0, otherwise FAIL with the reason; 8 does 1 to 7 one after another, then says how many passed; 0 goes back |
+| 3 | Runs all automated tests (`dotnet test`) |
 | 0 | Quits |
 
-Any other choice shows `Not a choice: <what was typed>` and the menu again. Every run goes through the run script, so the .NET check, the build and the messages are those of [DEC-37][dec-37]. A file run and its comparison read no console input, so they cannot take the menu's own input. The end of the input ends `menu.sh`; `menu.cmd` cannot tell an empty line from the end of the input, so three empty choices in a row end it. The menu's own lines are console output (stdout); it adds no message of its own to console messages (stderr). PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `menu.sh` uses colours only when it writes to a terminal; `menu.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does.
-- Reason: a reviewer can try every test-data file, a typed session and the automated tests without typing file names or commands. Added after the implementation at the developer's request; until then the run scripts had no separate demo mode ([DEC-37][dec-37]).
+Any other choice shows `Not a choice: <what was typed>` and the same menu again. Console input that is redirected or piped is still read as commands, without the menu: `run.sh` asks whether its console input is a terminal; `run.cmd` uses `timeout`, which fails at once when console input is redirected. The environment variable `TOYROBOT_MENU` shows the menu even then, so CI can test it. The .NET check and the build run once, before the menu. A file run and its comparison read no console input other than the file, so they cannot take the menu's own input. The end of the input ends the menu in `run.sh`; `run.cmd` cannot tell an empty line from the end of the input, so three empty choices in a row end it. The menu's own lines are console output (stdout). PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `run.sh` uses colours only when it writes to a terminal; `run.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does.
+- Reason: running the app is the natural first step, so `run` is the one command to start with; from it a reviewer can type commands, try every test-data file or run the automated tests without typing file names. Added after the implementation at the developer's request, first as two separate menu scripts (`menu.cmd`, `menu.sh`); then, also at the developer's request, moved into the run scripts and the separate scripts removed, so there is one command to start with.
 
 ---
 
@@ -513,4 +512,4 @@ Other assumptions, stated in the README: positions 0..4 with (0,0) at the SOUTH 
 [dec-27]: #dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-39]: #dec-39-not-included
 [dec-40]: #dec-40-source-folders
-[dec-41]: #dec-41-menu-scripts
+[dec-41]: #dec-41-menu-in-the-run-scripts

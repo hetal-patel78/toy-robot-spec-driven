@@ -40,7 +40,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 | II. Three Test Levels, Tests First | The three levels run in CI on all three systems; [TD-02][td-02] is written before the test data, the CI script checks before the scripts, the README check before the README; each phase ends with its tests passing | Pass |
 | III. Never Crash | The scripts never pass an argument to the application; every script error path has a defined message on stderr and exit code, and a CI check ([CI-02][ci-02], [CI-04][ci-04], [CI-05][ci-05]) | Pass |
 | IV. Cross-Platform | CI on `windows-latest`, `ubuntu-latest`, `macos-latest`; `.gitattributes`; `run.sh` executable; line-by-line comparison | Pass |
-| V. No Over-Engineering | Only standard checkout and SDK steps; no demo mode in the run scripts (the separate menu scripts of [DEC-41][dec-41] were added later at the developer's request), no PowerShell script, no extra tool; scripts hold only what [DEC-37][dec-37] lists | Pass |
+| V. No Over-Engineering | Only standard checkout and SDK steps; no demo mode in the run scripts at first (the menu of [DEC-41][dec-41] was added later at the developer's request), no PowerShell script, no extra tool; scripts hold only what [DEC-37][dec-37] lists | Pass |
 | VI. Standard Output for REPORT Output Only | Scripts write nothing of their own to stdout; CI checks stdout is empty in every error case and equals the expected file otherwise | Pass |
 
 Post-design re-check (after research.md, data-model.md, contracts/, quickstart.md): all six still pass. The `.gitignore` ([R-11][r-11], created by spec 001 and checked here) adds no behaviour; it keeps build output out of the repository.
@@ -81,10 +81,8 @@ toy-robot-spec-driven/
 │   └── empty.txt / .expected.txt
 ├── .github/workflows/ci.yml              this spec (NFR-02, CI-01 to CI-06)
 ├── ToyRobot.sln                          spec 001
-├── run.cmd                               this spec (NFR-08)
-├── run.sh                                this spec (NFR-08), executable
-├── menu.cmd                              this spec (MN-01, developer request 2026-10-05)
-├── menu.sh                               this spec (MN-01), executable
+├── run.cmd                               this spec (NFR-08; the menu: MN-01, developer request 2026-10-05)
+├── run.sh                                this spec (NFR-08; MN-01), executable
 ├── .gitattributes                        this spec (NFR-02a)
 ├── .gitignore                            created by spec 001 (SK skeleton); checked here (R-11)
 └── README.md                             this spec: the README (NFR-09), changed in place
@@ -110,7 +108,7 @@ No constitution violations. Nothing to justify.
 [ci-06]: spec.md#ci-06
 [dec-23]: ../../docs/design-analysis/design-decisions.md#dec-23-output-channels
 [dec-37]: ../../docs/design-analysis/design-decisions.md#dec-37-deliverables
-[dec-41]: ../../docs/design-analysis/design-decisions.md#dec-41-menu-scripts
+[dec-41]: ../../docs/design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts
 [dec-39]: ../../docs/design-analysis/design-decisions.md#dec-39-not-included
 [e2e-01]: ../002-console-session/spec.md#e2e-01
 [nfr-02]: spec.md#nfr-02

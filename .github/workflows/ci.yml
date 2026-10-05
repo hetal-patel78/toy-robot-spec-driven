@@ -57,7 +57,7 @@ jobs:
                 ;;
             esac
           done < <(git ls-files --eol)
-          for script in run.sh menu.sh; do
+          for script in run.sh; do
             mode=$(git ls-files -s "$script" | cut -c1-6)
             if [ "$mode" != "100755" ]; then
               echo "CI-06: $script has mode '$mode' in git, expected 100755"
@@ -373,8 +373,9 @@ jobs:
         shell: cmd
         run: |
           set NO_COLOR=1
-          (echo 1& echo 8& echo x& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
-          call menu.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
+          set TOYROBOT_MENU=1
+          (echo 2& echo 1& echo 8& echo x& echo 0& echo y& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
+          call run.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
           >"%RUNNER_TEMP%\out\ci08.code" echo %ERRORLEVEL%
           exit /b 0
 
@@ -383,7 +384,7 @@ jobs:
         shell: bash
         run: |
           rc=0
-          printf '1\n8\nx\n0\n' | NO_COLOR=1 ./menu.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          printf '2\n1\n8\nx\n0\ny\n0\n' | NO_COLOR=1 TOYROBOT_MENU=1 ./run.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
           echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
 
       - name: CI-08 Menu check
@@ -396,7 +397,7 @@ jobs:
             echo "CI-08: exit code '$code', expected 0"
             fail=1
           fi
-          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Not a choice: x'; do
+          for expected in 'PASS: challenge-example-1' 'All 7 files PASS' 'Not a choice: x' 'Not a choice: y'; do
             if ! tr -d '\r' < "$out/ci08.out" | grep -qF "$expected"; then
               echo "CI-08: console output (stdout) does not contain '$expected'"
               fail=1

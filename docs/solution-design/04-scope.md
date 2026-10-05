@@ -15,7 +15,7 @@ What this solution includes, and what it leaves out on purpose, with the reason 
 | A prompt when a person is typing, and an echo of each line when input is redirected | [DEC-24][dec-24], [DEC-25][dec-25] |
 | A how-to-run message for any argument, and exit codes 0 (normal end), 1 (wrong use) and 2 (unexpected problem, shown as one error line instead of a .NET stack trace) | [DEC-04][dec-04], [DEC-10][dec-10], [DEC-32][dec-32] |
 | Run scripts for Windows, Linux and macOS | [DEC-37][dec-37] |
-| Menu scripts for Windows, Linux and macOS that list the test-data files, a typed session and the automated tests, and run the choice by number | [DEC-41][dec-41] |
+| A menu in the run scripts (no file, console input from a keyboard) to type commands, run the test-data files or run the automated tests by number | [DEC-41][dec-41] |
 | Tests at three levels, run by CI (an automated build and test run) on Windows, Linux and macOS | [DEC-31][dec-31], [DEC-33][dec-33] |
 | The challenge deliverables: source code, test data, a short README, a description of the development process, and the AI prompts and artefacts | [DEC-37][dec-37] |
 
@@ -63,4 +63,4 @@ Back to the [solution design overview](README.md).
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-27]: ../design-analysis/design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-39]: ../design-analysis/design-decisions.md#dec-39-not-included
-[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-scripts
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts

@@ -101,10 +101,8 @@ toy-robot-spec-driven/
 ├── docs/                         challenge, design analysis, solution design
 ├── .github/workflows/            the CI workflow (page 9)
 ├── ToyRobot.sln                  the solution file that groups the three projects
-├── run.cmd                       run script for Windows (cmd and PowerShell)
-├── run.sh                        run script for Linux and macOS
-├── menu.cmd                      menu script for Windows: choose a test-data file, a typed session or the tests by number
-├── menu.sh                       menu script for Linux and macOS
+├── run.cmd                       run script for Windows (cmd and PowerShell); with no file, a menu (page 9)
+├── run.sh                        run script for Linux and macOS; with no file, a menu
 ├── .gitattributes                line-ending rules
 └── README.md                     the README
 ```

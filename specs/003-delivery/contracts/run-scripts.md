@@ -19,8 +19,8 @@ The file path is taken relative to the current folder. The script finds the appl
 | Case | Console output (stdout) | Console messages (stderr) | Exit code | Checked by |
 |---|---|---|---|---|
 | One existing file | the app's (only `Output:` and position lines) | the progress lines (SDK, build, "Running the application with commands from <file>"), then the app's (echo and warnings); no build output | the app's (0) | [CI-01][ci-01] (console output (stdout) and exit code), [CI-07][ci-07] (progress lines) |
-| No argument, typed | the app's | the progress lines (SDK, build, "Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter." (`run.cmd`) or "... end with EXIT or Ctrl+D." (`run.sh`)), then the app's (prompt `> `, warnings) | the app's (0) | real run by hand (brief step 10); prompt itself: spec 002 |
-| No argument, console input redirected | the app's | the first two progress lines and the no-argument "Running" line, then the app's (echo and warnings) | the app's (0) | [CI-03][ci-03] (console output (stdout) and exit code) |
+| No argument, console input from a keyboard | the menu's lines (below); after choice 1, the app's | the progress lines (SDK, build); after choice 1, "Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter." (`run.cmd`) or "... end with EXIT or Ctrl+D." (`run.sh`), then the app's (prompt `> `, warnings) | 0 | the menu: [CI-08][ci-08] (with `TOYROBOT_MENU`); the keyboard case: by hand; prompt itself: spec 002 |
+| No argument, console input redirected or piped (and `TOYROBOT_MENU` not set) | the app's; no menu | the first two progress lines and the no-argument "Running" line, then the app's (echo and warnings) | the app's (0) | [CI-03][ci-03] (console output (stdout) and exit code) |
 | One argument, missing path or a folder | (empty) | file-not-found message (wording not fixed) | 1 | [CI-02][ci-02] |
 | File name with `*` or `?` (`run.cmd`) | (empty) | message that the file name must not contain `*` or `?` (contains `must not contain * or ?`); no "Running" line. `run.sh` gives the file-not-found message instead (a quoted `*` or `?` is not a regular file) | 1 | [CI-02][ci-02] (Windows) |
 | More than one argument | (empty) | the script's how-to-run message (wording not fixed) | 1 | [CI-02][ci-02] |
@@ -38,30 +38,33 @@ Each script writes these lines to console messages (stderr), in this order, and 
 
 1. `"Checking for a .NET SDK, version 8 or later..."` (before the SDK check)
 2. `"Building the application (Release)..."` (before the build)
-3. after a successful build and the argument checks, just before the application starts: with a file, `"Running the application with commands from <file>"` (the argument as given, without quotes); with no argument, `"Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter."` (`run.cmd`) or `"Running the application: type commands, one per line; end with EXIT or Ctrl+D."` (`run.sh`)
+3. after a successful build and the argument checks, just before the application starts: with a file, `"Running the application with commands from <file>"` (the argument as given, without quotes); with no argument (at a keyboard: when menu choice 1 starts the typed session), `"Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter."` (`run.cmd`) or `"Running the application: type commands, one per line; end with EXIT or Ctrl+D."` (`run.sh`)
 
 Error cases (no SDK, failed build, how-to-run message, file not found) show the lines before the failure but never the "Running" line. Build output is shown only when the build fails. Console output (stdout) is unchanged.
 
-## Menu scripts (developer request, 2026-10-05; MN-01, CI-08)
+## Menu (developer request, 2026-10-05; MN-01, CI-08)
 
-| Shell | Start the menu |
-|---|---|
-| cmd | `menu` |
-| PowerShell | `.\menu.cmd` |
-| bash, zsh | `./menu.sh` |
+Shown by `run` (cmd), `.\run.cmd` (PowerShell) or `./run.sh` (bash, zsh) with no argument, when console input is a keyboard or `TOYROBOT_MENU` is set; after the .NET check and the build.
 
-| Choice | Runs | Writes (console output, stdout) |
+| Main menu choice | Runs | Writes (console output, stdout) |
 |---|---|---|
-| 1 to 7 | the run script with `testdata/<name>.txt`, no console input | "=== <name> ===", "--- console output (stdout):", the run's console output, then "PASS: <name>" or "FAIL: <name> - <reason>" |
-| 8 | choices 1 to 7 in order | as above for each, then "All 7 files PASS" or "<n> of 7 files FAIL" |
-| 9 | the run script with no argument | the typed session, then "Typed session ended." |
-| 10 | `dotnet test ToyRobot.sln --nologo`, no console input | the test results |
+| 1 | the app with the script's console input | the typed session, then "Typed session ended." |
+| 2 | the test-data menu | the test-data menu |
+| 3 | `dotnet test` on `ToyRobot.sln` with `--nologo`, no console input | the test results |
 | 0 | — | nothing; exit code 0 |
 | anything else | — | "Not a choice: <choice>" |
 
-Colours: "PASS" lines green, "FAIL" lines red, the run's console output bright cyan; `menu.sh` only when writing to a terminal; none when `NO_COLOR` is set. The run script's own messages stay on console messages (stderr). The end of the input ends `menu.sh` (exit code 0); `menu.cmd` ends after three empty choices in a row (exit code 0).
+| Test-data menu choice | Runs | Writes (console output, stdout) |
+|---|---|---|
+| 1 to 7 | the app with `testdata/<name>.txt` as its console input | "=== <name> ===", "--- console output (stdout):", the app's console output, then "PASS: <name>" or "FAIL: <name> - <reason>" |
+| 8 | choices 1 to 7 in order | as above for each, then "All 7 files PASS" or "<n> of 7 files FAIL" |
+| 0 | — | the main menu again |
+| anything else | — | "Not a choice: <choice>" |
+
+Colours: "PASS" lines green, "FAIL" lines red, the app's console output bright cyan; `run.sh` only when writing to a terminal; none when `NO_COLOR` is set. The script's own messages stay on console messages (stderr). The end of the input ends `run.sh` (exit code 0); `run.cmd` ends after three empty choices in a row (exit code 0).
 
 [ci-01]: ../spec.md#ci-01
+[ci-08]: ../spec.md#ci-08
 [ci-02]: ../spec.md#ci-02
 [ci-03]: ../spec.md#ci-03
 [ci-04]: ../spec.md#ci-04

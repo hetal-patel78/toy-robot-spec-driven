@@ -1,9 +1,10 @@
 @echo off
-setlocal DisableDelayedExpansion
+setlocal EnableExtensions DisableDelayedExpansion
 rem Builds the Toy Robot application and runs it (Windows cmd and PowerShell).
-rem   run.cmd              commands are typed (or read from redirected console input)
+rem   run.cmd              typed at a keyboard: shows the menu (DEC-41); redirected or piped console input: the commands are read from it
 rem   run.cmd commands.txt commands are read from the file
-rem Messages of this script (progress lines and errors) go to console messages (stderr); console output (stdout) is the application's.
+rem Messages of this script (progress lines and errors) go to console messages (stderr); console output (stdout) is the application's
+rem and the menu's own lines.
 
 rem 1. A .NET SDK, version 8 or later, must be installed.
 >&2 echo Checking for a .NET SDK, version 8 or later...
@@ -21,6 +22,7 @@ dotnet build "%~dp0src\ToyRobot\ToyRobot.csproj" -c Release --nologo < NUL > "%l
 set "rc=%ERRORLEVEL%"
 if not "%rc%"=="0" goto :buildfailed
 del "%log%"
+set "app=%~dp0src\ToyRobot\bin\Release\net8.0\ToyRobot.exe"
 
 rem 3. Arguments: none, or one existing file.
 if not "%~2"=="" goto :howtorun
@@ -33,12 +35,20 @@ if not exist "%~1" goto :notfound
 if exist "%~1\*" goto :notfound
 rem The file name is echoed through a for variable, which cmd does not parse again, so characters such as & in it stay text.
 for %%f in ("%~1") do >&2 echo Running the application with commands from %%~f
-"%~dp0src\ToyRobot\bin\Release\net8.0\ToyRobot.exe" < "%~1"
+"%app%" < "%~1"
 exit /b %ERRORLEVEL%
 
 :noargument
+rem Console input from a keyboard shows the menu. Redirected or piped console input is read as commands:
+rem timeout cannot wait on redirected input and fails at once. TOYROBOT_MENU shows the menu even then (CI-08 uses it).
+if defined TOYROBOT_MENU goto :menustart
+timeout /t 0 >nul 2>&1
+if errorlevel 1 goto :readinput
+goto :menustart
+
+:readinput
 >&2 echo Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter.
-"%~dp0src\ToyRobot\bin\Release\net8.0\ToyRobot.exe"
+"%app%"
 exit /b %ERRORLEVEL%
 
 :buildfailed
@@ -47,7 +57,7 @@ del "%log%"
 exit /b %rc%
 
 :howtorun
->&2 echo How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run.
+>&2 echo How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file for the menu. In PowerShell, use .\run.cmd instead of run.
 exit /b 1
 
 :wildcard
@@ -62,4 +72,125 @@ exit /b 1
 rem %1 is the first part of a line of "dotnet --list-sdks", for example 8 in "8.0.414 [...]".
 echo %1| findstr /r "^[0-9][0-9]*$" >nul || exit /b 0
 if %1 GEQ 8 set "sdkok=1"
+exit /b 0
+
+rem The menu (DEC-41): type commands, run a test-data file (its console output compared with the expected file), or run the tests.
+:menustart
+set "out=%TEMP%\toyrobot-menu-%RANDOM%%RANDOM%.out"
+set "empties=0"
+rem Colours (Windows 10 or later): PASS green, FAIL red, the app's console output bright cyan. Set NO_COLOR to turn them off.
+set "green=" & set "red=" & set "bright=" & set "bold=" & set "reset="
+if defined NO_COLOR goto :menu
+rem The escape character comes from a prompt that shows it ($E); there is no other built-in way to get it in cmd.
+for /f "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do set "ESC=%%b"
+set "green=%ESC%[92m" & set "red=%ESC%[91m" & set "bright=%ESC%[1;96m" & set "bold=%ESC%[1m" & set "reset=%ESC%[0m"
+
+:menu
+echo.
+echo %bold%Toy Robot - choose what to run%reset%
+echo.
+echo    1  Type commands yourself
+echo    2  Run a test-data file
+echo    3  Run the automated tests (dotnet test)
+echo    0  Quit
+echo.
+call :choose
+if defined endmenu goto :quit
+if "%choice%"=="" goto :menu
+if "%choice%"=="0" goto :quit
+if "%choice%"=="1" goto :typed
+if "%choice%"=="2" goto :files
+if "%choice%"=="3" goto :tests
+echo Not a choice: %choice%
+goto :menu
+
+:files
+echo.
+echo %bold%Toy Robot - choose a test-data file%reset% (shows what the app prints, then PASS or FAIL against the expected output)
+echo.
+echo    1  challenge-example-1
+echo    2  challenge-example-2
+echo    3  challenge-example-3
+echo    4  bom-challenge-example-1
+echo    5  exit-mid-file
+echo    6  empty
+echo    7  long-session
+echo    8  all seven files, one after another
+echo    0  back
+echo.
+call :choose
+if defined endmenu goto :quit
+if "%choice%"=="" goto :files
+if "%choice%"=="0" goto :menu
+if "%choice%"=="1" call :file challenge-example-1 & goto :files
+if "%choice%"=="2" call :file challenge-example-2 & goto :files
+if "%choice%"=="3" call :file challenge-example-3 & goto :files
+if "%choice%"=="4" call :file bom-challenge-example-1 & goto :files
+if "%choice%"=="5" call :file exit-mid-file & goto :files
+if "%choice%"=="6" call :file empty & goto :files
+if "%choice%"=="7" call :file long-session & goto :files
+if "%choice%"=="8" goto :all
+echo Not a choice: %choice%
+goto :files
+
+:choose
+rem Reads one choice. An empty line, or the end of redirected input, shows the menu again; three in a row end the menu.
+set "choice="
+set /p "choice=Choose: "
+if defined choice (set "empties=0" & exit /b 0)
+set /a empties+=1
+if %empties% GEQ 3 set "endmenu=1"
+exit /b 0
+
+:all
+set "failed=0"
+for %%f in (challenge-example-1 challenge-example-2 challenge-example-3 bom-challenge-example-1 exit-mid-file empty long-session) do call :file %%f
+echo.
+if "%failed%"=="0" (echo %green%All 7 files PASS%reset%) else (echo %red%%failed% of 7 files FAIL%reset%)
+goto :files
+
+:typed
+echo.
+>&2 echo Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter.
+"%app%"
+echo.
+echo Typed session ended.
+goto :menu
+
+:tests
+echo.
+dotnet test "%~dp0ToyRobot.sln" --nologo < nul
+goto :menu
+
+:quit
+if exist "%out%" del "%out%"
+exit /b 0
+
+:file
+rem %1 is a test-data name: run testdata\%1.txt, show its console output (stdout) and compare it with testdata\%1.expected.txt.
+echo.
+echo %bold%=== %1 ===%reset%
+rem The file run gets its console input from the file only, so it cannot read the menu's own input.
+"%app%" < "%~dp0testdata\%1.txt" > "%out%"
+set "rc=%ERRORLEVEL%"
+echo --- console output (stdout):
+rem The colour is switched on before the app's output and off after it, so the file itself stays plain.
+if defined bright echo|set /p "=%bright%"
+type "%out%"
+if defined reset echo|set /p "=%reset%"
+rem fc reads console input too, so it gets < nul.
+fc "%out%" "%~dp0testdata\%1.expected.txt" < nul > nul 2>&1
+if errorlevel 1 goto :filediff
+if not "%rc%"=="0" goto :filecode
+echo %green%PASS: %1%reset%
+exit /b 0
+
+:filediff
+echo %red%FAIL: %1 - console output differs from testdata\%1.expected.txt%reset%
+set /a failed+=1
+exit /b 0
+
+:filecode
+echo %red%FAIL: %1 - exit code %rc%, expected 0%reset%
+set /a failed+=1
 exit /b 0

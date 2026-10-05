@@ -11,22 +11,37 @@ A C# .NET 8 console application for the classic "Toy Robot" coding challenge, bu
 - A .NET SDK, version 8 or later: <https://dotnet.microsoft.com/download>. The app also runs where only a later major version of .NET is installed.
 
 ## Run it
-Run the commands from the repository root. The scripts build the app quietly and then run it.
+Run the commands from the repository root. The scripts check .NET, build the app quietly and then run it.
 
-The quickest way to try everything is the menu: `menu` (cmd), `.\menu.cmd` (PowerShell) or `./menu.sh` (bash, zsh). It lists the test-data files (each shown with PASS or FAIL against its expected output), a typed session and the automated tests; type a number and press Enter.
-
-| Shell | With a file of commands | Typing the commands |
+| Shell | Start | With a file of commands |
 |---|---|---|
-| cmd | `run commands.txt` | `run` |
-| PowerShell | `.\run.cmd commands.txt` | `.\run.cmd` |
-| bash, zsh (Linux, macOS) | `./run.sh commands.txt` | `./run.sh` |
+| cmd | `run` | `run commands.txt` |
+| PowerShell | `.\run.cmd` | `.\run.cmd commands.txt` |
+| bash, zsh (Linux, macOS) | `./run.sh` | `./run.sh commands.txt` |
+
+Started with no file, the script shows a menu; type a number and press Enter:
+
+```
+Toy Robot - choose what to run
+
+   1  Type commands yourself
+   2  Run a test-data file
+   3  Run the automated tests (dotnet test)
+   0  Quit
+```
+
+- **1** starts a typed session; when it ends, the menu comes back.
+- **2** lists the seven test-data files, and all seven together. Each shows what the app prints, then PASS (green) or FAIL (red) against its expected output.
+- **3** runs all the automated tests.
+
+Commands piped or redirected into the script (`run < commands.txt` in cmd) are read as commands, without the menu.
 
 While they work, the scripts show what they are doing on the console (checking .NET, building, then running); only the application's REPORT output goes to console output (stdout).
 
 When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/testing-by-hand.md](docs/testing-by-hand.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
 
 ## Run the test data
-Copy and run; each prints the console output (stdout) shown. The first three are the challenge examples; what each file shows is under [Test data](#test-data).
+Copy and run; each prints the console output (stdout) shown. Or start `run` and choose 2. The first three are the challenge examples; what each file shows is under [Test data](#test-data).
 
 | File | cmd | PowerShell | bash, zsh | Console output (stdout) |
 |---|---|---|---|---|
@@ -39,7 +54,7 @@ Copy and run; each prints the console output (stdout) shown. The first three are
 | long-session | `run testdata\long-session.txt` | `.\run.cmd testdata\long-session.txt` | `./run.sh testdata/long-session.txt` | four reports, each `Output:` then: `0,0,WEST`, `4,4,EAST`, `3,0,EAST`, `3,0,EAST` |
 
 ## Run the tests
-From the repository root, in any shell (cmd, PowerShell, bash, zsh). `dotnet test` builds the solution first.
+From the repository root, in any shell (cmd, PowerShell, bash, zsh). `dotnet test` builds the solution first. Or start `run` and choose 3.
 
 | What | Command | Expected |
 |---|---|---|

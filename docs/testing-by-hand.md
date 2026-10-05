@@ -3,17 +3,6 @@
 How to run the application by hand and what to expect. Every warning and output line on this page was produced by running the same commands through the built application.
 
 ## The menu
-The menu runs everything on this page by number, without typing file names. From the repository root:
-
-| Shell | Command |
-|---|---|
-| cmd | `menu` |
-| PowerShell | `.\menu.cmd` |
-| bash, zsh (Linux, macOS) | `./menu.sh` |
-
-Choices 1 to 7 run one test-data file and say PASS (green) or FAIL (red) against its expected output, with the app's output in bright cyan, 8 runs all seven, 9 starts a typed session (the menu comes back after `EXIT`), 10 runs all automated tests, and 0 quits.
-
-## Start a typed session
 Run a script from the repository root with no file name:
 
 | Shell | Command |
@@ -22,7 +11,10 @@ Run a script from the repository root with no file name:
 | PowerShell | `.\run.cmd` |
 | bash, zsh (Linux, macOS) | `./run.sh` |
 
-After the build the app shows a `> ` prompt. Type one command per line and press Enter; type only the command, not the `> `. The blocks of commands on this page can be copied and pasted into the session as they are. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
+After the build the script shows a menu; type a number and press Enter. 1 starts a typed session (the menu comes back after `EXIT`); 2 shows the test-data menu, where 1 to 7 run one test-data file and say PASS (green) or FAIL (red) against its expected output, with the app's output in bright cyan, 8 runs all seven and 0 goes back; 3 runs all automated tests; 0 quits.
+
+## Start a typed session
+Start the menu (above) and choose 1. The app shows a `> ` prompt. Type one command per line and press Enter; type only the command, not the `> `. The blocks of commands on this page can be copied and pasted into the session as they are. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
 
 ## Commands
 
@@ -301,7 +293,7 @@ How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and typ
 
 | Case | cmd (PowerShell: `.\run.cmd` instead of `run`) | bash, zsh | Console message (stderr) |
 |---|---|---|---|
-| Two files | `run testdata\challenge-example-1.txt testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-1.txt testdata/challenge-example-2.txt` | `How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run.` (bash: `How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file to type the commands.`) |
+| Two files | `run testdata\challenge-example-1.txt testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-1.txt testdata/challenge-example-2.txt` | `How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file for the menu. In PowerShell, use .\run.cmd instead of run.` (bash: `How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file for the menu.`) |
 | A file that does not exist | `run testdata\no-such-file.txt` | `./run.sh testdata/no-such-file.txt` | `File not found: "testdata\no-such-file.txt"` (bash: `File not found: testdata/no-such-file.txt`) |
 | A folder | `run testdata` | `./run.sh testdata` | `File not found: "testdata"` (bash: `File not found: testdata`) |
 | `*` or `?` in the name (cmd only) | `run testdata\challenge-example-1.*` | | `The file name must not contain * or ?: "testdata\challenge-example-1.*"` |

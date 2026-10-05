@@ -171,9 +171,10 @@ Rules for every cmd step below (GitHub's `shell: cmd` runs with delayed expansio
 
 ---
 
-## Phase 10: Menu scripts (developer request 2026-10-05)
+## Phase 10: Menu (developer request 2026-10-05)
 
 - [x] T041 [US1] Menu scripts ([MN-01][mn-01]; [NFR-08][nfr-08]; [DEC-41][dec-41]). Test first: add the CI steps "[CI-08][ci-08] Menu" for Windows (cmd, input from a file) and for Linux and macOS (bash, input piped), and the check step; add `menu.sh` to the mode check of [CI-06][ci-06]. Then write `menu.cmd` (CRLF) and `menu.sh` (LF, executable) at the repository root: each calls the run script by its own folder, gives a file run and the comparison no console input, and shows the list again after every choice except 0. Run by hand on Windows from cmd and PowerShell and in Git Bash: choices 1, 8, 9 (typed session), `x` and 0, and a copy with a changed expected file (FAIL). Colours (developer request 2026-10-05): PASS green, FAIL red, the run's console output bright cyan; `menu.sh` only on a terminal; none with `NO_COLOR` set, which both CI-08 steps set.
+- [x] T042 [US1] Menu in the run scripts ([MN-01][mn-01]; [NFR-08][nfr-08]; [DEC-41][dec-41]; developer request 2026-10-05). Test first: change the CI-08 steps to run `run.cmd` and `run.sh` with no argument, `TOYROBOT_MENU` and `NO_COLOR` set and the choices `2`, `1`, `8`, `x`, `0`, `y`, `0`, and take `menu.sh` out of the mode check of [CI-06][ci-06]. Then move the menu into `run.cmd` (CRLF) and `run.sh` (LF, executable): shown after the build when there is no argument and console input is a keyboard (`run.sh`: `[ -t 0 ]`; `run.cmd`: `timeout /t 0` succeeds) or `TOYROBOT_MENU` is set; main menu 1 typed session, 2 test-data menu, 3 tests, 0 quit. Remove `menu.cmd` and `menu.sh`. Run by hand on Windows from cmd and PowerShell and in Git Bash: the menu at a keyboard, every choice, `x`, and `run < testdata\challenge-example-1.txt` (no menu).
 
 ## Test coverage of every behaviour in spec.md
 
@@ -256,7 +257,7 @@ US1 example:
 [dec-37]: ../../docs/design-analysis/design-decisions.md#dec-37-deliverables
 [dec-38]: ../../docs/design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: ../../docs/design-analysis/design-decisions.md#dec-39-not-included
-[dec-41]: ../../docs/design-analysis/design-decisions.md#dec-41-menu-scripts
+[dec-41]: ../../docs/design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts
 [e2e-01]: ../002-console-session/spec.md#e2e-01
 [e2e-05]: ../002-console-session/spec.md#e2e-05
 [nfr-02]: spec.md#nfr-02

@@ -53,7 +53,7 @@ These are mostly proved by how the tests run, or by a review, rather than by one
 | [NFR-05](03-non-functional-requirements.md) Testable without the console | [DEC-03][dec-03], [DEC-29][dec-29], [DEC-31][dec-31] | Runner (given its input and outputs), Table (size in the constructor) | Runner whole-flow tests, including a 2 x 2 table |
 | [NFR-06](03-non-functional-requirements.md) Tested at three levels | [DEC-31][dec-31] | `ToyRobot.Tests`, `ToyRobot.ConsoleEndToEndTests` | CI runs all three levels; the test list is compared with [DEC-31][dec-31] |
 | [NFR-07](03-non-functional-requirements.md) Readable code (SOLID) | [DEC-34][dec-34], [DEC-40][dec-40] | All components | Code review against page [6](06-components.md) |
-| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`; the menu scripts `menu.cmd`, `menu.sh` | CI runs each system's script with a challenge example; the error cases are checked by their exit codes |
+| [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37], [DEC-41][dec-41] | `run.cmd`, `run.sh`, with the menu | CI runs each system's script with a challenge example; the error cases are checked by their exit codes |
 | [NFR-09](03-non-functional-requirements.md) Short README | [DEC-37][dec-37] | The README | Following the README word for word on a fresh copy, in cmd, PowerShell and bash |
 
 ---
@@ -89,7 +89,7 @@ Back to the [solution design overview](README.md).
 [dec-34]: ../design-analysis/design-decisions.md#dec-34-readable-code-solid
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
 [dec-40]: ../design-analysis/design-decisions.md#dec-40-source-folders
-[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-scripts
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts
 [fr-02]: 02-functional-requirements.md#fr-02
 [fr-03]: 02-functional-requirements.md#fr-03
 [fr-06]: 02-functional-requirements.md#fr-06

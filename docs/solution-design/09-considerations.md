@@ -98,7 +98,7 @@ Two scripts at the repository root let a reviewer start the application without 
 |---|---|---|
 | 1 | Checks that a .NET SDK, version 8 or later, is installed | Says where to get it; exit code 1 |
 | 2 | Builds the application quietly (`Release`) | Shows the build output; exits with the build's exit code |
-| 3 | Checks the arguments: none starts the application for typing; one must be a file that exists, which is fed to the application's console input (stdin) | Missing file: a message, exit code 1. More than one argument: the script's how-to-run message, exit code 1 |
+| 3 | Checks the arguments: none shows the menu (below) when console input is a keyboard, or starts the application with the redirected console input; one must be a file that exists, which is fed to the application's console input (stdin) | Missing file: a message, exit code 1. More than one argument: the script's how-to-run message, exit code 1 |
 | 4 | Exits with the application's own exit code | — |
 
 The application itself still takes no arguments; the script redirects the file for it ([DEC-04][dec-04]). The scripts write their own messages, and any build output, to console messages (stderr), so console output (stdout) carries only the REPORT results. The wording of the script messages is not fixed.
@@ -113,25 +113,18 @@ How to feed a file in each shell ([DEC-04][dec-04]):
 | cmd, bash, zsh, without the scripts | `ToyRobot < commands.txt` (path of the built application: page [5](05-high-level-design.md#folder-layout-and-the-built-application)) |
 | PowerShell, without the scripts | `cmd /c "ToyRobot < commands.txt"`, because PowerShell does not support `<` |
 
-## Menu scripts
+## Menu
 
-Two more scripts at the repository root, `menu.cmd` (Windows: cmd and PowerShell) and `menu.sh` (Linux and macOS), let a reviewer try everything by choosing a number instead of typing file names ([DEC-41][dec-41]):
+Started with no file and with console input from a keyboard (`run`, `.\run.cmd` or `./run.sh`), the run scripts show a menu, so a reviewer can try everything by choosing a number instead of typing file names ([DEC-41][dec-41]):
 
 | Choice | What it does |
 |---|---|
-| 1 to 7 | One test-data file through the run script: its console output (stdout), then PASS or FAIL against the expected file |
-| 8 | All seven files, then how many passed |
-| 9 | A typed session; the menu comes back after EXIT or the end of input |
-| 10 | All automated tests (`dotnet test`) |
+| 1 | A typed session; the menu comes back after EXIT or the end of input |
+| 2 | The test-data menu: 1 to 7 run one file and show its console output (stdout), then PASS or FAIL against the expected file; 8 runs all seven, then says how many passed; 0 goes back |
+| 3 | All automated tests (`dotnet test`) |
 | 0 | Quit |
 
-Every choice goes through the run script, so the .NET check and the build are the same. PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `menu.sh` uses colours only when it writes to a terminal; `menu.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does. How to start the menu:
-
-| Shell | Command |
-|---|---|
-| cmd | `menu` |
-| PowerShell | `.\menu.cmd` |
-| bash, zsh | `./menu.sh` |
+The .NET check and the build run once, before the menu. Console input that is redirected or piped is still read as commands, without the menu: `run.sh` asks whether its console input is a terminal; `run.cmd` uses `timeout`, which fails at once when console input is redirected. The environment variable `TOYROBOT_MENU` shows the menu even then, so CI can test it. PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `run.sh` uses colours only when it writes to a terminal; `run.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does.
 
 ## Extensibility
 
@@ -232,7 +225,7 @@ Back to the [solution design overview](README.md).
 [dec-37]: ../design-analysis/design-decisions.md#dec-37-deliverables
 [dec-38]: ../design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later
 [dec-39]: ../design-analysis/design-decisions.md#dec-39-not-included
-[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-scripts
+[dec-41]: ../design-analysis/design-decisions.md#dec-41-menu-in-the-run-scripts
 [nfr-02]: 03-non-functional-requirements.md#nfr-02
 [nfr-03]: 03-non-functional-requirements.md#nfr-03
 [nfr-08]: 03-non-functional-requirements.md#nfr-08
