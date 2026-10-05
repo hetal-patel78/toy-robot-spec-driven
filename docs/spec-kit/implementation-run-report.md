@@ -535,6 +535,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Testing by hand, exit-mid-file: the pasteable block stops at `EXIT`; the lines after it are named in the text, with a warning | Developer's finding ([P193][p193]): pasting the whole file sent `MOVE` to PowerShell (`Move-Item`) after the session ended | the exit-mid-file entry | Links checked |
 | DEC-40 "Source folders" added to the design decisions; solution design pages 5, 6 and 10 and spec 001 cite it | Developer's request ([P194][p194]): the folders must be traceable from the source of truth, so that later work, by a person or an AI tool, follows them | design decisions; then pages 5, 6 and 10; then spec 001's decision and T060 | Spec checks pass; all tests pass; links checked; no code change |
 | Menu scripts `menu.cmd` and `menu.sh` (DEC-41, MN-01, CI-08): choose a test-data file (PASS or FAIL), all files, a typed session or the automated tests by number | Developer's request ([P195][p195]) | design decisions; then solution design pages 4, 5, 9 and 10; then spec 003 (MN-01, CI-08, SC-008, decision, contracts, plan, T041); then the CI steps; then the scripts; then the README and the testing-by-hand page | By hand on Windows (cmd, input from a file) and in Git Bash: choices 1, 8, 9, `x`, 0, and FAIL with a changed expected file; CI-08 on all three systems; spec checks; links checked |
+| Menu colours: PASS green, FAIL red, the run's console output bright cyan; off when `NO_COLOR` is set (and in `menu.sh` when not on a terminal) | Developer's request ([P196][p196]) | DEC-41; then solution design page 9; then spec 003 (MN-01, CI-08, T041) and its contracts; then CI (`NO_COLOR` in both CI-08 steps); then the scripts; then the testing-by-hand page | `menu.cmd` with and without `NO_COLOR`, `menu.sh` piped: codes only where intended; CI-08 on all three systems; spec checks; links checked |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -695,6 +696,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p193]: ../design-analysis/prompts-implementation-phase.md#p193
 [p194]: ../design-analysis/prompts-implementation-phase.md#p194
 [p195]: ../design-analysis/prompts-implementation-phase.md#p195
+[p196]: ../design-analysis/prompts-implementation-phase.md#p196
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

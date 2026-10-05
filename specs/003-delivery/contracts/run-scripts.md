@@ -59,7 +59,7 @@ Error cases (no SDK, failed build, how-to-run message, file not found) show the 
 | 0 | — | nothing; exit code 0 |
 | anything else | — | "Not a choice: <choice>" |
 
-The run script's own messages stay on console messages (stderr). The end of the input ends `menu.sh` (exit code 0); `menu.cmd` ends after three empty choices in a row (exit code 0).
+Colours: "PASS" lines green, "FAIL" lines red, the run's console output bright cyan; `menu.sh` only when writing to a terminal; none when `NO_COLOR` is set. The run script's own messages stay on console messages (stderr). The end of the input ends `menu.sh` (exit code 0); `menu.cmd` ends after three empty choices in a row (exit code 0).
 
 [ci-01]: ../spec.md#ci-01
 [ci-02]: ../spec.md#ci-02

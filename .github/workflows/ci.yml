@@ -372,6 +372,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: cmd
         run: |
+          set NO_COLOR=1
           (echo 1& echo 8& echo x& echo 0) > "%RUNNER_TEMP%\out\ci08.in"
           call menu.cmd < "%RUNNER_TEMP%\out\ci08.in" > "%RUNNER_TEMP%\out\ci08.out" 2> "%RUNNER_TEMP%\out\ci08.err"
           >"%RUNNER_TEMP%\out\ci08.code" echo %ERRORLEVEL%
@@ -382,7 +383,7 @@ jobs:
         shell: bash
         run: |
           rc=0
-          printf '1\n8\nx\n0\n' | ./menu.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
+          printf '1\n8\nx\n0\n' | NO_COLOR=1 ./menu.sh > "$RUNNER_TEMP/out/ci08.out" 2> "$RUNNER_TEMP/out/ci08.err" || rc=$?
           echo "$rc" > "$RUNNER_TEMP/out/ci08.code"
 
       - name: CI-08 Menu check

@@ -125,7 +125,7 @@ Two more scripts at the repository root, `menu.cmd` (Windows: cmd and PowerShell
 | 10 | All automated tests (`dotnet test`) |
 | 0 | Quit |
 
-Every choice goes through the run script, so the .NET check and the build are the same. How to start the menu:
+Every choice goes through the run script, so the .NET check and the build are the same. PASS is shown in green, FAIL in red and the app's console output in bright cyan, so the result stands out. `menu.sh` uses colours only when it writes to a terminal; `menu.cmd` cannot tell, so it always uses them; both leave them out when the `NO_COLOR` environment variable is set, as CI does. How to start the menu:
 
 | Shell | Command |
 |---|---|

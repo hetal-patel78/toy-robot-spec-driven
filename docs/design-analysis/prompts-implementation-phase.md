@@ -392,3 +392,10 @@ Outcome: [DEC-40](design-decisions.md#dec-40-source-folders) "Source folders" in
 The assistant showed the proposed menu (each test-data file with PASS or FAIL, all files, a typed session, the automated tests) and explained "type commands yourself" (the typed session). The developer answered "yes go ahead and push".
 
 Outcome: [DEC-41](design-decisions.md#dec-41-menu-scripts) "Menu scripts" (DEC-37 no longer says there is no demo mode); `menu.cmd` and `menu.sh` at the repository root; spec 003 requirement MN-01, CI check CI-08 and SC-008, `menu.sh` in NFR-02a and CI-06, a decision, task T041, both contracts and the plan; solution design pages 4, 5, 9 and 10; the README and the testing-by-hand page. While testing, `menu.cmd` lost its input after the first choice: `fc` reads console input, so the file run, `fc` and `dotnet test` now get `< nul`. No application code changed.
+
+<a id="p196"></a>**P196.** On the menu of [P195](#p195):
+> how easy it will be to highlight the output so that it is easily visible?
+
+The assistant recommended colouring the menu's lines only, not the application's output, whose exact form DEC-21 and DEC-23 fix and the tests compare. The developer answered "yes add colours to the menu and push".
+
+Outcome: in `menu.cmd` and `menu.sh`, PASS lines are green, FAIL lines red and the run's console output bright cyan (ANSI colour codes). `menu.sh` uses them only when writing to a terminal; `menu.cmd` cannot tell, so it always does; both leave them out when `NO_COLOR` is set, and both CI-08 steps set it. DEC-41, solution design page 9, spec 003 (MN-01, CI-08, T041), both contracts and the testing-by-hand page say so. Tested on Windows with and without `NO_COLOR` and in Git Bash with output piped. The application is unchanged.
