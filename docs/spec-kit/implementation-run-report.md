@@ -74,9 +74,7 @@ solution design and the brief) do not answer, or answer in two ways. Each was de
 listed below. Each is also written out in full in that spec's **Assumptions** section (what the sources
 say, what was chosen and why, and the other options); every item below links to its entry there.
 
-**What you need to do:** read each item and either confirm it or tell me to change it. An item that is
-confirmed and changes behaviour is then recorded in design-decisions.md (CLAUDE.md). Items marked
-"Confirmed by the developer" are done; every other item is still waiting for you.
+**Status:** every item below is confirmed by the developer: items 1 to 7 one at a time ([P153][p153] to [P155][p155]); the Table size, a command run with no placed robot, `Robot.Replace` refusing a missing state, the one position text and the placeholder entry point after a walk-through ([P158][p158] to [P160][p160]); the rest as they stand ([P160][p160]). None of them changes behaviour, so design-decisions.md is unchanged.
 
 Words used in this section:
 - **Spec 001, 002, 003** are the three specifications: 001 the robot's rules, 002 the console session
@@ -468,7 +466,7 @@ finding `run.cmd` in the current folder; it was cleared for these runs. A normal
 
 ## 8. Left for the developer
 
-- Confirm the "Decided in the run" list.
+- Confirm the "Decided in the run" list: done ([P158][p158] to [P160][p160]).
 - Review the code.
 - Check the README, and follow it word for word on a fresh clone in cmd, PowerShell and bash ([DEC-37][dec-37]).
 - Run a typed session by hand (spec 002 T052): type commands, see the `> ` prompt, end with Ctrl+Z then
@@ -630,6 +628,9 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p153]: ../design-analysis/prompts-implementation-phase.md#p153
 [p154]: ../design-analysis/prompts-implementation-phase.md#p154
 [p155]: ../design-analysis/prompts-implementation-phase.md#p155
+[p158]: ../design-analysis/prompts-implementation-phase.md#p158
+[p159]: ../design-analysis/prompts-implementation-phase.md#p159
+[p160]: ../design-analysis/prompts-implementation-phase.md#p160
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

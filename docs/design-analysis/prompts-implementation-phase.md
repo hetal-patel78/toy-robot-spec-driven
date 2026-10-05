@@ -141,3 +141,18 @@ Outcome: item 3 marked confirmed by the developer in the report (section 3); all
 > and the decision as well
 
 Outcome: decided by the developer: the code stays as it is. `RobotState` stays a `sealed record` (not a `readonly record struct`), and the commands and `Outcome.Done` are not changed to shared instances; no decision, spec or code changed. The review questions were logged in a new file, [prompts-review.md](prompts-review.md) (R1 to R14, quoted exactly as typed, each with a summary of the answer and, where there was one, the decision it led to), and the README links it.
+
+<a id="p158"></a>**P158.** After the assistant explained the decided item "the Table does not check its own size" (spec 001):
+> Yes that is the reason I left it out as the values were hard coded
+
+Outcome: confirmed by the developer. The Table size is fixed at 5 x 5 by Program, so no input can reach a size of 0 or less; a guard in the Table's constructor is the place to add one when the size becomes configurable ([DEC-38](design-decisions.md#dec-38-one-robot-now-room-for-more-later), [DEC-39](design-decisions.md#dec-39-not-included)).
+
+<a id="p159"></a>**P159.** After the assistant explained the decided item "a command run directly with no placed robot throws" (spec 001):
+> yes confirmed, move to decision 3
+
+Outcome: confirmed by the developer. The same answer, with the next number, then confirmed "`Robot.Replace` refuses a missing state" and "one text form for a position, `X,Y,F`, written by `RobotState`".
+
+<a id="p160"></a>**P160.** After the assistant explained the decided item "a placeholder entry point until spec 002":
+> confirm all at this stage as I want to test the changes from the new repo and then finish
+
+Outcome: confirmed by the developer: the placeholder entry point and every other item in section 3 of the [run report](../spec-kit/implementation-run-report.md#3-decided-in-the-run), as they stand. None of them changes behaviour, so design-decisions.md is unchanged.
