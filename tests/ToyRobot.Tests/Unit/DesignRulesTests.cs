@@ -36,6 +36,27 @@ public class DesignRulesTests
     }
 
     [Fact]
+    public void Each_public_type_is_in_the_namespace_of_its_folder()
+    {
+        var expected = new Dictionary<string, string>
+        {
+            ["Direction"] = "ToyRobot.Domain", ["IRobotOperator"] = "ToyRobot.Domain", ["Robot"] = "ToyRobot.Domain",
+            ["RobotOperator"] = "ToyRobot.Domain", ["RobotState"] = "ToyRobot.Domain", ["Table"] = "ToyRobot.Domain",
+            ["IRobotCommand"] = "ToyRobot.Commands", ["LeftCommand"] = "ToyRobot.Commands", ["MoveCommand"] = "ToyRobot.Commands",
+            ["Outcome"] = "ToyRobot.Commands", ["PlaceCommand"] = "ToyRobot.Commands", ["ReportCommand"] = "ToyRobot.Commands",
+            ["RightCommand"] = "ToyRobot.Commands",
+            ["CommandParser"] = "ToyRobot.Parsing", ["ParseResult"] = "ToyRobot.Parsing",
+            ["Runner"] = "ToyRobot.Session",
+        };
+
+        foreach (var type in AppAssembly.GetTypes().Where(t => t.IsPublic && !t.IsNested))
+        {
+            Assert.True(expected.TryGetValue(type.Name, out var ns), $"{type.Name} has no folder in this test.");
+            Assert.Equal(ns, type.Namespace);
+        }
+    }
+
+    [Fact]
     public void IRobotCommand_declares_exactly_Name_NeedsRobotOnTable_and_Execute()
     {
         var members = typeof(IRobotCommand).GetMembers(AllMembers).Select(Describe).OrderBy(x => x, StringComparer.Ordinal);

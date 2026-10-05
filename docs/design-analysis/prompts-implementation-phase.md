@@ -355,3 +355,13 @@ Outcome: the assistant cloned the repository fresh from GitHub (all 496 tests pa
 > Claude Code, Microsoft .NET or xUnit docs
 
 and, to the assistant's questions, "I tested in powershell and cmd" and "Yes, all three". The README now lists the resources consulted and says the developer followed it on a fresh clone in cmd and PowerShell; spec 002 T052 and spec 003 T032 and T035 are ticked with what was done; the run report says the same. No decision or application code changed.
+
+<a id="p191"></a>**P191.** On the source layout:
+> in reason why we have added all the files directly in the src
+
+Outcome: the assistant found no recorded reason: spec 001's plan listed every class directly in `src/ToyRobot/`. It explained why that suits 16 small files and suggested recording the reason rather than moving files. The developer chose otherwise:
+> group it please
+
+> and also update the specs and all the relevant places
+
+The application files are now grouped by job, with namespaces following the folders (the rule specs 001 and 002 already used for the tests): `Domain/` (Table, Direction, RobotState, Robot, IRobotOperator, RobotOperator), `Commands/` (IRobotCommand, the five command classes, Outcome), `Parsing/` (ParseResult, CommandParser) and `Session/` (Runner); Program stays at the project root. Files moved with `git mv`; each file has the `using` directives it needs, and the unit-test project has them as global usings. A new design-rules test checks each public type's namespace (497 tests pass). Spec 001 (decision "source folders", plan, contract, data model, tasks with T060), spec 002 (namespaces, plan), every task and spec that names a source file path, solution design page 5's folder layout, and the README (test counts, a "Source code" row) follow. No type, member or behaviour changed.

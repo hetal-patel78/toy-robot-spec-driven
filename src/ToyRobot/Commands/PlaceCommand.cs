@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Domain;
+
+namespace ToyRobot.Commands;
 
 /// <summary>PLACE X,Y,F: puts the robot at the given position and facing (DEC-15).</summary>
 public sealed record PlaceCommand(int X, int Y, Direction F) : IRobotCommand

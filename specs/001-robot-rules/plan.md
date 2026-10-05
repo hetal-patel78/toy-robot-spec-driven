@@ -71,21 +71,24 @@ src/
 └── ToyRobot/
     ├── ToyRobot.csproj              # Exe, net8.0, RollForward LatestMajor, no packages
     ├── Program.cs                   # placeholder entry point; replaced by spec 002 (research R2)
-    ├── Table.cs
-    ├── Direction.cs
-    ├── RobotState.cs
-    ├── Robot.cs
-    ├── Outcome.cs
-    ├── IRobotOperator.cs
-    ├── RobotOperator.cs
-    ├── IRobotCommand.cs
-    ├── PlaceCommand.cs
-    ├── MoveCommand.cs
-    ├── LeftCommand.cs
-    ├── RightCommand.cs
-    ├── ReportCommand.cs
-    ├── ParseResult.cs
-    └── CommandParser.cs
+    ├── Domain/                      # namespace ToyRobot.Domain: the table, the robot and the shared rules
+    │   ├── Table.cs
+    │   ├── Direction.cs
+    │   ├── RobotState.cs
+    │   ├── Robot.cs
+    │   ├── IRobotOperator.cs
+    │   └── RobotOperator.cs
+    ├── Commands/                    # namespace ToyRobot.Commands: one class per command and their outcome
+    │   ├── IRobotCommand.cs
+    │   ├── PlaceCommand.cs
+    │   ├── MoveCommand.cs
+    │   ├── LeftCommand.cs
+    │   ├── RightCommand.cs
+    │   ├── ReportCommand.cs
+    │   └── Outcome.cs
+    └── Parsing/                     # namespace ToyRobot.Parsing: from a line to a command
+        ├── ParseResult.cs
+        └── CommandParser.cs
 tests/
 ├── ToyRobot.Tests/
 │   ├── ToyRobot.Tests.csproj        # xUnit; references src/ToyRobot
@@ -112,7 +115,7 @@ tests/
     └── ToyRobot.ConsoleEndToEndTests.csproj   # xUnit; references src/ToyRobot; no tests until spec 002
 ```
 
-`ToyRobot.Tests` will also hold spec 002's Runner whole-flow tests (page 9), in their own folder. All application types are in the namespace `ToyRobot` and are public, except Program, which is internal (the compiler-generated class of this spec's placeholder entry point, then `internal static class Program` in spec 002 T022); test classes are in `ToyRobot.Tests.Unit` (support types in `ToyRobot.Tests.Unit.Support`).
+`ToyRobot.Tests` will also hold spec 002's Runner whole-flow tests (page 9), in their own folder. The application's folders group its types, and the namespaces follow the folders: `ToyRobot.Domain` (Table, Direction, RobotState, Robot, IRobotOperator, RobotOperator), `ToyRobot.Commands` (IRobotCommand, the five command classes, Outcome) and `ToyRobot.Parsing` (ParseResult, CommandParser); spec 002 adds `ToyRobot.Session` (Runner), and Program stays in `ToyRobot` at the project root (see the spec's "Decided (developer, 2026-10-05): source folders"). These types are public, except Program, which is internal (the compiler-generated class of this spec's placeholder entry point, then `internal static class Program` in spec 002 T022); test classes are in `ToyRobot.Tests.Unit` (support types in `ToyRobot.Tests.Unit.Support`).
 
 **Structure Decision**: the single-application layout fixed by page 5 (`src/ToyRobot/`, `tests/ToyRobot.Tests/`, `tests/ToyRobot.ConsoleEndToEndTests/`, `ToyRobot.sln` at the root). One file per type, named after the type. `testdata/`, `run.cmd`, `run.sh`, `.gitattributes`, the CI workflow and the README belong to spec 003; Runner and Program to spec 002.
 

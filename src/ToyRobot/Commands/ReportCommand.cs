@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Domain;
+
+namespace ToyRobot.Commands;
 
 /// <summary>REPORT: gives the robot's position and facing as text (DEC-18, DEC-21).</summary>
 public sealed record ReportCommand : IRobotCommand

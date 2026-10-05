@@ -1,4 +1,4 @@
-namespace ToyRobot;
+namespace ToyRobot.Commands;
 
 /// <summary>What running a command gives back: a position text, a warning, or nothing to show (DEC-21, DEC-26).</summary>
 public abstract record Outcome

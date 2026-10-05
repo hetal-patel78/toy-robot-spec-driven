@@ -80,8 +80,9 @@ src/
 └── ToyRobot/
     ├── ToyRobot.csproj           # from spec 001 (net8.0, RollForward = LatestMajor); this spec adds InternalsVisibleTo for ToyRobot.Tests (SG-01)
     ├── Program.cs                # Program (this spec; replaces the skeleton's entry point)
-    ├── Runner.cs                 # Runner (this spec)
-    └── ...                       # spec 001's types (Table, Direction, RobotState, Robot, commands, RobotOperator, CommandParser)
+    ├── Session/
+    │   └── Runner.cs             # Runner (this spec; namespace ToyRobot.Session)
+    └── Domain/, Commands/, Parsing/   # spec 001's types (Table, Direction, RobotState, Robot, commands, RobotOperator, CommandParser)
 
 tests/
 ├── ToyRobot.Tests/               # from spec 001: unit tests, plus this spec's Runner whole-flow tests
@@ -109,7 +110,7 @@ tests/
 
 **Structure Decision**: the layout is fixed by page 5 and spec 001 ([SK-01][sk-01]): one application project and two xUnit test projects in `ToyRobot.sln`. This spec adds two files to the application project, a `RunnerWholeFlow` folder to `ToyRobot.Tests`, and its files to `ToyRobot.ConsoleEndToEndTests`. File names inside the test projects are a planning choice (research [R-08][r-08]); the component names are page 6's.
 
-Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `ToyRobot`; the Runner whole-flow tests and `SessionHarness` are in `ToyRobot.Tests.RunnerWholeFlow`; the console end-to-end tests, `AppProcess` and `LineComparer` are in `ToyRobot.ConsoleEndToEndTests`.
+Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session` (folder `src/ToyRobot/Session/`, moved there by spec 001 T060) and `Program` in `ToyRobot`; the Runner whole-flow tests and `SessionHarness` are in `ToyRobot.Tests.RunnerWholeFlow`; the console end-to-end tests, `AppProcess` and `LineComparer` are in `ToyRobot.ConsoleEndToEndTests`.
 
 ## Design Notes
 

@@ -1,6 +1,6 @@
 # Data model: Robot rules (001-robot-rules)
 
-Phase 1 of `/speckit-plan`. The entities are the components of page 6 that hold data or results. Names and members come from page 6 and `research.md` R4. All types are public, in the namespace `ToyRobot`, in `src/ToyRobot/`. Nothing is stored outside memory.
+Phase 1 of `/speckit-plan`. The entities are the components of page 6 that hold data or results. Names and members come from page 6 and `research.md` R4. All types are public, in `src/ToyRobot/`, in namespaces that follow its folders (`ToyRobot.Domain`, `ToyRobot.Commands`, `ToyRobot.Parsing`; see plan.md, Project Structure). Nothing is stored outside memory.
 
 ## Table (DEC-01, DEC-03, DEC-28; FR-01)
 

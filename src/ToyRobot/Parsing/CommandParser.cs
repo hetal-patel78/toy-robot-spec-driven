@@ -1,6 +1,8 @@
 using System.Globalization;
+using ToyRobot.Commands;
+using ToyRobot.Domain;
 
-namespace ToyRobot;
+namespace ToyRobot.Parsing;
 
 /// <summary>
 /// Turns one input line into a parse result. Checks the format only, never the table (DEC-28),

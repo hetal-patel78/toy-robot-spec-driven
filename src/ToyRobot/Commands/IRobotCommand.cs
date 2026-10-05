@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Domain;
+
+namespace ToyRobot.Commands;
 
 /// <summary>One robot command (DEC-27).</summary>
 public interface IRobotCommand

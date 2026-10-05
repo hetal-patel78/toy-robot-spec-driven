@@ -17,6 +17,11 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <!-- The application's namespaces follow its folders (Commands, Domain, Parsing, Session). -->
+    <Using Include="ToyRobot.Commands" />
+    <Using Include="ToyRobot.Domain" />
+    <Using Include="ToyRobot.Parsing" />
+    <Using Include="ToyRobot.Session" />
   </ItemGroup>
 
   <ItemGroup>

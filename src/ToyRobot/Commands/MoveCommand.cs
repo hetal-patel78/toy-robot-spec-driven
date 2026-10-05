@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Domain;
+
+namespace ToyRobot.Commands;
 
 /// <summary>MOVE: asks to move the robot one step in the direction it faces (DEC-16).</summary>
 public sealed record MoveCommand : IRobotCommand

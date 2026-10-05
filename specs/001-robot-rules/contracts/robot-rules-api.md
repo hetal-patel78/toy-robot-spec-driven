@@ -1,6 +1,6 @@
 # Contract: the robot-rules types used by spec 002
 
-The public surface that spec 002's Runner and Program build on. Names and members are exactly as on page 6, with the code names settled in `research.md` R4. Everything is in the namespace `ToyRobot`, in the project `src/ToyRobot/`. Spec 002 uses these types and does not restate their rules.
+The public surface that spec 002's Runner and Program build on. Names and members are exactly as on page 6, with the code names settled in `research.md` R4. Everything is in the project `src/ToyRobot/`, in namespaces that follow its folders: `ToyRobot.Domain` (Table, Direction, RobotState, Robot, IRobotOperator, RobotOperator), `ToyRobot.Commands` (IRobotCommand, the command classes, Outcome) and `ToyRobot.Parsing` (ParseResult, CommandParser). Spec 002 uses these types and does not restate their rules.
 
 ```csharp
 public sealed class Table

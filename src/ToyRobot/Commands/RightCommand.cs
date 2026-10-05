@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Domain;
+
+namespace ToyRobot.Commands;
 
 /// <summary>RIGHT: turns the robot 90 degrees to the right, staying in place (DEC-17).</summary>
 public sealed record RightCommand : IRobotCommand

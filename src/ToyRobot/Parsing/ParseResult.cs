@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Commands;
+
+namespace ToyRobot.Parsing;
 
 /// <summary>What reading one input line gives: a command object, EXIT, or a failure with its reason (DEC-26, DEC-30).</summary>
 public abstract record ParseResult

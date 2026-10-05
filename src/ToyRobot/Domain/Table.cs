@@ -1,4 +1,4 @@
-namespace ToyRobot;
+namespace ToyRobot.Domain;
 
 /// <summary>The rectangular surface. Answers whether a position is on it (DEC-01, DEC-03, DEC-28).</summary>
 public sealed class Table

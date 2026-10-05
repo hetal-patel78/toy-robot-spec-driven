@@ -41,8 +41,8 @@ From the repository root, in any shell (cmd, PowerShell, bash, zsh). `dotnet tes
 
 | What | Command | Expected |
 |---|---|---|
-| All tests | `dotnet test` | 496 passed, 0 failed (470 in ToyRobot.Tests, 26 in ToyRobot.ConsoleEndToEndTests) |
-| Unit tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.Unit"` | 364 passed |
+| All tests | `dotnet test` | 497 passed, 0 failed (471 in ToyRobot.Tests, 26 in ToyRobot.ConsoleEndToEndTests) |
+| Unit tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.Unit"` | 365 passed |
 | Runner whole-flow tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.RunnerWholeFlow"` | 106 passed |
 | Console end-to-end tests only | `dotnet test tests/ToyRobot.ConsoleEndToEndTests` | 26 passed |
 
@@ -120,6 +120,7 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | Prompts used while reviewing the delivered work (questions and answers) | [docs/design-analysis/prompts-review.md](docs/design-analysis/prompts-review.md) |
 | Spec Kit constitution and specifications | [.specify/memory/constitution.md](.specify/memory/constitution.md), [specs/](specs/) |
 | Solution design | [docs/solution-design/README.md](docs/solution-design/README.md) |
+| Source code | [src/ToyRobot/](src/ToyRobot/): `Program.cs`, and the folders `Session/` (Runner), `Parsing/` (CommandParser), `Commands/` (one class per command) and `Domain/` (Table, Robot, RobotOperator) |
 
 [dec-27]: docs/design-analysis/design-decisions.md#dec-27-each-command-is-a-class-robotoperator-holds-the-shared-rules
 [dec-38]: docs/design-analysis/design-decisions.md#dec-38-one-robot-now-room-for-more-later

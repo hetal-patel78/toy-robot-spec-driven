@@ -1,4 +1,6 @@
-namespace ToyRobot;
+using ToyRobot.Commands;
+
+namespace ToyRobot.Domain;
 
 /// <summary>
 /// Holds the only Robot and the Table. Applies the rule "check with the Table, then replace" (DEC-13, DEC-14)

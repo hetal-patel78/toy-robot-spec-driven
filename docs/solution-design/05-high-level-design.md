@@ -89,6 +89,11 @@ The details of each component are on page [6](06-components.md); step-by-step fl
 toy-robot-spec-driven/
 ├── src/
 │   └── ToyRobot/                 the application (all components)
+│       ├── Program.cs            Program
+│       ├── Session/              Runner
+│       ├── Parsing/              CommandParser and its parse result
+│       ├── Commands/             the command interface, one class per command, and the outcome
+│       └── Domain/               Table, Direction, RobotState, Robot and RobotOperator
 ├── tests/
 │   ├── ToyRobot.Tests/           Unit/ (unit tests) and RunnerWholeFlow/ (Runner whole-flow tests, in memory)
 │   └── ToyRobot.ConsoleEndToEndTests/   console end-to-end tests of the built application

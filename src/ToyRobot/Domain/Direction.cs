@@ -1,4 +1,4 @@
-namespace ToyRobot;
+namespace ToyRobot.Domain;
 
 /// <summary>One of the four facing directions. Turns left and right and knows its upper-case name (DEC-07, DEC-17).</summary>
 public sealed class Direction

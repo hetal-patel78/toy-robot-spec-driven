@@ -1,4 +1,8 @@
-namespace ToyRobot;
+using ToyRobot.Commands;
+using ToyRobot.Domain;
+using ToyRobot.Parsing;
+
+namespace ToyRobot.Session;
 
 /// <summary>
 /// Runs one session: reads lines from the input, shows the prompt or the echo on the console messages,

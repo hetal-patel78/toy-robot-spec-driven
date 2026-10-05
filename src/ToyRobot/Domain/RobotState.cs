@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace ToyRobot;
+namespace ToyRobot.Domain;
 
 /// <summary>The robot's position and facing as one immutable value (DEC-12, DEC-13).</summary>
 public sealed record RobotState(int X, int Y, Direction Facing)

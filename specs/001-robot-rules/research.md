@@ -37,6 +37,7 @@ Phase 0 of `/speckit-plan`. The technical choices are fixed by the sources (Spec
   | RobotState: X, Y and the facing Direction | `RobotState(int X, int Y, Direction Facing)` |
   | `PlaceCommand` holds X, Y and F | `PlaceCommand(int X, int Y, Direction F)` |
   | Direction: four values, turning left and right, name in upper case | `Direction.North`, `Direction.East`, `Direction.South`, `Direction.West`, `Direction.All`, `Name`, `TurnLeft()`, `TurnRight()` |
+  | Page 5 folder layout: the application folders and their namespaces (spec Assumptions, "source folders", added by T060) | `Domain`, `Commands`, `Parsing`, `Session`: namespaces `ToyRobot.Domain`, `ToyRobot.Commands`, `ToyRobot.Parsing`, `ToyRobot.Session` |
 
   The members page 6 names itself are used exactly: `IRobotCommand.Name`, `NeedsRobotOnTable`, `Execute(IRobotOperator robot)`; `IRobotOperator.CurrentState`, `TryMoveTo(next)` (parameter name `next`).
 - **Rationale**: specs 001 and 002 must use the same names (brief rule 6); spec 001 owns these components. `ParseResult` and `Outcome` are result types, not new components: page 6 defines both under CommandParser and RobotOperator.
