@@ -457,7 +457,7 @@ Notes from spec 003:
 | The built app with an argument (`--help`, and a file name) | the how-to-run message, character for character, on stderr; exit code 1 |
 | Empty input, a file starting with a byte-order mark, EXIT in the middle of a file | expected output; exit code 0 (in the six files above) |
 | Script error paths (no .NET SDK, missing file, folder, two arguments, failed build) | exit code 1 (failed build: the build's exit code); checked by the spec 003 implementation (T023, T024, T035) |
-| A typed session ended with Ctrl+Z | not run: it needs a person at a console. Left for the developer |
+| A typed session ended with Ctrl+Z | not run in the run: it needs a person at a console. Run afterwards by the developer on Windows: commands typed at the `> ` prompt, then Ctrl+Z then Enter ended the session, once the fix for [P161][p161] was in ([DEC-10][dec-10]) |
 
 Note: the environment the session runs in sets `NoDefaultCurrentDirectoryInExePath=1`, which stops cmd
 finding `run.cmd` in the current folder; it was cleared for these runs. A normal machine and CI do not set it.
@@ -466,15 +466,15 @@ finding `run.cmd` in the current folder; it was cleared for these runs. A normal
 
 | Run | Commit | Result |
 |---|---|---|
-| 37264850199 | `9de6c24` (the code as finished, with the Ctrl+Z fix) | Pass on `windows-latest`, `ubuntu-latest` and `macos-latest` |
+| 37267711180 | `c756617` (the code as finished) | Pass on `windows-latest`, `ubuntu-latest` and `macos-latest` |
 
 ## 8. Left for the developer
 
 - Confirm the "Decided in the run" list: done ([P158][p158] to [P160][p160]).
 - Review the code.
 - Check the README, and follow it word for word on a fresh clone in cmd, PowerShell and bash ([DEC-37][dec-37]).
-- Run a typed session by hand (spec 002 T052): type commands, see the `> ` prompt, end with Ctrl+Z then
-  Enter (Windows) or Ctrl+D.
+- Run a typed session by hand (spec 002 T052): done on Windows by the developer, ended with Ctrl+Z then Enter
+  after the fix for [P161][p161]; Ctrl+D on Linux or macOS was not tried by hand.
 - Read the README's "how this was built" section and adjust the wording if wanted.
 - The implementation-phase prompt log is `docs/design-analysis/prompts-implementation-phase.md` ([P133][p133] to
   [P140][p140]), written as CLAUDE.md asks: every instruction quoted as typed, with its outcome.
