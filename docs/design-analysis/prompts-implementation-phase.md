@@ -312,3 +312,8 @@ Outcome: the assistant agreed that naming only BACK suggested it was the one com
 > current command 6 or 5?
 
 Outcome: the assistant answered six command words: the five robot commands of the challenge (PLACE, MOVE, LEFT, RIGHT, REPORT) and EXIT ([DEC-10](design-decisions.md#dec-10-ending-a-session), [DEC-30](design-decisions.md#dec-30-exit-is-handled-by-the-runner)), which the Runner handles and RobotOperator never sees. On the developer's "yes update it and push", "the six" now says "(the five robot commands and EXIT)" in the scope page, [DEC-39](design-decisions.md#dec-39-not-included) and the solution-design overview. Wording only; no decision or code changed.
+
+<a id="p186"></a>**P186.** On the README:
+> ur read me does not include testing how to run?
+
+Outcome: the README had `dotnet test` only inside "Build, test and run directly". A new section, "Run the tests", gives the command for all tests and for each test level (unit, Runner whole-flow, console end-to-end) with the expected number passed, each command run first (364 + 106 + 26 = 496), and links to the table of test levels. No decision or code changed.

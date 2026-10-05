@@ -36,6 +36,18 @@ Copy and run; each prints the console output (stdout) shown. The first three are
 | empty | `run testdata\empty.txt` | `.\run.cmd testdata\empty.txt` | `./run.sh testdata/empty.txt` | nothing |
 | long-session | `run testdata\long-session.txt` | `.\run.cmd testdata\long-session.txt` | `./run.sh testdata/long-session.txt` | four reports, each `Output:` then: `0,0,WEST`, `4,4,EAST`, `3,0,EAST`, `3,0,EAST` |
 
+## Run the tests
+From the repository root, in any shell (cmd, PowerShell, bash, zsh). `dotnet test` builds the solution first.
+
+| What | Command | Expected |
+|---|---|---|
+| All tests | `dotnet test` | 496 passed, 0 failed (470 in ToyRobot.Tests, 26 in ToyRobot.ConsoleEndToEndTests) |
+| Unit tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.Unit"` | 364 passed |
+| Runner whole-flow tests only | `dotnet test tests/ToyRobot.Tests --filter "FullyQualifiedName~ToyRobot.Tests.RunnerWholeFlow"` | 106 passed |
+| Console end-to-end tests only | `dotnet test tests/ToyRobot.ConsoleEndToEndTests` | 26 passed |
+
+What each level covers is under [Tested on Windows, Linux and macOS](#tested-on-windows-linux-and-macos).
+
 ## Build, test and run directly
 ```
 dotnet build -c Release

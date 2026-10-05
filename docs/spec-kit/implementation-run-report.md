@@ -525,6 +525,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Unit tests: a duplicate line, `PLACE -2147483649,0,NORTH`, removed from the extra inputs of the "never throws" parser theory | `dotnet test` warned that a test case with a duplicate ID was skipped ([P183][p183]); the line was already in the failure table that feeds the same theory | `CommandParserTests.cs` | All tests pass (470 + 26, unchanged); no duplicate-ID warning |
 | Out of scope: "a BACK command" became "commands other than the six (for example BACK)"; the README's "How this would evolve" says how a command is added | Developer's request ([P184][p184]): naming only BACK read as if it were the one command considered | scope page; then DEC-39; then the solution-design overview; then the README | Wording only; links checked |
 | "The six commands" now says "(the five robot commands and EXIT)" | Developer's question ([P185][p185]): the challenge has five commands, so "six" could read as a miscount | scope page; then DEC-39; then the solution-design overview | Wording only; links checked |
+| README: a "Run the tests" section, with the command for all tests and for each test level and the expected number passed | Developer's question ([P186][p186]): how to run the tests was not easy to find | README, before "Build, test and run directly" | Each command run on Windows: 496 = 364 unit + 106 Runner whole-flow + 26 console end-to-end, 0 failed; links checked |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -675,6 +676,7 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p183]: ../design-analysis/prompts-implementation-phase.md#p183
 [p184]: ../design-analysis/prompts-implementation-phase.md#p184
 [p185]: ../design-analysis/prompts-implementation-phase.md#p185
+[p186]: ../design-analysis/prompts-implementation-phase.md#p186
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy
