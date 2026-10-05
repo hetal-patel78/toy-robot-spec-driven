@@ -54,7 +54,7 @@ Error handling, the two output streams and exit codes, the testing strategy (thr
 ### Reference (pages 10–12)
 
 **10. [Traceability](10-traceability.md)**
-A table linking each FR and NFR to its decisions, the components that implement it and the test levels that prove it: unit, whole-flow in memory, or end-to-end.
+A table linking each FR and NFR to its decisions, the components that implement it and the test levels that prove it: unit, Runner whole-flow in memory, or console end-to-end.
 
 **11. [Glossary](11-glossary.md)**
 Every term and component name, defined once.

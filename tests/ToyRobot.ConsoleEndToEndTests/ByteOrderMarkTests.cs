@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-05: FR-11; DEC-20, DEC-26, DEC-31 "input starting with a byte-order mark".
 public class ByteOrderMarkTests

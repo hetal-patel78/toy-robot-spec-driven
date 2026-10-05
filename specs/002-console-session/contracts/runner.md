@@ -1,6 +1,6 @@
 # Contract: Runner
 
-The in-memory contract the whole-flow tests rely on ([DEC-29][dec-29], [NFR-05][nfr-05]). Names exactly as page 6.
+The in-memory contract the Runner whole-flow tests rely on ([DEC-29][dec-29], [NFR-05][nfr-05]). Names exactly as page 6.
 
 ## Construction
 

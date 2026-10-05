@@ -86,8 +86,8 @@ Words used in this section:
   message.
 - **Exit code** is the number the app hands back to the shell when it ends: 0 for a normal end, 1 when it
   printed the how-to-run message, 2 for an unexpected problem.
-- **End-to-end test** starts the real, built application as a separate process and checks what it prints.
-  **Whole-flow test** runs a whole session in memory, inside the test program, and checks everything the
+- **Console end-to-end test** starts the real, built application as a separate process and checks what it prints.
+  **Runner whole-flow test** runs a whole session in memory, inside the test program, and checks everything the
   session wrote.
 - **CI** is the GitHub Actions runs that build and test the project on Windows, Linux and macOS after every
   push.
@@ -95,12 +95,12 @@ Words used in this section:
   entry point that starts it and returns the exit code.
 
 **Most worth checking** (they shape behaviour or tests). Each item ends with its sources.
-1. **End-to-end tests check the printed results and the exit code, not the other console messages.**
-   Confirmed by the developer ([P153][p153]). The end-to-end tests start the real app and compare the
+1. **Console end-to-end tests check the printed results and the exit code, not the other console messages.**
+   Confirmed by the developer ([P153][p153]). The console end-to-end tests start the real app and compare the
    results it prints (`Output:` and the position, line by line) and its exit code; they look at the other
    messages only for the how-to-run message. The echo, the prompt and the warnings are already checked
-   exactly by the whole-flow tests, and a file starting with a byte-order mark (an invisible marker some
-   editors add, which the app must ignore) is still proved end-to-end, because if the mark were not removed
+   exactly by the Runner whole-flow tests, and a file starting with a byte-order mark (an invisible marker some
+   editors add, which the app must ignore) is still proved console end-to-end, because if the mark were not removed
    the first line would be an unknown command and no position would be printed.
    *Sources:* [spec 002, Assumptions][decided-002-e2e-compare-stdout]; page 9; page 10.
 2. **CI compares the printed results and the exit codes of the script runs, and the scripts' progress
@@ -143,7 +143,7 @@ Words used in this section:
 - **Spec 001's scenarios show console text, but only spec 002 tests it.** The sources want each scenario
   copied from page 2 with the printed results and the other messages, but the classes that print them (Runner
   and Program) belong to spec 002. So spec 001's unit tests check the parse result and the outcome texts, and
-  spec 002's whole-flow tests check the console text. *Sources:* [spec 001][decided-001-console-text]; brief
+  spec 002's Runner whole-flow tests check the console text. *Sources:* [spec 001][decided-001-console-text]; brief
   rules 3 and 5; [DEC-31][dec-31].
 - **Spec 001 covers recognising EXIT; spec 002 covers what the session does with it.** The parser that
   recognises EXIT is a spec 001 part, but "EXIT ends the session" ([FR-15][fr-15]) is spec 002's, so spec 001
@@ -157,8 +157,8 @@ Words used in this section:
   [DEC-31][dec-31] asks for "every edge and corner" without naming positions; testing every position on every
   edge would add tests but cover no extra rule. The edge cases are 2,4,NORTH; 2,0,SOUTH; 4,2,EAST; 0,2,WEST.
   *Sources:* [spec 001][decided-001-edge-corner-positions]; [DEC-31][dec-31].
-- **Spec 001 creates the empty end-to-end test project.** The brief gives spec 001 "the three projects", but
-  the end-to-end tests are planned by spec 002, so spec 001 adds `tests/ToyRobot.EndToEndTests/` as a project
+- **Spec 001 creates the empty console end-to-end test project.** The brief gives spec 001 "the three projects", but
+  the console end-to-end tests are planned by spec 002, so spec 001 adds `tests/ToyRobot.ConsoleEndToEndTests/` as a project
   that builds and has no tests yet. *Sources:* [spec 001][decided-001-e2e-project-skeleton].
 - **The two test projects also set `RollForward`.** [DEC-37][dec-37] makes the application run on a newer
   .NET when 8 is not installed (`RollForward` = `LatestMajor`); the test projects get the same setting so
@@ -203,16 +203,16 @@ Words used in this section:
   internal, so the test stays green. This is written in tasks.md. *Sources:* [spec 001][decided-001-public-type-handoff].
 
 **002-console-session**
-- **End-to-end tests check the printed results and the exit code** (item 1 above, confirmed by the developer,
+- **Console end-to-end tests check the printed results and the exit code** (item 1 above, confirmed by the developer,
   [P153][p153]). *Sources:* [spec 002][decided-002-e2e-compare-stdout].
 - **The start-up checks get their own test ID, [E2E-09][e2e-09].** The redirected-REPORT check and the 5 x 5
   table check (T018) live in `StartUpTests.cs` under that ID, instead of being mixed into
   [E2E-06][e2e-06]. *Sources:* [spec 002][decided-002-e2e-09-startup].
 - **[E2E-09][e2e-09] checks the 5 x 5 table through the printed results only.** Checking the other messages
   as well would contradict page 10. *Sources:* [spec 002][decided-002-e2e-09-stdout-only].
-- **Namespaces follow the folders, as in spec 001.** Runner and Program are in `ToyRobot`; the whole-flow tests
-  and `SessionHarness` in `ToyRobot.Tests.WholeFlow`; the end-to-end tests, `AppProcess` and `LineComparer` in
-  `ToyRobot.EndToEndTests`. *Sources:* [spec 002][decided-002-namespaces].
+- **Namespaces follow the folders, as in spec 001.** Runner and Program are in `ToyRobot`; the Runner whole-flow tests
+  and `SessionHarness` in `ToyRobot.Tests.RunnerWholeFlow`; the console end-to-end tests, `AppProcess` and `LineComparer` in
+  `ToyRobot.ConsoleEndToEndTests`. *Sources:* [spec 002][decided-002-namespaces].
 - **User Story 1 scenario 5 lists the other messages for reference only.** They (the echo and warnings) are
   not compared with a file, because a test-data pair holds only the expected printed results; expected-message
   files would go beyond page 9 and spec 003. *Sources:* [spec 002][decided-002-us1-scenario-5].
@@ -227,13 +227,13 @@ Words used in this section:
   since T021, so T027 passes before T030 and checks that T030 stops only on exactly EXIT.
   *Sources:* [spec 002][decided-002-t027-guard].
 - **Spec 002 is finished and tested before spec 003 adds the test-data files.** [E2E-01][e2e-01] runs every
-  input/expected pair found in `testdata/` and passes when there are none; the other end-to-end tests
+  input/expected pair found in `testdata/` and passes when there are none; the other console end-to-end tests
   ([E2E-02][e2e-02] to [E2E-09][e2e-09]) create their input inside the test, for example a temporary file
   with the byte-order mark written as bytes. *Sources:* [spec 002][decided-002-testdata-and-e2e].
 - **Line breaks: the prompt has none; every other line is a full line.** The Runner writes each echo, warning,
   `Output:` label and position as a full line, and the prompt `> ` without a line break; Program writes the
   how-to-run message as one full line. *Sources:* [spec 002][decided-002-line-breaks]; [FR-13][fr-13].
-- **The end-to-end tests start the build made by the same `dotnet test`.** The end-to-end project references
+- **The console end-to-end tests start the build made by the same `dotnet test`.** The console end-to-end project references
   the application project, so `dotnet test` builds it first, and the tests start its executable from
   `src/ToyRobot/bin/<configuration>/net8.0/` for the configuration under test (Debug unless built in
   Release). So `dotnet test` from the repository root needs no earlier step.
@@ -242,7 +242,7 @@ Words used in this section:
   `static int Main(string[] args)` returns the exit code given by Program's internal `Run(args, input, output,
   error, interactive)`, which holds the work so tests can call it in memory.
   *Sources:* [spec 002][decided-002-method-names].
-- **Exit codes in in-memory scenarios.** Page 10 says the end-to-end tests check exit codes, so a whole-flow test checks that
+- **Exit codes in in-memory scenarios.** Page 10 says the console end-to-end tests check exit codes, so a Runner whole-flow test checks that
   `Run()` returns normally at EXIT or at the end of input, and the scenario's exit code is what Program then
   returns; the unexpected-problem scenarios (User Story 5, scenarios 4 to 6) call Program's `Run`, so their
   exit code 2 is checked in memory. *Sources:* [spec 002][decided-002-exit-codes-in-memory].
@@ -264,12 +264,12 @@ Words used in this section:
   is no echo. *Sources:* [spec 002][decided-002-args-stop-reading].
 - **User Story 3 scenario 3 reuses T035's input.** T035 already tests exactly this input, so no task changes.
   *Sources:* [spec 002][decided-002-us3-scenario-3].
-- **No second project reference.** The end-to-end project keeps the one reference to the application that
+- **No second project reference.** The console end-to-end project keeps the one reference to the application that
   spec 001 T005 adds; a second would give NuGet warning NU1504. *Sources:* [spec 002][decided-002-no-second-reference].
 - **Every task names its FR or NFR ID and its DEC IDs.** Tasks that only build and run tests cite
   [NFR-06][nfr-06] and [DEC-31][dec-31]. *Sources:* [spec 002][decided-002-tasks-cite-ids].
-- **[SC-001][sc-001] is measured at the level that checks each scenario.** Whole-flow tests compare the
-  printed results and the other messages; end-to-end tests compare the printed results line by line, the
+- **[SC-001][sc-001] is measured at the level that checks each scenario.** Runner whole-flow tests compare the
+  printed results and the other messages; console end-to-end tests compare the printed results line by line, the
   other messages only for the how-to-run message, and the exit code; in-memory scenarios have no exit code.
   Requiring all three everywhere cannot be met. *Sources:* [spec 002][decided-002-sc-001-levels]; page 10.
 - **The Runner reads the next line only after finishing the previous one.** The Runner contract says so
@@ -295,7 +295,7 @@ Words used in this section:
   *Sources:* [spec 003][decided-003-error-paths-checks].
 - **CI runs every test-data file through each script.** [CI-01][ci-01] runs all six inputs through each
   script on each system (18 comparisons), so the empty input and the byte-order mark are proved through the
-  scripts as well as end-to-end. *Sources:* [spec 003][decided-003-every-testdata-file]; [DEC-33][dec-33].
+  scripts as well as console end-to-end. *Sources:* [spec 003][decided-003-every-testdata-file]; [DEC-33][dec-33].
 - **The scripts build only the application, in Release, and stay quiet unless the build fails.** They build
   `src/ToyRobot/ToyRobot.csproj`, hide the .NET check and build output unless the build fails, and give the
   build no console input. On success they show only their progress lines (a later decision, see "Changes
@@ -330,16 +330,16 @@ Words used in this section:
 - **The shape of the CI workflow.** One workflow `CI`, run on every push, with one job over `windows-latest`,
   `ubuntu-latest` and `macos-latest`: one system failing does not cancel the others, and a hung step fails
   after 30 minutes instead of 6 hours. It uses `actions/checkout@v5` and `actions/setup-dotnet@v5` (.NET
-  8.0.x), and runs the unit and whole-flow tests and the end-to-end tests as two steps, to show page 9's two
+  8.0.x), and runs the unit and Runner whole-flow tests and the console end-to-end tests as two steps, to show page 9's two
   levels. *Sources:* [spec 003][decided-003-workflow-shape]; research [R-05][r-05].
 - **The `.gitattributes` content.** Three lines: `* text=auto eol=lf`, `*.cmd text eol=crlf` and
   `*.pdf binary`; the last makes the handling of the PDFs explicit. *Sources:* [spec 003][decided-003-gitattributes];
   research [R-10][r-10].
 - **Where the test-data and build-settings tests live.** [TD-02][td-02] and [BS-01][bs-01] are in
-  `tests/ToyRobot.EndToEndTests/DeliveryTests.cs`; the repository root is found by walking up to the folder
+  `tests/ToyRobot.ConsoleEndToEndTests/DeliveryTests.cs`; the repository root is found by walking up to the folder
   with `ToyRobot.sln`, so spec 002 needs no shared helper. *Sources:* [spec 003][decided-003-td02-bs01-location];
   research [R-12][r-12].
-- **The `DeliveryTests` namespace is `ToyRobot.EndToEndTests`,** following the folder-equals-namespace rule.
+- **The `DeliveryTests` namespace is `ToyRobot.ConsoleEndToEndTests`,** following the folder-equals-namespace rule.
   *Sources:* [spec 003][decided-003-deliverytests-namespace].
 - **Two repeatable checks, [BS-01][bs-01] and [CI-06][ci-06].** Page 3 checks [NFR-03][nfr-03] by review and
   states the line endings of [NFR-02][nfr-02] ([DEC-33][dec-33]) without a check. The review stays, and
@@ -377,7 +377,7 @@ was needed.
 002-console-session (4 review rounds; round 2 had 1 HIGH, fixed):
 - HIGH: spec 001's public-type test would break when the Runner was added; spec 002 now updates its list in
   a task just before the Runner is created, and Program is internal.
-- The end-to-end channel rule aligned with page 10 (stdout only, stderr for the how-to-run message); a general
+- The console end-to-end channel rule aligned with page 10 (stdout only, stderr for the how-to-run message); a general
   scenario given concrete input and output; task citations; E2E ID ranges; tests-first statements made
   accurate where a test already passes with the placeholder Program.
 
@@ -390,14 +390,14 @@ was needed.
   decisions in research.md copied into the Assumptions.
 
 Cross-check of the three specs together (6 rounds, then clean of all but low wording items):
-- HIGH: spec 002 and then spec 003 compared stderr end-to-end and in CI, against page 9, page 10 and [DEC-33][dec-33];
+- HIGH: spec 002 and then spec 003 compared stderr console end-to-end and in CI, against page 9, page 10 and [DEC-33][dec-33];
   both now compare stdout (stderr only for the how-to-run message and the script error cases).
 - Spec 002 now uses spec 001's code names everywhere; namespaces fixed for all test projects; task
   dependency and hand-off wording made consistent; ID ranges aligned.
 
 ## 5. Review first
 
-1. The end-to-end and CI channel rule (Decided items 1 and 2 above): it follows page 9, page 10 and [DEC-33][dec-33],
+1. The console end-to-end and CI channel rule (Decided items 1 and 2 above): it follows page 9, page 10 and [DEC-33][dec-33],
    but it means the echo and warnings are proved only in memory, not through the real console.
 2. The code names and Direction-as-a-class (items 4 and 5): they become the public shape of the code.
 3. The test-data set and the run-script checks in spec 003, including which script paths are checked by
@@ -410,12 +410,12 @@ Branch `impl`, in the session's worktree (the app allows this session to edit on
 
 | Spec | Status | Tests | Code review |
 |---|---|---|---|
-| 001-robot-rules | Done: T001 to T058 | Unit: 337 passing, 0 failing (`ToyRobot.Tests`); end-to-end project empty, as planned | Round 1 clean |
-| 002-console-session | Done: T001 to T051 (with T020a) | Unit and whole-flow: 430 passing (includes 001's 337); end-to-end: 17 passing; 0 failing, in Debug and Release | Round 1 clean |
-| 003-delivery | Done: T001 to T037 except T032 and the typed-session part of T035 (left for the developer) | Unit and whole-flow: 430; end-to-end: 25 (adds [TD-02][td-02] test-data presence and [BS-01][bs-01] build settings, and runs [E2E-01][e2e-01] over the six test-data pairs); 0 failing | Round 1 clean |
+| 001-robot-rules | Done: T001 to T058 | Unit: 337 passing, 0 failing (`ToyRobot.Tests`); console end-to-end project empty, as planned | Round 1 clean |
+| 002-console-session | Done: T001 to T051 (with T020a) | Unit and Runner whole-flow: 430 passing (includes 001's 337); console end-to-end: 17 passing; 0 failing, in Debug and Release | Round 1 clean |
+| 003-delivery | Done: T001 to T037 except T032 and the typed-session part of T035 (left for the developer) | Unit and Runner whole-flow: 430; console end-to-end: 25 (adds [TD-02][td-02] test-data presence and [BS-01][bs-01] build settings, and runs [E2E-01][e2e-01] over the six test-data pairs); 0 failing | Round 1 clean |
 
-**Totals at the finish:** 455 tests, all passing: 430 in `ToyRobot.Tests` (unit and whole-flow), 25 in
-`ToyRobot.EndToEndTests`. `dotnet build` gives 0 warnings and 0 errors.
+**Totals at the finish:** 455 tests, all passing: 430 in `ToyRobot.Tests` (unit and Runner whole-flow), 25 in
+`ToyRobot.ConsoleEndToEndTests`. `dotnet build` gives 0 warnings and 0 errors.
 
 Notes from spec 001:
 - Each phase's tests were run before its code: Phase 2 did not compile, Phases 3 and 4 failed, Phases 5
@@ -427,9 +427,9 @@ Notes from spec 002:
 - T052 (follow the quickstart by hand, including a typed session ended with Ctrl+Z / Ctrl+D) is left
   unchecked: a typed session needs a real console. The redirected-input, channel and how-to-run-message parts were
   run by hand from bash and were correct. Left for the developer.
-- The end-to-end tests start the built executable (`ToyRobot.exe` on Windows, `ToyRobot` elsewhere) for
+- The console end-to-end tests start the built executable (`ToyRobot.exe` on Windows, `ToyRobot` elsewhere) for
   the configuration under test; they passed here in Debug and Release.
-- After the main review, the byte-order mark in `Runner.cs` and one whole-flow test was changed from an
+- After the main review, the byte-order mark in `Runner.cs` and one Runner whole-flow test was changed from an
   invisible literal character to the escape ``\uFEFF``; all 447 tests pass.
 - Small choices: `AppProcess.FindRepositoryRoot` is public so the test-data test reuses it; `Program.Main`
   is private inside `internal static class Program`.
@@ -496,7 +496,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | After | Review | Non-blocking points |
 |---|---|---|
 | Specification phase (step 7) | Approved; ran the checks script, compared strings by hand, re-traced the Brainstorm examples | `--format sln` needs SDK 9.0.200 or later (fine here); the README status text is updated in place (003); worktree location; `*.pdf binary` in `.gitattributes` (decided in 003) |
-| Spec 001 | Approved; built and ran the tests in a fresh clone: 0 warnings, 337 of 337 pass | Commands throw if run directly with no robot (unreachable through RobotOperator); empty end-to-end project prints "No test is available"; implementation-phase prompt log still to be written; tests-first visible in task order, not in commit history (each phase commit holds its tests and code) |
+| Spec 001 | Approved; built and ran the tests in a fresh clone: 0 warnings, 337 of 337 pass | Commands throw if run directly with no robot (unreachable through RobotOperator); empty console end-to-end project prints "No test is available"; implementation-phase prompt log still to be written; tests-first visible in task order, not in commit history (each phase commit holds its tests and code) |
 | Spec 002 | Approved; fresh clone built with warnings as errors (0 warnings), 430 + 17 tests pass; hand runs with a byte-order mark, CRLF, blank line and `EXIT now` gave the exact expected output | Report row was out of date (fixed); T052 left for the developer; literal byte-order mark in `Runner.cs` (fixed); the last `> ` prompt stays on screen at Ctrl+Z / Ctrl+D (expected, [DEC-10][dec-10]) |
 | Spec 003 and the finish (step 12) | Approved; fresh clone: 0 warnings, 455 of 455 tests pass; `run.cmd` with Challenge Example 1 matches; CI green on all three systems; every prompt-log quote found word for word (before names, folder paths and links were edited for publication) | T032 (README fresh-clone check) open; T035 was ticked though the typed session was not run (now left open with a note); README typing note lacked Ctrl+Z / Ctrl+D (fixed); README status said the commands were run as written before the final check (fixed); README now links this report; `run.cmd` quotes the missing file name and `run.sh` does not (cosmetic); an empty second argument `run a ""` counts as none (trivial) |
 
@@ -507,12 +507,13 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | The run scripts show progress lines on console messages (stderr): checking .NET, building, then running (with the file name, or a typing hint) | Developer's request ([P141][p141]). Spec 003 had decided that a successful run shows nothing from the script; [DEC-37][dec-37] only requires the build to be quiet and the script's messages to go to stderr, so this stays within [DEC-37][dec-37] and [DEC-23][dec-23] | spec 003, [CI-07][ci-07] check first; then scripts, README | 455 tests pass; hand runs in cmd and Git Bash: stdout unchanged, progress lines then the echo on stderr, no "Running" line for a missing file or two arguments |
 | `run.cmd` rejects a file argument containing `*` or `?` (exit 1, message on stderr) and turns delayed expansion off itself | Developer's request ([P142][p142]), after a review found that a wildcard argument printed misleading lines and exited 0, and that a `!` in a file name would be changed if a user's settings turn delayed expansion on | spec 003, [CI-02][ci-02] case first; then script | 455 tests pass; hand runs: wildcards exit 1 with no "Running" line; names with `&`, `^`, `%`, `!` shown as text, also with delayed expansion forced on; `run.sh` already gives File not found |
 | `Program` catches any unexpected exception: one line `Error: unexpected problem - <message>` on stderr, exit code 2 | Developer's decision ([P143][p143]), recorded in [DEC-32][dec-32], [DEC-23][dec-23], [DEC-26][dec-26] and [DEC-31][dec-31], then the solution design and spec 002. It replaces the run's decision "no catch-all in the Runner or Program" (spec 002 Assumptions); the Runner still has none | [DEC-32][dec-32]; then solution design; then spec 002; then code and tests | 460 tests pass (5 new: failing reader, failing output writer, failing error writer, how-to-run and normal runs through `Program.Run`); spec checks 1 to 5 pass (the check script now knows the [DEC-32][dec-32] error line and exit code 2) |
-| The message for an argument starts `How to run:` instead of `Usage:`, and is called the how-to-run message instead of the usage hint, in the documents, code, tests and run scripts | Developer's decision ([P144][p144] to [P146][p146]): "Usage" is not self-explanatory. Recorded in [DEC-04][dec-04], then the solution design, the three specs and the checks script, then the tests (written first, 5 failed), then `Program`, `run.cmd`, `run.sh` and the README; the constitution wording too (version 1.0.1, after the review). The recorded `/speckit-specify` inputs (`specify-inputs.md`, spec 002 Input line) keep the wording that was run. The end-to-end test file is now `HowToRunMessageTests.cs` (renamed with git, history kept) | [DEC-04][dec-04]; then solution design; then specs, checks; then tests first; then code, scripts, README; then constitution and review notes | 460 tests pass; spec checks 1 to 5 pass; hand runs: `run.cmd a b` and `./run.sh a b` print their `How to run:` line and exit 1; `run.cmd` with Challenge Example 1 unchanged |
+| The message for an argument starts `How to run:` instead of `Usage:`, and is called the how-to-run message instead of the usage hint, in the documents, code, tests and run scripts | Developer's decision ([P144][p144] to [P146][p146]): "Usage" is not self-explanatory. Recorded in [DEC-04][dec-04], then the solution design, the three specs and the checks script, then the tests (written first, 5 failed), then `Program`, `run.cmd`, `run.sh` and the README; the constitution wording too (version 1.0.1, after the review). The recorded `/speckit-specify` inputs (`specify-inputs.md`, spec 002 Input line) keep the wording that was run. The console end-to-end test file is now `HowToRunMessageTests.cs` (renamed with git, history kept) | [DEC-04][dec-04]; then solution design; then specs, checks; then tests first; then code, scripts, README; then constitution and review notes | 460 tests pass; spec checks 1 to 5 pass; hand runs: `run.cmd a b` and `./run.sh a b` print their `How to run:` line and exit 1; `run.cmd` with Challenge Example 1 unchanged |
 | The references in the Markdown documents are clickable: every `DEC-nn`, `FR-nn`, `NFR-nn`, spec-local ID (for example `TD-01`, `CI-02`) and `Pnn` prompt number links to its definition (reference-style links, definitions at the end of each file), with invisible `<a id>` anchors on each requirement of pages 2 and 3, each ID defined in a spec and each prompt in the two logs. No wording changed | Developer's request ([P149][p149] to [P150][p150]): a reader who sees a reference should be able to click it. Left unlinked: the recorded `/speckit-specify` inputs, the scenario tags such as `**[FR-01; DEC-01]**` and two "as for FR-nn" phrases on page 2 that the spec checks read as raw text. Done by a Sonnet 5.5 agent | links; then prompt anchors; then prompt log | 460 tests pass; spec checks 1 to 5 pass (7 fails as before); link checker: 2835 links, every file and anchor resolves; text unchanged once links and anchors are removed |
 | A line that is only Ctrl+Z (U+001A) ends the input like the end of a file, typed or redirected, with no echo or warning and exit code 0 | Developer's report from testing on Windows ([P161][p161]) and decision ([P162][p162]), recorded in [DEC-10][dec-10], then the solution design and spec 002 (FR-16, two scenarios, task T058). On Windows the console gives Ctrl+Z then Enter as that one-character line instead of the end of input, so the session did not end. Done by a Sonnet 5.5 agent | [DEC-10][dec-10]; then solution design; then spec 002; then tests first (2 failed); then Runner | 462 tests pass (437 + 25; 2 new, failing before the change); spec checks 1 to 5 pass (7 fails as before) |
 | A page [docs/try-it-by-typing.md](../try-it-by-typing.md), linked from the README ("Run it" and "Where to look"): how to start a typed session, the commands, a normal session, the commands that are ignored with their exact warnings, and a session blocked at the edge | Developer's request ([P163][p163] to [P165][p165]), so a reader can try the application by hand without a longer README | the page; then the README links | Every warning and output line on the page was produced by running the same commands through the built application |
-| A number written as a whole number but too large to read (outside the range of a 32-bit whole number, in either direction) is still a bad line, but its warning says `X is too large` (or `Y is too large`) instead of `X must be a whole number`; anything not written as a whole number keeps `must be a whole number`; only the first problem on a line is still reported | Developer's report from testing by hand ([P167][p167] to [P169][p169]): `place 9999999999999999999,0,east` said "must be a whole number" although it is one, and a second too-large value on the same line was not mentioned. Recorded in [DEC-20][dec-20] and [DEC-22][dec-22] (the developer's choice of option A in [DEC-20][dec-20] is unchanged), then the solution design, spec 001 (spec, contract, research, task T059) and the other specs and the checks script that list the text. Done by a Sonnet 5.5 agent | [DEC-20][dec-20], [DEC-22][dec-22]; then solution design; then spec 001; then tests first (22 failed); then `CommandParser`; then the try-it page | 495 tests pass (470 unit and whole-flow, 25 end-to-end); 0 build warnings; spec checks 1 to 5 pass; every new warning on the try-it page was produced by running the built application |
+| A number written as a whole number but too large to read (outside the range of a 32-bit whole number, in either direction) is still a bad line, but its warning says `X is too large` (or `Y is too large`) instead of `X must be a whole number`; anything not written as a whole number keeps `must be a whole number`; only the first problem on a line is still reported | Developer's report from testing by hand ([P167][p167] to [P169][p169]): `place 9999999999999999999,0,east` said "must be a whole number" although it is one, and a second too-large value on the same line was not mentioned. Recorded in [DEC-20][dec-20] and [DEC-22][dec-22] (the developer's choice of option A in [DEC-20][dec-20] is unchanged), then the solution design, spec 001 (spec, contract, research, task T059) and the other specs and the checks script that list the text. Done by a Sonnet 5.5 agent | [DEC-20][dec-20], [DEC-22][dec-22]; then solution design; then spec 001; then tests first (22 failed); then `CommandParser`; then the try-it page | 495 tests pass (470 unit and Runner whole-flow, 25 console end-to-end); 0 build warnings; spec checks 1 to 5 pass; every new warning on the try-it page was produced by running the built application |
 | Solution design page 8.3 (event-based alternative): the CommandParser returns a command, which the Runner or a dispatcher turns into an event for the store and reducer; the review log records the issues found while testing by hand | Found while testing by hand ([P170][p170] to [P172][p172]); the diagram had the CommandParser return an event | page 8.3; then the review log | Links checked; no code, test or decision changed |
+| The two test levels are named "Runner whole-flow tests" (in memory, from the Runner inward) and "console end-to-end tests" (the real built application as a separate process); the folder `tests/ToyRobot.Tests/WholeFlow/` is now `tests/ToyRobot.Tests/RunnerWholeFlow/` and the project `ToyRobot.EndToEndTests` is now `ToyRobot.ConsoleEndToEndTests` | Developer's review of the tests ([P173][p173], [P174][p174]): the names "whole-flow" and "end-to-end" were confusing. Recorded in [DEC-31][dec-31], which now defines the two terms, then the solution design, the Spec Kit files (new task T059 in spec 002), the code, the CI workflow, the checks script and the README. Done by a Sonnet 5.5 agent | [DEC-31][dec-31]; then solution design; then Spec Kit files; then `git mv` of the folder and project with namespaces, the solution file and the CI workflow; then README | 495 tests pass (470 in `ToyRobot.Tests`, 25 in `ToyRobot.ConsoleEndToEndTests`), in Debug; 0 build warnings in Debug and Release; spec checks 1 to 5 pass; link checker: every file and anchor resolves |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -650,6 +651,8 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p170]: ../design-analysis/prompts-implementation-phase.md#p170
 [p171]: ../design-analysis/prompts-implementation-phase.md#p171
 [p172]: ../design-analysis/prompts-implementation-phase.md#p172
+[p173]: ../design-analysis/prompts-implementation-phase.md#p173
+[p174]: ../design-analysis/prompts-implementation-phase.md#p174
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

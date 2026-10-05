@@ -21,7 +21,7 @@ description: "Task list for spec 001-robot-rules"
 - **[Story]**: the user story in spec.md (US1 to US4).
 - Every task cites its requirement (FR, NFR, SK, UT) and DEC IDs. Expected texts in test tasks are copied character for character from [DEC-22][dec-22]; write them exactly as shown, between the backticks.
 - `[TAB]` means one tab character (U+0009) and `[NBSP]` one non-breaking space (U+00A0); in C# write them as `\t` and `\u00A0`.
-- "Driver" means the test helper `RulesDriver` (T028): it passes each line to `CommandParser.Parse`, runs each command object with `RobotOperator.Run`, and gives back, in order, the position texts (from `Outcome.PositionText`) and the warning texts (from `Outcome.Warning` and from `ParseResult.Failure` reasons), plus the final `CurrentState`. Spec 002's whole-flow tests check the same scenarios as console text.
+- "Driver" means the test helper `RulesDriver` (T028): it passes each line to `CommandParser.Parse`, runs each command object with `RobotOperator.Run`, and gives back, in order, the position texts (from `Outcome.PositionText`) and the warning texts (from `Outcome.Warning` and from `ParseResult.Failure` reasons), plus the final `CurrentState`. Spec 002's Runner whole-flow tests check the same scenarios as console text.
 
 ## Path conventions
 
@@ -37,8 +37,8 @@ Application: `src/ToyRobot/` (namespace `ToyRobot`). Unit tests: `tests/ToyRobot
 - [x] T002 Create `src/ToyRobot/ToyRobot.csproj` by hand (not from a template): `Sdk="Microsoft.NET.Sdk"`, `OutputType` `Exe`, `TargetFramework` `net8.0`, `RollForward` `LatestMajor`, `Nullable` `enable`, `ImplicitUsings` `enable`, `RootNamespace` `ToyRobot`, `AssemblyName` `ToyRobot`, no package references ([NFR-03][nfr-03]; [SK-02][sk-02], [SK-03][sk-03]; [DEC-37][dec-37], [DEC-39][dec-39]; research R1).
 - [x] T003 Create `src/ToyRobot/Program.cs` as a placeholder entry point: a top-level `return 0;` with a comment saying it is a placeholder from spec 001 that spec 002 replaces with Program as page 6 describes. It reads nothing and writes nothing ([NFR-06][nfr-06]; [DEC-23][dec-23], [DEC-26][dec-26]; research R2).
 - [x] T004 [P] Create `tests/ToyRobot.Tests/ToyRobot.Tests.csproj` by hand: `TargetFramework` `net8.0`, `RollForward` `LatestMajor`, `Nullable` `enable`, `ImplicitUsings` `enable`, `IsPackable` `false`, `IsTestProject` `true`; package references exactly `Microsoft.NET.Test.Sdk` 17.8.0, `xunit` 2.5.3, `xunit.runner.visualstudio` 2.5.3; `<Using Include="Xunit" />`; a project reference to `..\..\src\ToyRobot\ToyRobot.csproj`. No `coverlet.collector`, no `UnitTest1.cs` ([NFR-03][nfr-03], [NFR-06][nfr-06]; [SK-01][sk-01], [SK-03][sk-03]; [DEC-31][dec-31]; research R1).
-- [x] T005 [P] Create `tests/ToyRobot.EndToEndTests/ToyRobot.EndToEndTests.csproj` with the same content as T004 (same settings, packages and project reference). It holds no test file; spec 002 adds its tests ([NFR-03][nfr-03], [NFR-06][nfr-06]; [SK-01][sk-01]; [DEC-31][dec-31], [DEC-37][dec-37]; spec Assumptions "the end-to-end test project in the skeleton").
-- [x] T006 Create `ToyRobot.sln` at the repository root with `dotnet new sln -n ToyRobot --format sln` (the `--format sln` option is needed with an SDK of version 9 or later, which otherwise creates `.slnx`), then add the three projects with `dotnet sln ToyRobot.sln add src/ToyRobot/ToyRobot.csproj tests/ToyRobot.Tests/ToyRobot.Tests.csproj tests/ToyRobot.EndToEndTests/ToyRobot.EndToEndTests.csproj` ([NFR-06][nfr-06]; [SK-01][sk-01]; [DEC-31][dec-31], [DEC-37][dec-37]; page 5).
+- [x] T005 [P] Create `tests/ToyRobot.ConsoleEndToEndTests/ToyRobot.ConsoleEndToEndTests.csproj` with the same content as T004 (same settings, packages and project reference). It holds no test file; spec 002 adds its tests ([NFR-03][nfr-03], [NFR-06][nfr-06]; [SK-01][sk-01]; [DEC-31][dec-31], [DEC-37][dec-37]; spec Assumptions "the console end-to-end test project in the skeleton").
+- [x] T006 Create `ToyRobot.sln` at the repository root with `dotnet new sln -n ToyRobot --format sln` (the `--format sln` option is needed with an SDK of version 9 or later, which otherwise creates `.slnx`), then add the three projects with `dotnet sln ToyRobot.sln add src/ToyRobot/ToyRobot.csproj tests/ToyRobot.Tests/ToyRobot.Tests.csproj tests/ToyRobot.ConsoleEndToEndTests/ToyRobot.ConsoleEndToEndTests.csproj` ([NFR-06][nfr-06]; [SK-01][sk-01]; [DEC-31][dec-31], [DEC-37][dec-37]; page 5).
 - [x] T007 Run `dotnet build ToyRobot.sln` and `dotnet test ToyRobot.sln` from the repository root: both exit with code 0 (no tests yet). Run `git status` and confirm no `bin/` or `obj/` folder is listed ([NFR-06][nfr-06]; [SK-01][sk-01], [SC-007][sc-007]; [DEC-31][dec-31], [DEC-37][dec-37]).
 
 **Checkpoint**: the skeleton builds and `dotnet test` passes. Commit.
@@ -280,7 +280,7 @@ Task: "T043 Implement RightCommand in src/ToyRobot/RightCommand.cs"
 | Every warning in [DEC-22][dec-22] with its exact text, including `> MOVE`, `MOVE now`, `PLACEHOLDER`, `PLACE 99999999999,0,NORTH`, `PLACE 0,0,N`, blank lines, off-table with parsed values | T024, T026, T035, T046, T050, T051 (US4-3), T029 (US1-7) |
 | `EXIT now` exits, `EXITNOW` warns (parser level) | T050 |
 
-The remaining [DEC-31][dec-31] cases (EXIT mid-file and before PLACE as a session, prompt and echo, empty input, byte-order mark, how-to-run message and exit codes) belong to spec 002's whole-flow and end-to-end tests.
+The remaining [DEC-31][dec-31] cases (EXIT mid-file and before PLACE as a session, prompt and echo, empty input, byte-order mark, how-to-run message and exit codes) belong to spec 002's Runner whole-flow and console end-to-end tests.
 
 ## Notes
 

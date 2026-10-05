@@ -1,6 +1,6 @@
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // Ending a session with EXIT or a Ctrl+Z line: FR-15, FR-16, FR-14; DEC-10, DEC-25, DEC-30.
 public class EndOfSessionTests

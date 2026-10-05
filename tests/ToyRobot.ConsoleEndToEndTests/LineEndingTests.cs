@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-07: NFR-04; DEC-31, DEC-33.
 public class LineEndingTests

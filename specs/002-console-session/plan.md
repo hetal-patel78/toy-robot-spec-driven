@@ -8,22 +8,22 @@
 
 ## Summary
 
-This spec builds the two components that turn spec 001's robot rules into a console application: the **Runner** (runs one session over a reader and two writers) and **Program** (the thin entry point). It also plans the whole-flow tests in memory (level 2 of [DEC-31][dec-31]) and the end-to-end tests of the built application (level 3). It owns [FR-08][fr-08], [FR-11][fr-11] to [FR-17][fr-17], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05] and [NFR-06][nfr-06].
+This spec builds the two components that turn spec 001's robot rules into a console application: the **Runner** (runs one session over a reader and two writers) and **Program** (the thin entry point). It also plans the Runner whole-flow tests in memory (level 2 of [DEC-31][dec-31]) and the console end-to-end tests of the built application (level 3). It owns [FR-08][fr-08], [FR-11][fr-11] to [FR-17][fr-17], [NFR-01][nfr-01], [NFR-04][nfr-04], [NFR-05][nfr-05] and [NFR-06][nfr-06].
 
 Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 - `Runner(TextReader input, TextWriter output, TextWriter error, RobotOperator robotOperator, bool interactive)` with one method, `Run()`, which follows page 6's five steps for each line: prompt (interactive), read, remove a byte-order mark from the first line, echo (redirected), parse and dispatch. It creates its own CommandParser and never touches `Console`.
 - `Program` with `static int Main(string[] args)`, which picks `Console.In` (typing) or its own UTF-8 reader over console input (redirected) and returns what `internal static int Run(string[] args, TextReader input, TextWriter output, TextWriter error, bool interactive)` returns for that reader, `Console.Out` and `Console.Error`. `Run`: any argument gives the how-to-run message on `error` and returns 1; otherwise it builds `Table(5, 5)`, `RobotOperator(table)`, runs the Runner, and returns 0; an unexpected exception gives one error line on `error` and returns 2 ([PG-02][pg-02], [DEC-32][dec-32]).
-- Whole-flow tests give the Runner a `StringReader` and two `StringWriter`s; end-to-end tests start the built executable as a separate process with redirected console input, console output (stdout) and console messages (stderr).
+- Runner whole-flow tests give the Runner a `StringReader` and two `StringWriter`s; console end-to-end tests start the built executable as a separate process with redirected console input, console output (stdout) and console messages (stderr).
 
 ## Technical Context
 
 **Language/Version**: C# on .NET 8 (`net8.0`), `RollForward` = `LatestMajor` ([DEC-37][dec-37]; set up by spec 001, [SK-02][sk-02])
 
-**Primary Dependencies**: none beyond the .NET base class library (`System.IO`, `System.Text`, `System.Diagnostics.Process` in the end-to-end tests). No other library, no dependency injection container, no logging framework ([DEC-39][dec-39], brief rule 7).
+**Primary Dependencies**: none beyond the .NET base class library (`System.IO`, `System.Text`, `System.Diagnostics.Process` in the console end-to-end tests). No other library, no dependency injection container, no logging framework ([DEC-39][dec-39], brief rule 7).
 
 **Storage**: N/A. Input is console input (stdin); output is console output (stdout) and console messages (stderr). Test-data files in `testdata/` are delivered by spec 003.
 
-**Testing**: xUnit (page 5). Whole-flow tests in `tests/ToyRobot.Tests/` (same project as spec 001's unit tests); end-to-end tests in `tests/ToyRobot.EndToEndTests/` (project created empty by spec 001, filled here).
+**Testing**: xUnit (page 5). Runner whole-flow tests in `tests/ToyRobot.Tests/` (same project as spec 001's unit tests); console end-to-end tests in `tests/ToyRobot.ConsoleEndToEndTests/` (project created empty by spec 001, filled here).
 
 **Target Platform**: Windows, Linux and macOS ([DEC-33][dec-33]); console application; CI on `windows-latest`, `ubuntu-latest`, `macos-latest` (spec 003).
 
@@ -44,9 +44,9 @@ Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 | Principle | How this plan meets it | Status |
 |---|---|---|
 | I. Clean Code and SOLID | Runner and Program each have the single job page 6 gives them; names and members exactly as page 6 and [DEC-29][dec-29]; the Runner depends on the reader and writers it is given, not on `Console`. | Pass |
-| II. Three Test Levels, Tests First | This spec plans levels 2 and 3 (level 1 is spec 001). In `tasks.md` every test task comes before the code that makes it pass; each phase ends with `dotnet build` and `dotnet test` all passing. Expected output is compared line by line (end-to-end) and exactly (whole-flow). | Pass |
+| II. Three Test Levels, Tests First | This spec plans levels 2 and 3 (level 1 is spec 001). In `tasks.md` every test task comes before the code that makes it pass; each phase ends with `dotnet build` and `dotnet test` all passing. Expected output is compared line by line (console end-to-end) and exactly (Runner whole-flow). | Pass |
 | III. Never Crash | The Runner handles every parse result and outcome; nothing is thrown for any input; [NFR-01][nfr-01] tests at both levels (empty input, a number too large, every kind of bad line, BOM). Program's last safeguard turns an unexpected exception into one error line and exit code 2 ([PG-02][pg-02], [DEC-32][dec-32]), tested in memory ([SG-01][sg-01]). | Pass |
-| IV. Cross-Platform | No platform-specific code in the application; the end-to-end tests start `ToyRobot.exe` or `ToyRobot` by platform; CRLF and LF input are both tested ([WF-03][wf-03], [E2E-07][e2e-07]); CI runs all levels on three systems (spec 003). | Pass |
+| IV. Cross-Platform | No platform-specific code in the application; the console end-to-end tests start `ToyRobot.exe` or `ToyRobot` by platform; CRLF and LF input are both tested ([WF-03][wf-03], [E2E-07][e2e-07]); CI runs all levels on three systems (spec 003). | Pass |
 | V. No Over-Engineering | Only the BCL and xUnit; no options, no configuration, no extra commands or messages; the table size stays a constructor argument set by Program. | Pass |
 | VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`. Every test checks the two channels separately. | Pass |
 
@@ -84,8 +84,8 @@ src/
     └── ...                       # spec 001's types (Table, Direction, RobotState, Robot, commands, RobotOperator, CommandParser)
 
 tests/
-├── ToyRobot.Tests/               # from spec 001: unit tests, plus this spec's whole-flow tests
-│   └── WholeFlow/
+├── ToyRobot.Tests/               # from spec 001: unit tests, plus this spec's Runner whole-flow tests
+│   └── RunnerWholeFlow/
 │       ├── SessionHarness.cs                 # runs a Runner over a StringReader and two StringWriters
 │       ├── RedirectedInputTests.cs           # FR-08, FR-11, FR-12, FR-14, WF-02, WF-03
 │       ├── EndOfSessionTests.cs              # FR-15, FR-16
@@ -94,8 +94,8 @@ tests/
 │       ├── ProgramSafeguardTests.cs          # SG-01: Program's Run in memory (PG-01, PG-02)
 │       ├── SmallTableTests.cs                # NFR-05 (2 x 2)
 │       └── RobotRulesAsConsoleTextTests.cs   # WF-01: spec 001's scenarios as console text
-└── ToyRobot.EndToEndTests/       # from spec 001 (empty); this spec adds:
-    ├── ToyRobot.EndToEndTests.csproj         # from spec 001, with its ProjectReference to src/ToyRobot (builds the app first)
+└── ToyRobot.ConsoleEndToEndTests/       # from spec 001 (empty); this spec adds:
+    ├── ToyRobot.ConsoleEndToEndTests.csproj         # from spec 001, with its ProjectReference to src/ToyRobot (builds the app first)
     ├── AppProcess.cs                         # starts the built executable, feeds bytes, collects both channels and the exit code
     ├── LineComparer.cs                       # splits text into lines (CRLF or LF) for line-by-line comparison
     ├── TestDataTests.cs                      # E2E-01
@@ -107,9 +107,9 @@ tests/
     └── LineEndingTests.cs                    # E2E-07
 ```
 
-**Structure Decision**: the layout is fixed by page 5 and spec 001 ([SK-01][sk-01]): one application project and two xUnit test projects in `ToyRobot.sln`. This spec adds two files to the application project, a `WholeFlow` folder to `ToyRobot.Tests`, and its files to `ToyRobot.EndToEndTests`. File names inside the test projects are a planning choice (research [R-08][r-08]); the component names are page 6's.
+**Structure Decision**: the layout is fixed by page 5 and spec 001 ([SK-01][sk-01]): one application project and two xUnit test projects in `ToyRobot.sln`. This spec adds two files to the application project, a `RunnerWholeFlow` folder to `ToyRobot.Tests`, and its files to `ToyRobot.ConsoleEndToEndTests`. File names inside the test projects are a planning choice (research [R-08][r-08]); the component names are page 6's.
 
-Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `ToyRobot`; the whole-flow tests and `SessionHarness` are in `ToyRobot.Tests.WholeFlow`; the end-to-end tests, `AppProcess` and `LineComparer` are in `ToyRobot.EndToEndTests`.
+Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `ToyRobot`; the Runner whole-flow tests and `SessionHarness` are in `ToyRobot.Tests.RunnerWholeFlow`; the console end-to-end tests, `AppProcess` and `LineComparer` are in `ToyRobot.ConsoleEndToEndTests`.
 
 ## Design Notes
 
@@ -136,11 +136,11 @@ Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `To
 - `src/ToyRobot/ToyRobot.csproj` gets an `ItemGroup` with `<InternalsVisibleTo Include="ToyRobot.Tests" />` (an MSBuild item; no library or package), so `ToyRobot.Tests` can call `Run` ([SG-01][sg-01]).
 - Program does not set `Console.OutputEncoding` or `Console.InputEncoding`, and does not handle Ctrl+C ([DEC-10][dec-10], [DEC-26][dec-26]).
 
-### Whole-flow test harness
+### Runner whole-flow test harness
 
 `SessionHarness.Run(string input, bool interactive = false, int width = 5, int height = 5)` builds `Table(width, height)`, `RobotOperator(table)`, a `StringReader(input)`, two `StringWriter`s whose `NewLine` is set to `"\n"`, runs `new Runner(...).Run()`, and returns the two texts. Tests compare each text exactly with the expected lines, each followed by `"\n"` (the prompt with no line break). Setting `NewLine` makes the exact comparison the same on every system ([NFR-04][nfr-04]).
 
-### End-to-end test harness
+### Console end-to-end test harness
 
 `AppProcess.Run(byte[] stdin, params string[] args)`:
 - finds the repository root by walking up from `AppContext.BaseDirectory` to the folder holding `ToyRobot.sln`;
@@ -152,7 +152,7 @@ Namespaces follow the folders, as in spec 001: `Runner` and `Program` are in `To
 
 ### Safeguard tests (SG-01)
 
-`ProgramSafeguardTests` in `ToyRobot.Tests` (namespace `ToyRobot.Tests.WholeFlow`) calls `Run` with a `StringReader` or the test helper `FailingReader` (its `ReadLine` throws `IOException` with the message `boom`), and with `StringWriter`s whose `NewLine` is `"\n"` or the test helper `FailingWriter` (every write throws `IOException` with the message `boom`). It checks the exact text on both writers and the returned exit code.
+`ProgramSafeguardTests` in `ToyRobot.Tests` (namespace `ToyRobot.Tests.RunnerWholeFlow`) calls `Run` with a `StringReader` or the test helper `FailingReader` (its `ReadLine` throws `IOException` with the message `boom`), and with `StringWriter`s whose `NewLine` is `"\n"` or the test helper `FailingWriter` (every write throws `IOException` with the message `boom`). It checks the exact text on both writers and the returned exit code.
 
 ## Complexity Tracking
 
@@ -190,7 +190,7 @@ No Constitution Check violations; nothing to justify.
 [nfr-06]: spec.md#nfr-06
 [pg-02]: spec.md#pg-02
 [r-02]: research.md#r-02-the-utf-8-reader-for-redirected-input-dec-20-dec-26
-[r-04]: research.md#r-04-how-the-end-to-end-tests-start-the-built-application-decided
+[r-04]: research.md#r-04-how-the-console-end-to-end-tests-start-the-built-application-decided
 [r-08]: research.md#r-08-test-file-names-and-test-names-dec-31-nfr-06
 [sg-01]: spec.md#sg-01
 [sk-01]: ../001-robot-rules/spec.md#sk-01

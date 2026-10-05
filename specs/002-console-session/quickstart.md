@@ -9,7 +9,7 @@ dotnet build
 dotnet test
 ```
 
-Expected: the build succeeds; every unit test (spec 001), whole-flow test and end-to-end test passes. The end-to-end tests start `src/ToyRobot/bin/Debug/net8.0/ToyRobot(.exe)`, built by the same command. To check the Release build the same way: `dotnet test -c Release`.
+Expected: the build succeeds; every unit test (spec 001), Runner whole-flow test and console end-to-end test passes. The console end-to-end tests start `src/ToyRobot/bin/Debug/net8.0/ToyRobot(.exe)`, built by the same command. To check the Release build the same way: `dotnet test -c Release`.
 
 ## Try it by hand
 

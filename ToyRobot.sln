@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.Tests", "tests\ToyRobot.Tests\ToyRobot.Tests.csproj", "{6FC63910-BC8E-4C00-AED8-B6C4101D9DD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.EndToEndTests", "tests\ToyRobot.EndToEndTests\ToyRobot.EndToEndTests.csproj", "{70641925-26FE-47FC-866F-C77B53A4A40B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyRobot.ConsoleEndToEndTests", "tests\ToyRobot.ConsoleEndToEndTests\ToyRobot.ConsoleEndToEndTests.csproj", "{70641925-26FE-47FC-866F-C77B53A4A40B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

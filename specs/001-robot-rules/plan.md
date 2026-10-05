@@ -16,7 +16,7 @@ This spec builds the solution skeleton and the robot rules: the Table, Direction
 
 **Storage**: N/A (all state in memory for one session).
 
-**Testing**: xUnit unit tests in `tests/ToyRobot.Tests/Unit/` ([DEC-31][dec-31] level 1). Hand-written test doubles (`FakeRobotOperator`, `SpyCommand`) and a test helper (`RulesDriver`) instead of a mocking library (research R13). Whole-flow and end-to-end tests belong to spec 002.
+**Testing**: xUnit unit tests in `tests/ToyRobot.Tests/Unit/` ([DEC-31][dec-31] level 1). Hand-written test doubles (`FakeRobotOperator`, `SpyCommand`) and a test helper (`RulesDriver`) instead of a mocking library (research R13). Runner whole-flow and console end-to-end tests belong to spec 002.
 
 **Target Platform**: Windows, Linux and macOS ([DEC-33][dec-33]; proved by spec 003's CI). Nothing in this spec depends on the system: culture-independent reading and writing (research R8, R9), no file or console access.
 
@@ -108,13 +108,13 @@ tests/
 │       ├── CommandParserTests.cs
 │       ├── RobotRulesScenarioTests.cs
 │       └── DesignRulesTests.cs
-└── ToyRobot.EndToEndTests/
-    └── ToyRobot.EndToEndTests.csproj   # xUnit; references src/ToyRobot; no tests until spec 002
+└── ToyRobot.ConsoleEndToEndTests/
+    └── ToyRobot.ConsoleEndToEndTests.csproj   # xUnit; references src/ToyRobot; no tests until spec 002
 ```
 
-`ToyRobot.Tests` will also hold spec 002's whole-flow tests (page 9), in their own folder. All application types are in the namespace `ToyRobot` and are public, except Program, which is internal (the compiler-generated class of this spec's placeholder entry point, then `internal static class Program` in spec 002 T022); test classes are in `ToyRobot.Tests.Unit` (support types in `ToyRobot.Tests.Unit.Support`).
+`ToyRobot.Tests` will also hold spec 002's Runner whole-flow tests (page 9), in their own folder. All application types are in the namespace `ToyRobot` and are public, except Program, which is internal (the compiler-generated class of this spec's placeholder entry point, then `internal static class Program` in spec 002 T022); test classes are in `ToyRobot.Tests.Unit` (support types in `ToyRobot.Tests.Unit.Support`).
 
-**Structure Decision**: the single-application layout fixed by page 5 (`src/ToyRobot/`, `tests/ToyRobot.Tests/`, `tests/ToyRobot.EndToEndTests/`, `ToyRobot.sln` at the root). One file per type, named after the type. `testdata/`, `run.cmd`, `run.sh`, `.gitattributes`, the CI workflow and the README belong to spec 003; Runner and Program to spec 002.
+**Structure Decision**: the single-application layout fixed by page 5 (`src/ToyRobot/`, `tests/ToyRobot.Tests/`, `tests/ToyRobot.ConsoleEndToEndTests/`, `ToyRobot.sln` at the root). One file per type, named after the type. `testdata/`, `run.cmd`, `run.sh`, `.gitattributes`, the CI workflow and the README belong to spec 003; Runner and Program to spec 002.
 
 ## Implementation notes
 
@@ -128,8 +128,8 @@ tests/
 ## Dependencies on other specs
 
 - None before this spec: it is implemented first.
-- Spec 002 builds on this spec's types (contracts/robot-rules-api.md), adds the Runner and Program (replacing the placeholder `Program.cs`), and adds whole-flow tests to `tests/ToyRobot.Tests` and end-to-end tests to `tests/ToyRobot.EndToEndTests`.
-- Spec 003 needs the built application and spec 002's end-to-end tests.
+- Spec 002 builds on this spec's types (contracts/robot-rules-api.md), adds the Runner and Program (replacing the placeholder `Program.cs`), and adds Runner whole-flow tests to `tests/ToyRobot.Tests` and console end-to-end tests to `tests/ToyRobot.ConsoleEndToEndTests`.
+- Spec 003 needs the built application and spec 002's console end-to-end tests.
 
 ## Complexity Tracking
 

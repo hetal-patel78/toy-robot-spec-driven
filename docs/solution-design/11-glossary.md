@@ -35,6 +35,7 @@ In alphabetical order.
 | **Command pattern** | A design where each command is its own class with a method that carries it out. The chosen design uses it, with commands reaching the robot only through `IRobotOperator` (page [8](08-alternative-solutions.md)). |
 | **Command word** | The first word of a line, up to the first whitespace, for example `PLACE` ([DEC-08][dec-08]). |
 | **Console** | Where commands are typed and everything the application prints appears. |
+| **Console end-to-end test** | A test that starts the real built application as a separate program and checks its real console input and output (stdout and stderr), exit codes, the test data and the run scripts. Lives in the project `ToyRobot.ConsoleEndToEndTests` ([DEC-31][dec-31]). |
 | **Console input (stdin)** | Where the commands come from: the keyboard, or a file or pipe redirected into the application. Technically standard input. |
 | **Console messages (stderr)** | Everything the application prints except the REPORT result: the prompt, the echo, warnings, the how-to-run message and the unexpected-problem error line. Technically standard error ([DEC-23][dec-23]). |
 | **Console output (stdout)** | Only the REPORT result, `Output:` and the position. Technically standard output ([DEC-23][dec-23]). |
@@ -43,7 +44,6 @@ In alphabetical order.
 | **DEC-nn** | A decision in [design-decisions.md][dd], for example [DEC-15][dec-15]. That file is the source of truth. |
 | **Echo** | With redirected input, each line read is written back to console messages (stderr) as `> ` and the line, so a file run reads like a typed session ([DEC-25][dec-25]). |
 | **End of input** | The input has no more lines: the end of a file, or Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS) when typing. A line holding only the character Ctrl+Z (U+001A), as the Windows console gives it, counts as the end of input too. It ends the session with exit code 0 ([DEC-10][dec-10]). |
-| **End-to-end test** | A test that starts the built application as a separate program and checks its real console output (stdout) and exit code ([DEC-31][dec-31]). |
 | **EXIT** | Ends the session at once with exit code 0. Handled by the Runner, never by RobotOperator ([DEC-10][dec-10], [DEC-30][dec-30]). |
 | **Exit code** | The number a program returns to the system when it stops: 0 means success, 1 means it was used incorrectly, 2 means an unexpected problem ([DEC-32][dec-32]). |
 | **Failure** | What the CommandParser returns for a bad line, with the reason used in the warning. It is a normal result, not an error that stops the application. |
@@ -68,6 +68,7 @@ In alphabetical order.
 | **Replace** | The only way the robot changes: a new RobotState takes the place of the old one, after the Table has checked it ([DEC-13][dec-13]). |
 | **RollForward** | A project setting that lets the application, built for .NET 8, run on a newer installed .NET version ([DEC-37][dec-37]). |
 | **Run scripts** | `run.cmd` (Windows) and `run.sh` (Linux, macOS): check .NET, build, and start the application, optionally with a file ([DEC-37][dec-37]). |
+| **Runner whole-flow test** | A test that runs the whole application in memory, from the Runner inward (Runner, CommandParser, RobotOperator, the command classes and Table, some through Program's `Run` method), without the console. Lives in the folder `tests/ToyRobot.Tests/RunnerWholeFlow/` ([DEC-31][dec-31]). |
 | **SOLID** | Five principles of object-oriented design. Those used here: each class has one job (single responsibility); new behaviour is added with new classes (open/closed); parts depend on small interfaces ([DEC-34][dec-34]). |
 | **Spec Kit** | GitHub's tool for spec-driven development. The next step after this document: constitution, specification, plan and tasks ([DEC-36][dec-36]). |
 | **Test data** | Input files with matching expected-output files, in `testdata/` ([DEC-37][dec-37]). |
@@ -76,7 +77,6 @@ In alphabetical order.
 | **UTF-8, UTF-16** | Ways of storing text as bytes. The application reads redirected input as UTF-8 ([DEC-26][dec-26]). |
 | **Warning** | One line on console messages (stderr), starting `Warning: `, saying why a line or command was ignored ([DEC-22][dec-22]). |
 | **Whitespace** | Spaces, tabs, non-breaking spaces and other blank characters: what `Trim()` removes ([DEC-08][dec-08]). |
-| **Whole-flow test** | A test that runs the Runner, CommandParser, RobotOperator and Table together in memory, without the console ([DEC-31][dec-31]). |
 | **xUnit** | The .NET test framework the tests use. |
 
 ---

@@ -1,4 +1,4 @@
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 /// <summary>
 /// Runs a <see cref="Runner"/> over a string reader and two string writers and gives back what was written

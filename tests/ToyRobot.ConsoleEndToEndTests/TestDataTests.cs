@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-01: every testdata/<name>.txt with a testdata/<name>.expected.txt gives that console output
 // (FR-08, FR-12, NFR-06; DEC-23, DEC-31). With no testdata/ folder or no pair, it passes (research R-05).

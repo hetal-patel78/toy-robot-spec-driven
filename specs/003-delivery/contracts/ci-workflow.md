@@ -6,8 +6,8 @@ File: `.github/workflows/ci.yml`, workflow name `CI`. Trigger: `on: push` (every
 |---|---|---|---|
 | 1 | Check out (`actions/checkout`) and install the .NET SDK 8 (`actions/setup-dotnet`, `8.0.x`) | — | the steps succeed |
 | 2 | `dotnet build ToyRobot.sln` | default | exit code 0 |
-| 3 | `dotnet test tests/ToyRobot.Tests --no-build` (unit and whole-flow tests) | default | every test passes |
-| 4 | `dotnet test tests/ToyRobot.EndToEndTests --no-build` (end-to-end tests incl. [E2E-01][e2e-01] to [E2E-09][e2e-09] of spec 002, [TD-02][td-02], [BS-01][bs-01]) | default | every test passes |
+| 3 | `dotnet test tests/ToyRobot.Tests --no-build` (unit and Runner whole-flow tests) | default | every test passes |
+| 4 | `dotnet test tests/ToyRobot.ConsoleEndToEndTests --no-build` (console end-to-end tests incl. [E2E-01][e2e-01] to [E2E-09][e2e-09] of spec 002, [TD-02][td-02], [BS-01][bs-01]) | default | every test passes |
 | 5 | [CI-06][ci-06]: `git ls-files --eol` (line-ending part, added before `.gitattributes`) and `git ls-files -s run.sh` (mode part, added before `run.sh`) | bash | `.cmd` files `w/crlf`; other text files `w/lf`, `w/none` or empty; `run.sh` mode `100755` |
 | 6 | [CI-01][ci-01]: the script with each `testdata/<name>.txt` as its one argument, console output (stdout) saved to `out/<name>.txt`, exit code saved; and one run from inside `testdata` (`challenge-example-1.txt`, output saved to `out/other-folder.txt`, exit code saved) | Windows: cmd (`call run.cmd testdata\<name>.txt`; `cd testdata`, `call ..\run.cmd challenge-example-1.txt`); Linux, macOS: bash (`./run.sh testdata/<name>.txt`; `(cd testdata && ../run.sh challenge-example-1.txt)`) | every exit code 0 (checked in step 8) |
 | 7 | [CI-03][ci-03]: the script with no argument, console input from `testdata/challenge-example-1.txt`, console output (stdout) saved to `out/no-argument.txt` | as step 6 (`call run.cmd < testdata\challenge-example-1.txt`; `./run.sh < testdata/challenge-example-1.txt`) | exit code 0 (checked in step 8) |

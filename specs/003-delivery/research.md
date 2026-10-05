@@ -40,8 +40,8 @@ Phase 0 of the plan. The Technical Context had no open items: the technology is 
 - **Decision**: one workflow `.github/workflows/ci.yml`, named `CI`, triggered `on: push` (every branch). One job with `timeout-minutes: 30` (a hanging step fails that system within 30 minutes, not after the 360-minute default) and a matrix `os: [windows-latest, ubuntu-latest, macos-latest]` and `fail-fast: false`, so each system reports its own result. Steps in the order of the page 9 test flow:
   1. `actions/checkout@v5`; `actions/setup-dotnet@v5` with `dotnet-version: 8.0.x` (if a `@v5` tag is not available when implemented, the latest major of the same action).
   2. `dotnet build ToyRobot.sln`.
-  3. `dotnet test tests/ToyRobot.Tests --no-build` (unit and whole-flow tests).
-  4. `dotnet test tests/ToyRobot.EndToEndTests --no-build` (end-to-end tests, including [E2E-01][e2e-01] over every pair, [TD-02][td-02], [BS-01][bs-01]).
+  3. `dotnet test tests/ToyRobot.Tests --no-build` (unit and Runner whole-flow tests).
+  4. `dotnet test tests/ToyRobot.ConsoleEndToEndTests --no-build` (console end-to-end tests, including [E2E-01][e2e-01] over every pair, [TD-02][td-02], [BS-01][bs-01]).
   5. [CI-06][ci-06] line endings and `run.sh` mode.
   6. [CI-01][ci-01] and [CI-03][ci-03] (scripts with the test data), then the comparison.
   7. [CI-02][ci-02], [CI-04][ci-04], [CI-05][ci-05] (script error paths).
@@ -95,7 +95,7 @@ Phase 0 of the plan. The Technical Context had no open items: the technology is 
 
 - **Decision**:
   - Files are UTF-8 without byte-order mark, LF line endings, each line ending with a line break (including the last); the empty pair is two files of zero bytes. `bom-challenge-example-1.txt` is written as bytes (`EF BB BF` then the text of `challenge-example-1.txt`), not with an editor.
-  - `tests/ToyRobot.EndToEndTests/DeliveryTests.cs` holds:
+  - `tests/ToyRobot.ConsoleEndToEndTests/DeliveryTests.cs` holds:
     - [TD-02][td-02]: `Test_data_holds_every_input_and_expected_pair` (a theory over the six names, checking both files exist) and `Byte_order_mark_test_file_starts_with_the_mark` (first three bytes `EF BB BF`).
     - [BS-01][bs-01]: `Application_targets_net8_and_rolls_forward_to_the_latest_major_version`, reading `src/ToyRobot/ToyRobot.csproj` with `System.Xml.Linq` and checking `TargetFramework` = `net8.0` and `RollForward` = `LatestMajor`.
   - The tests find the repository root by walking up from `AppContext.BaseDirectory` to the folder holding `ToyRobot.sln` (the same rule as spec 002's AppProcess, which exposes no shared helper).

@@ -1,6 +1,6 @@
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // WF-01: every acceptance scenario of spec 001 as console text, on a 5 x 5 table with redirected input
 // (NFR-05, NFR-06; FR-01 to FR-07, FR-09, FR-10; DEC-31). Scenario numbers follow specs/001-robot-rules/spec.md.

@@ -343,8 +343,10 @@ The Runner stops reading when it receives EXIT; RobotOperator never sees EXIT.
 
 Three levels:
 1. **Unit tests** for Table, Direction, CommandParser, RobotOperator and each command class.
-2. **Whole-flow tests in memory:** Runner → CommandParser → RobotOperator → Table, using a `StringReader`, `StringWriter`s and any table size, without the console app. Standard output and standard error are checked separately and exactly.
-3. **End-to-end tests** that start the built app as a separate process: run it with redirected input for each test-data file and compare standard output with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after end of input and after EXIT. These exercise the real console, `Console.IsInputRedirected`, the UTF-8 input reader and `Program`.
+2. **Runner whole-flow tests:** the whole application in memory, from the Runner inward (Runner → CommandParser → RobotOperator → commands → Table, and some through `Program.Run`), using a `StringReader`, `StringWriter`s and any table size, without the console app. Standard output and standard error are checked separately and exactly.
+3. **Console end-to-end tests** that start the real built app as a separate process, with real standard input, standard output, standard error and exit codes: run it with redirected input for each test-data file and compare standard output with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after end of input and after EXIT. These exercise the real console, `Console.IsInputRedirected`, the UTF-8 input reader and `Program`. They also run the test data and the run scripts.
+
+In this project, "Runner whole-flow tests" means the in-memory tests that run the whole application from the Runner inward, and "console end-to-end tests" means the tests that run the real built application as a separate process. The Runner whole-flow tests are in `tests/ToyRobot.Tests/RunnerWholeFlow/` (the unit tests are in `tests/ToyRobot.Tests/Unit/`); the console end-to-end tests are the project `tests/ToyRobot.ConsoleEndToEndTests/`.
 
 Expected output is compared **line by line**, so Windows and Linux line endings both pass. Test names use the challenge wording where possible (for example `Robot_not_on_table_ignores_MOVE`).
 
@@ -357,8 +359,8 @@ Must be covered:
 - every warning in [DEC-22][dec-22] with its exact text, including `> MOVE`, `MOVE now`, `PLACEHOLDER`, `PLACE 99999999999,0,NORTH`, abbreviations (`PLACE 0,0,N`), blank lines, and the off-table warning with parsed values;
 - EXIT before PLACE, mid-file (later lines neither echoed nor run), `EXIT now` exits, `EXITNOW` warns;
 - prompt shown when interactive and not otherwise; echo content with redirected input;
-- an empty input; input starting with a byte-order mark (end-to-end, on all three systems);
-- the how-to-run message and exit codes (end-to-end);
+- an empty input; input starting with a byte-order mark (console end-to-end, on all three systems);
+- the how-to-run message and exit codes (console end-to-end);
 - the unexpected-problem line and exit code 2 ([DEC-32][dec-32]).
 
 ### DEC-32 Never crash
@@ -372,9 +374,9 @@ As a last safeguard, `Program`, the thin entry point, catches any exception that
 
 ### DEC-33 Cross-platform
 
-The app must work on Windows, Linux and macOS. Evidence: a GitHub Actions workflow builds the app and runs all tests, including the end-to-end tests ([DEC-31][dec-31]), on `windows-latest`, `ubuntu-latest` and `macos-latest` on every push. On each system it also runs that system's run script ([DEC-37][dec-37]) with a challenge example file and compares its standard output with the expected file, line by line. The README states that the solution is tested on all three systems through this workflow and links to it.
+The app must work on Windows, Linux and macOS. Evidence: a GitHub Actions workflow builds the app and runs all tests, including the console end-to-end tests ([DEC-31][dec-31]), on `windows-latest`, `ubuntu-latest` and `macos-latest` on every push. On each system it also runs that system's run script ([DEC-37][dec-37]) with a challenge example file and compares its standard output with the expected file, line by line. The README states that the solution is tested on all three systems through this workflow and links to it.
 - A `.gitattributes` file keeps line endings consistent: LF for all text files, CRLF for `.cmd` files. `run.sh` is committed as executable.
-- Reason: hosted CI gives real Windows, Linux and macOS machines, so macOS can be proven without owning a Mac. Docker cannot run macOS, and a README note alone would be unverified. The end-to-end tests and script runs make sure the parts most likely to differ by system (the real console, encoding, input redirection, line endings and the scripts) are covered, not just the in-memory logic.
+- Reason: hosted CI gives real Windows, Linux and macOS machines, so macOS can be proven without owning a Mac. Docker cannot run macOS, and a README note alone would be unverified. The console end-to-end tests and script runs make sure the parts most likely to differ by system (the real console, encoding, input redirection, line endings and the scripts) are covered, not just the in-memory logic.
 - Trade-off: time to set up and maintain the workflow, in exchange for real evidence on all three systems.
 
 ### DEC-34 Readable code (SOLID)

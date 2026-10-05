@@ -8,13 +8,13 @@ Links each requirement to the decisions it comes from, the components that imple
 - **Components** are the parts that carry the requirement out, as described on page [6](06-components.md). "Command classes" means `PlaceCommand`, `MoveCommand`, `LeftCommand`, `RightCommand` and `ReportCommand`.
 - **Test levels** are the three levels in [DEC-31][dec-31], described on page [9](09-considerations.md#testing-strategy):
   - **Unit:** one component on its own.
-  - **Whole-flow:** Runner → CommandParser → RobotOperator → Table, in memory, with console output (stdout) and console messages (stderr) checked separately and exactly.
-  - **End-to-end:** the built application run as a separate process, with the real console, on Windows, Linux and macOS in CI.
+  - **Runner whole-flow:** the whole application in memory, from the Runner inward (Runner → CommandParser → RobotOperator → commands → Table), with console output (stdout) and console messages (stderr) checked separately and exactly.
+  - **Console end-to-end:** the real built application run as a separate process, with the real console, on Windows, Linux and macOS in CI.
 - ✓ marks the levels planned to test the requirement. A blank cell means that level is not used for it.
 
 ## Functional requirements
 
-| Requirement | Decisions | Components | Unit | Whole-flow | End-to-end |
+| Requirement | Decisions | Components | Unit | Runner whole-flow | Console end-to-end |
 |---|---|---|:-:|:-:|:-:|
 | [FR-01](02-functional-requirements.md) Table 5 x 5, origin SOUTH WEST | [DEC-01][dec-01], [DEC-02][dec-02] | Table, Program (creates 5 x 5) | ✓ | ✓ | |
 | [FR-02](02-functional-requirements.md) PLACE, valid and off the table | [DEC-11][dec-11], [DEC-15][dec-15] | CommandParser, `PlaceCommand`, RobotOperator, Table, Robot | ✓ | ✓ | ✓ |
@@ -35,10 +35,10 @@ Links each requirement to the decisions it comes from, the components that imple
 | [FR-17](02-functional-requirements.md) Any argument: how-to-run message, exit code 1 | [DEC-04][dec-04] | Program | | | ✓ |
 
 Notes:
-- **Exit codes** ([FR-15][fr-15], [FR-16][fr-16], [FR-17][fr-17]) are returned by Program, so the end-to-end tests check them ([DEC-31][dec-31]). Exit code 2 for an unexpected problem ([NFR-01][nfr-01]) cannot be caused by any input, so it is checked in memory through Program's internal `Run` method, with a reader or writer that fails ([DEC-32][dec-32]).
-- **The prompt and the echo** ([FR-13][fr-13], [FR-14][fr-14]) are on console messages (stderr). The whole-flow tests check them exactly, giving the Runner `interactive` as true or false. The end-to-end tests compare only console output (stdout), so they do not check them.
+- **Exit codes** ([FR-15][fr-15], [FR-16][fr-16], [FR-17][fr-17]) are returned by Program, so the console end-to-end tests check them ([DEC-31][dec-31]). Exit code 2 for an unexpected problem ([NFR-01][nfr-01]) cannot be caused by any input, so it is checked in memory through Program's internal `Run` method, with a reader or writer that fails ([DEC-32][dec-32]).
+- **The prompt and the echo** ([FR-13][fr-13], [FR-14][fr-14]) are on console messages (stderr). The Runner whole-flow tests check them exactly, giving the Runner `interactive` as true or false. The console end-to-end tests compare only console output (stdout), so they do not check them.
 - **Every row of the [DEC-08][dec-08] table** and **every warning in [DEC-22][dec-22]**, with its exact text, must have a test ([FR-09][fr-09], [FR-10][fr-10], [DEC-31][dec-31]).
-- **The three challenge examples** are test-data files, so they run end-to-end and are compared with their expected output ([FR-02][fr-02], [FR-03][fr-03], [FR-06][fr-06]).
+- **The three challenge examples** are test-data files, so they run in the console end-to-end tests and are compared with their expected output ([FR-02][fr-02], [FR-03][fr-03], [FR-06][fr-06]).
 
 ## Non-functional requirements
 
@@ -46,12 +46,12 @@ These are mostly proved by how the tests run, or by a review, rather than by one
 
 | Requirement | Decisions | Implemented by | Proved by |
 |---|---|---|---|
-| [NFR-01](03-non-functional-requirements.md) Never crash | [DEC-20][dec-20], [DEC-32][dec-32] | CommandParser (failures, not exceptions; `int.TryParse`), RobotOperator (checks before it replaces), Program (last safeguard: one error line, exit code 2) | Unit, whole-flow and end-to-end tests with empty input, very large numbers and every kind of bad line; tests of Program's `Run` with a reader or writer that fails |
+| [NFR-01](03-non-functional-requirements.md) Never crash | [DEC-20][dec-20], [DEC-32][dec-32] | CommandParser (failures, not exceptions; `int.TryParse`), RobotOperator (checks before it replaces), Program (last safeguard: one error line, exit code 2) | Unit, Runner whole-flow and console end-to-end tests with empty input, very large numbers and every kind of bad line; tests of Program's `Run` with a reader or writer that fails |
 | [NFR-02](03-non-functional-requirements.md) Windows, Linux and macOS | [DEC-33][dec-33] | The CI workflow, `.gitattributes` | All three test levels and the run scripts, in CI on all three systems |
 | [NFR-03](03-non-functional-requirements.md) .NET 8 or later | [DEC-37][dec-37] | The project file (`RollForward` = `LatestMajor`) | Review of the build settings |
 | [NFR-04](03-non-functional-requirements.md) Same results on every machine | [DEC-08][dec-08], [DEC-31][dec-31], [DEC-33][dec-33] | CommandParser (invariant culture); tests compare line by line | Review, and the same tests on all three systems in CI |
-| [NFR-05](03-non-functional-requirements.md) Testable without the console | [DEC-03][dec-03], [DEC-29][dec-29], [DEC-31][dec-31] | Runner (given its input and outputs), Table (size in the constructor) | Whole-flow tests, including a 2 x 2 table |
-| [NFR-06](03-non-functional-requirements.md) Tested at three levels | [DEC-31][dec-31] | `ToyRobot.Tests`, `ToyRobot.EndToEndTests` | CI runs all three levels; the test list is compared with [DEC-31][dec-31] |
+| [NFR-05](03-non-functional-requirements.md) Testable without the console | [DEC-03][dec-03], [DEC-29][dec-29], [DEC-31][dec-31] | Runner (given its input and outputs), Table (size in the constructor) | Runner whole-flow tests, including a 2 x 2 table |
+| [NFR-06](03-non-functional-requirements.md) Tested at three levels | [DEC-31][dec-31] | `ToyRobot.Tests`, `ToyRobot.ConsoleEndToEndTests` | CI runs all three levels; the test list is compared with [DEC-31][dec-31] |
 | [NFR-07](03-non-functional-requirements.md) Readable code (SOLID) | [DEC-34][dec-34] | All components | Code review against page [6](06-components.md) |
 | [NFR-08](03-non-functional-requirements.md) Run scripts | [DEC-04][dec-04], [DEC-33][dec-33], [DEC-37][dec-37] | `run.cmd`, `run.sh` | CI runs each system's script with a challenge example; the error cases are checked by their exit codes |
 | [NFR-09](03-non-functional-requirements.md) Short README | [DEC-37][dec-37] | The README | Following the README word for word on a fresh copy, in cmd, PowerShell and bash |

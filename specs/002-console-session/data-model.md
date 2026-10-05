@@ -54,8 +54,8 @@ The robot's own state (on the table or not, its position) is held by RobotOperat
 |---|---|---|---|
 | `SessionHarness` | `ToyRobot.Tests` | the input text, `interactive`, the table width and height (default 5 x 5) | the text written to `output` (stdout) and to `error` (stderr), with `"\n"` line breaks |
 | `FailingReader`, `FailingWriter` | `ToyRobot.Tests` | nothing; every read (`ReadLine`) or write throws `IOException` with the message `boom` | used by the [SG-01][sg-01] tests to stand for a fault outside the application |
-| `AppProcess` | `ToyRobot.EndToEndTests` | the bytes for console input and the arguments | console output (stdout) text, console messages (stderr) text, exit code |
-| `LineComparer` | `ToyRobot.EndToEndTests` | a text | its lines, split on CRLF or LF, without the empty element after a final line break |
+| `AppProcess` | `ToyRobot.ConsoleEndToEndTests` | the bytes for console input and the arguments | console output (stdout) text, console messages (stderr) text, exit code |
+| `LineComparer` | `ToyRobot.ConsoleEndToEndTests` | a text | its lines, split on CRLF or LF, without the empty element after a final line break |
 | Test-data pair | `testdata/` (spec 003) | `<name>.txt` (input) and `<name>.expected.txt` (expected console output, stdout) | used by [E2E-01][e2e-01] |
 
 [dec-21]: ../../docs/design-analysis/design-decisions.md#dec-21-report-format

@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-09: PG-01; FR-08, FR-01 (spec 001); DEC-03, DEC-26.
 public class StartUpTests

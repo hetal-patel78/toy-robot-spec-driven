@@ -1,6 +1,6 @@
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // Redirected console input: FR-08, FR-11, FR-12, FR-14, FR-16; WF-02, WF-03.
 public class RedirectedInputTests

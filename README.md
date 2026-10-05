@@ -64,7 +64,13 @@ Output:
 All behaviour is defined in [docs/design-analysis/design-decisions.md](docs/design-analysis/design-decisions.md).
 
 ## Tested on Windows, Linux and macOS
-The solution is tested on all three systems through the [CI workflow](https://github.com/hetal-patel78/toy-robot-spec-driven/actions/workflows/ci.yml), which on every push builds it, runs the unit, whole-flow and end-to-end tests, and runs each run script with the test data and checks its output.
+The solution is tested on all three systems through the [CI workflow](https://github.com/hetal-patel78/toy-robot-spec-driven/actions/workflows/ci.yml), which on every push builds it, runs the unit, Runner whole-flow and console end-to-end tests, and runs each run script with the test data and checks its output.
+
+| Test level | Where | What it runs |
+|---|---|---|
+| Unit tests | `tests/ToyRobot.Tests/Unit/` | each class on its own |
+| Runner whole-flow tests | `tests/ToyRobot.Tests/RunnerWholeFlow/` | the whole application in memory, from the Runner inward (some through `Program.Run`), with in-memory input and output |
+| Console end-to-end tests | `tests/ToyRobot.ConsoleEndToEndTests/` | the real built application as a separate process: console input and output, exit codes, the test data and the run scripts |
 
 ## Test data
 `testdata/` holds pairs of an input file and its expected console output (stdout):
@@ -80,7 +86,7 @@ The solution is tested on all three systems through the [CI workflow](https://gi
 Multiple robots, a configurable table size and obstacles are not built. The design keeps each of them a local change ([DEC-38][dec-38], [DEC-39][dec-39] in the design decisions).
 
 ## How it was built
-The developer's brainstorm, the design analysis ([design-decisions.md](docs/design-analysis/design-decisions.md)) and the solution design ([docs/solution-design/](docs/solution-design/README.md)) came first. The GitHub Spec Kit specification (constitution, specs, plans and tasks) and the code were then generated from them with Claude Code and GitHub Spec Kit. The result is checked by tests at three levels (unit, whole-flow and end-to-end) and by CI on Windows, Linux and macOS. The prompts are in the [design-phase log](docs/design-analysis/prompts-design-phase.md) and the [implementation-phase log](docs/design-analysis/prompts-implementation-phase.md); the Spec Kit brief and inputs are in [docs/spec-kit/](docs/spec-kit/), and the decisions taken while writing the specification and code, with all check, test and CI results, are in the [Spec Kit run report](docs/spec-kit/implementation-run-report.md). Every decision taken in the run is listed there and was confirmed by the developer.
+The developer's brainstorm, the design analysis ([design-decisions.md](docs/design-analysis/design-decisions.md)) and the solution design ([docs/solution-design/](docs/solution-design/README.md)) came first. The GitHub Spec Kit specification (constitution, specs, plans and tasks) and the code were then generated from them with Claude Code and GitHub Spec Kit. The result is checked by tests at three levels (unit, Runner whole-flow and console end-to-end) and by CI on Windows, Linux and macOS. The prompts are in the [design-phase log](docs/design-analysis/prompts-design-phase.md) and the [implementation-phase log](docs/design-analysis/prompts-implementation-phase.md); the Spec Kit brief and inputs are in [docs/spec-kit/](docs/spec-kit/), and the decisions taken while writing the specification and code, with all check, test and CI results, are in the [Spec Kit run report](docs/spec-kit/implementation-run-report.md). Every decision taken in the run is listed there and was confirmed by the developer.
 
 ## Where to look
 | What | Location |

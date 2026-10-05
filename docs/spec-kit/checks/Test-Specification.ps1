@@ -870,7 +870,7 @@ $otherAllowed = @(
     'Exe', 'Release', 'Debug', 'LatestMajor', 'RollForward', 'TargetFramework', 'OutputType', 'Nullable', 'ImplicitUsings', 'RootNamespace', 'AssemblyName', 'IsPackable',
     'IsTestProject', 'ProjectReference', 'PackageReference', 'ItemGroup', 'InternalsVisibleTo', 'ReferenceOutputAssembly', 'Using', 'Include', 'Sdk', 'Test', 'NET',
     # project, namespace and folder names (page 5)
-    'ToyRobot', 'Tests', 'Unit', 'Support', 'WholeFlow', 'EndToEndTests')
+    'ToyRobot', 'Tests', 'Unit', 'Support', 'RunnerWholeFlow', 'ConsoleEndToEndTests')
 $extensions = @('cs', 'sln', 'slnx', 'csproj', 'exe', 'md', 'txt', 'yml', 'json', 'sh', 'cmd', 'pdf')
 
 function Test-NameChain([string]$chain, [string]$where) {
@@ -1035,11 +1035,11 @@ $cases += @(
     @{ N = 'no prompt otherwise'; A = @('No_prompt_when_input_is_redirected && interactive: false') }
     @{ N = 'echo content with redirected input'; A = @('Echo_removes_whitespace_of_any_kind_from_both_ends') }
     @{ N = 'an empty input'; A = @('Empty_input && stdout `""`') }
-    @{ N = 'byte-order mark (end-to-end)'; A = @('ToyRobot\.EndToEndTests && `EF BB BF` && `0,1,NORTH`') }
-    @{ N = 'how-to-run message (end-to-end)'; A = @('ToyRobot\.EndToEndTests && ' + [regex]::Escape($howToRunMessage) + ' && exit code 1') }
-    @{ N = 'exit code 1 (end-to-end)'; A = @('ToyRobot\.EndToEndTests && exit code 1') }
-    @{ N = 'exit code 0 at end of input (end-to-end)'; A = @('ToyRobot\.EndToEndTests && Exit_code_0_at_end_of_input && exit code 0') }
-    @{ N = 'exit code 0 after EXIT (end-to-end)'; A = @('ToyRobot\.EndToEndTests && Exit_code_0_after_EXIT && exit code 0') }
+    @{ N = 'byte-order mark (console end-to-end)'; A = @('ToyRobot\.ConsoleEndToEndTests && `EF BB BF` && `0,1,NORTH`') }
+    @{ N = 'how-to-run message (console end-to-end)'; A = @('ToyRobot\.ConsoleEndToEndTests && ' + [regex]::Escape($howToRunMessage) + ' && exit code 1') }
+    @{ N = 'exit code 1 (console end-to-end)'; A = @('ToyRobot\.ConsoleEndToEndTests && exit code 1') }
+    @{ N = 'exit code 0 at end of input (console end-to-end)'; A = @('ToyRobot\.ConsoleEndToEndTests && Exit_code_0_at_end_of_input && exit code 0') }
+    @{ N = 'exit code 0 after EXIT (console end-to-end)'; A = @('ToyRobot\.ConsoleEndToEndTests && Exit_code_0_after_EXIT && exit code 0') }
     @{ N = 'the unexpected-problem line and exit code 2 (DEC-32)'; A = @([regex]::Escape($errorPrefix) + ' && exit code 2') }
 )
 $covered = 0

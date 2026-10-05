@@ -90,8 +90,8 @@ toy-robot-spec-driven/
 ├── src/
 │   └── ToyRobot/                 the application (all components)
 ├── tests/
-│   ├── ToyRobot.Tests/           unit tests and whole-flow tests in memory
-│   └── ToyRobot.EndToEndTests/   end-to-end tests of the built application
+│   ├── ToyRobot.Tests/           Unit/ (unit tests) and RunnerWholeFlow/ (Runner whole-flow tests, in memory)
+│   └── ToyRobot.ConsoleEndToEndTests/   console end-to-end tests of the built application
 ├── testdata/                     input files with matching expected-output files
 ├── docs/                         challenge, design analysis, solution design
 ├── .github/workflows/            the CI workflow (page 9)

@@ -6,7 +6,7 @@
 
 ## Summary
 
-This spec delivers what lets a reviewer run, check and trust the application on any system: the run scripts `run.cmd` and `run.sh` ([NFR-08][nfr-08]), the six test-data pairs in `testdata/` including the three challenge examples ([TD-01][td-01]), the GitHub Actions workflow that builds and tests on `windows-latest`, `ubuntu-latest` and `macos-latest` and checks the scripts there ([NFR-02][nfr-02], [CI-01][ci-01] to [CI-06][ci-06]), `.gitattributes` ([NFR-02a][nfr-02a]), the README ([NFR-09][nfr-09]), and two tests in the end-to-end test project: [TD-02][td-02] (the test data is all there) and [BS-01][bs-01] (the project file targets .NET 8 and rolls forward, [NFR-03][nfr-03]). It writes no application code: Program, Runner and every other component on page 6 come from specs 001 and 002 and are only started, through the built application, by the scripts and CI.
+This spec delivers what lets a reviewer run, check and trust the application on any system: the run scripts `run.cmd` and `run.sh` ([NFR-08][nfr-08]), the six test-data pairs in `testdata/` including the three challenge examples ([TD-01][td-01]), the GitHub Actions workflow that builds and tests on `windows-latest`, `ubuntu-latest` and `macos-latest` and checks the scripts there ([NFR-02][nfr-02], [CI-01][ci-01] to [CI-06][ci-06]), `.gitattributes` ([NFR-02a][nfr-02a]), the README ([NFR-09][nfr-09]), and two tests in the console end-to-end test project: [TD-02][td-02] (the test data is all there) and [BS-01][bs-01] (the project file targets .NET 8 and rolls forward, [NFR-03][nfr-03]). It writes no application code: Program, Runner and every other component on page 6 come from specs 001 and 002 and are only started, through the built application, by the scripts and CI.
 
 Technical approach (research.md): each script captures the output of its .NET check and of a `Release` build of `src/ToyRobot/ToyRobot.csproj`, shows it only if the build fails, then starts the built application at the page 5 path with the file (if any) redirected to its console input (stdin). CI runs every script path, including the error paths, with exit-code and line-by-line console output (stdout) checks, on all three systems.
 
@@ -18,7 +18,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 
 **Storage**: files only: `testdata/*.txt` pairs
 
-**Testing**: xUnit in `tests/ToyRobot.EndToEndTests/` ([TD-02][td-02], [BS-01][bs-01], plus spec 002's [E2E-01][e2e-01] that runs every pair); GitHub Actions workflow steps for the scripts ([CI-01][ci-01] to [CI-06][ci-06]); the README check (quickstart.md, "README check")
+**Testing**: xUnit in `tests/ToyRobot.ConsoleEndToEndTests/` ([TD-02][td-02], [BS-01][bs-01], plus spec 002's [E2E-01][e2e-01] that runs every pair); GitHub Actions workflow steps for the scripts ([CI-01][ci-01] to [CI-06][ci-06]); the README check (quickstart.md, "README check")
 
 **Target Platform**: Windows (cmd and PowerShell), Linux and macOS (bash or zsh); CI on `windows-latest`, `ubuntu-latest`, `macos-latest`
 
@@ -28,7 +28,7 @@ Technical approach (research.md): each script captures the output of its .NET ch
 
 **Constraints**: console output (stdout) carries only the application's REPORT result ([DEC-23][dec-23]): the scripts write their own messages (progress lines, errors) and any build output (only when the build fails) to console messages (stderr) and nothing to console output (stdout); exit codes exactly as [NFR-08][nfr-08]; no PowerShell script, no other tool or library ([DEC-37][dec-37], [DEC-39][dec-39]); nothing is deleted (brief rule 12)
 
-**Scale/Scope**: 2 scripts, 12 test-data files, 1 workflow, 1 `.gitattributes`, 1 `.gitignore` checked (created by spec 001, research [R-11][r-11]), 1 README changed in place, 1 test file in the end-to-end project
+**Scale/Scope**: 2 scripts, 12 test-data files, 1 workflow, 1 `.gitattributes`, 1 `.gitignore` checked (created by spec 001, research [R-11][r-11]), 1 README changed in place, 1 test file in the console end-to-end project
 
 ## Constitution Check
 
@@ -71,7 +71,7 @@ toy-robot-spec-driven/
 ├── src/ToyRobot/                         spec 001 and 002 (not changed here)
 ├── tests/
 │   ├── ToyRobot.Tests/                   spec 001 and 002 (not changed here)
-│   └── ToyRobot.EndToEndTests/           spec 002; this spec adds DeliveryTests.cs (TD-02, BS-01)
+│   └── ToyRobot.ConsoleEndToEndTests/           spec 002; this spec adds DeliveryTests.cs (TD-02, BS-01)
 ├── testdata/                             this spec: six pairs (TD-01)
 │   ├── challenge-example-1.txt / .expected.txt
 │   ├── challenge-example-2.txt / .expected.txt
@@ -88,12 +88,12 @@ toy-robot-spec-driven/
 └── README.md                             this spec: the README (NFR-09), changed in place
 ```
 
-**Structure Decision**: the layout on page 5, unchanged. The only file this spec adds to a project of another spec is `tests/ToyRobot.EndToEndTests/DeliveryTests.cs`, because [TD-02][td-02] and [BS-01][bs-01] are end-to-end-project tests (spec [TD-02][td-02], [BS-01][bs-01]) and the brief gives this spec the test data and [NFR-03][nfr-03]. `DeliveryTests` is in namespace `ToyRobot.EndToEndTests`, as the project's other files.
+**Structure Decision**: the layout on page 5, unchanged. The only file this spec adds to a project of another spec is `tests/ToyRobot.ConsoleEndToEndTests/DeliveryTests.cs`, because [TD-02][td-02] and [BS-01][bs-01] are console end-to-end-project tests (spec [TD-02][td-02], [BS-01][bs-01]) and the brief gives this spec the test data and [NFR-03][nfr-03]. `DeliveryTests` is in namespace `ToyRobot.ConsoleEndToEndTests`, as the project's other files.
 
 ### Dependencies on the other specs
 
 - **Spec 001-robot-rules**: `ToyRobot.sln`, the three projects, xUnit, `net8.0` and `RollForward` = `LatestMajor` ([SK-01][sk-01], [SK-02][sk-02]). [BS-01][bs-01] reads what [SK-02][sk-02] sets.
-- **Spec 002-console-session**: the built application's behaviour (Program and Runner: echo, exit codes, how-to-run message) and the end-to-end tests, in particular [E2E-01][e2e-01], which runs every pair this spec adds. The scripts and CI rely on Program reading console input (stdin) and returning exit code 0 at the end of the input or EXIT.
+- **Spec 002-console-session**: the built application's behaviour (Program and Runner: echo, exit codes, how-to-run message) and the console end-to-end tests, in particular [E2E-01][e2e-01], which runs every pair this spec adds. The scripts and CI rely on Program reading console input (stdin) and returning exit code 0 at the end of the input or EXIT.
 - This spec is implemented after both; its first task checks that `dotnet build` and `dotnet test` pass at the repository root.
 
 ## Complexity Tracking

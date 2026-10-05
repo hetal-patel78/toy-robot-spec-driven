@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // Delivery checks (spec 003): TD-02, the test-data set is complete (DEC-31, DEC-37);
 // BS-01, the build settings that let the app run where only a later .NET is installed (NFR-03, DEC-37).

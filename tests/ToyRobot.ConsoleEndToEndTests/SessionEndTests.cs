@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-03, E2E-04: FR-15, FR-16, NFR-01; DEC-10, DEC-32.
 public class SessionEndTests

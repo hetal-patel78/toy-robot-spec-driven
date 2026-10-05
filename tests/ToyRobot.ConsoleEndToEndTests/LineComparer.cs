@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 /// <summary>Splits text into lines so expected and actual text compare line by line (DEC-31, NFR-04).</summary>
 public static class LineComparer

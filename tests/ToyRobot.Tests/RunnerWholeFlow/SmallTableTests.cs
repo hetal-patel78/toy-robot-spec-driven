@@ -1,6 +1,6 @@
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // The whole flow on a table that is not 5 x 5: NFR-05; DEC-03, DEC-29.
 public class SmallTableTests

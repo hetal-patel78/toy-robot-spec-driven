@@ -233,3 +233,15 @@ Outcome: the assistant proposed a diagram in which the reducer produced the even
 > Reducer returns (newState, warning)
 
 Outcome: [page 8.3](../solution-design/08-alternative-solutions/03-event-based-reducer.md) follows these steps: the CommandParser returns a command, the Runner turns it into an event (or a dispatcher or the store does), the store calls the reducer with the current state and the event, and the reducer returns the new state and any warning. The description, diagram and numbered steps changed; the pros, cons and the reason it was not chosen did not. No decision changed: page 8.3 describes a design that was not built.
+
+<a id="p173"></a>**P173.** While reviewing the tests (the first message was interrupted, then the question [R18](prompts-review.md#r18) was asked, then the suggestion):
+> I checked the test and the naming is confusing
+> ToyRobotEndToEnd and wholeflow can create confusion
+>
+> I suggest we add runner in the wholeflow and similarly for end to end to make if self explanatory
+
+Outcome: the assistant offered three scopes: folder and project, folder only with new wording, or wording only.
+
+<a id="p174"></a>**P174.** On the scope of the renaming: **[Selected: Folder + project (Recommended)]**
+
+Outcome: a decision change confirmed by the developer (CLAUDE.md). In order: [DEC-31](design-decisions.md#dec-31-testing) (the two levels are named "Runner whole-flow tests" and "console end-to-end tests" and defined once, with their folder and project); solution design pages 3, 5, 9, 10, 11 and 12 (folder layout, test levels, glossary); the Spec Kit files in `specs/` (paths, project names, namespaces and level names, and the new task T059 in spec 002); the code (`git mv` of `tests/ToyRobot.Tests/WholeFlow/` to `tests/ToyRobot.Tests/RunnerWholeFlow/` and of `tests/ToyRobot.EndToEndTests/` to `tests/ToyRobot.ConsoleEndToEndTests/`, with the project file, namespaces, `ToyRobot.sln` and the CI workflow); the specification check script; the README (the table of test levels); the run report. Totals after the change: 470 tests in `ToyRobot.Tests` and 25 in `ToyRobot.ConsoleEndToEndTests`, all passing, in Debug and Release. Done by a Sonnet 5.5 agent.

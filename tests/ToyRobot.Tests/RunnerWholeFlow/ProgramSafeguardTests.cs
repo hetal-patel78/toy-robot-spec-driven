@@ -1,7 +1,7 @@
 using System.Text;
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // Program's Run in memory: the last safeguard for unexpected problems and the existing exit codes
 // (SG-01; PG-01, PG-02; NFR-01, FR-17; DEC-04, DEC-10, DEC-23, DEC-26, DEC-32).

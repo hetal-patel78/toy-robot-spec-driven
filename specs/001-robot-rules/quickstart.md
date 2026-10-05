@@ -15,8 +15,8 @@ dotnet test ToyRobot.sln
 ```
 
 Expected:
-- The build succeeds for the three projects: `src/ToyRobot`, `tests/ToyRobot.Tests`, `tests/ToyRobot.EndToEndTests` ([SK-01][sk-01]).
-- Every unit test in `tests/ToyRobot.Tests/Unit/` passes. `tests/ToyRobot.EndToEndTests` holds no tests until spec 002 adds them; `dotnet test` reports no test for it and still exits with code 0.
+- The build succeeds for the three projects: `src/ToyRobot`, `tests/ToyRobot.Tests`, `tests/ToyRobot.ConsoleEndToEndTests` ([SK-01][sk-01]).
+- Every unit test in `tests/ToyRobot.Tests/Unit/` passes. `tests/ToyRobot.ConsoleEndToEndTests` holds no tests until spec 002 adds them; `dotnet test` reports no test for it and still exits with code 0.
 - `dotnet test` exits with code 0.
 
 To run one group of tests, for example the parser tests:

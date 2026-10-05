@@ -53,13 +53,13 @@ There are three test levels ([DEC-31][dec-31]). Tests use **xUnit** and live in 
 
 | Level | What it tests | How | Project |
 |---|---|---|---|
-| **1. Unit tests** | Table, Direction, CommandParser, RobotOperator and each command class, one at a time | Direct calls with small inputs; any table size | `ToyRobot.Tests` |
-| **2. Whole-flow tests in memory** | Runner → CommandParser → RobotOperator → Table, together | The Runner is given a `StringReader` as input and two `StringWriter`s as its outputs, instead of the console ([DEC-29][dec-29]). Console output (stdout) and console messages (stderr) are checked separately and exactly. Program's safeguard is tested the same way, through its internal `Run` method with a reader or writer that fails ([DEC-32][dec-32]). | `ToyRobot.Tests` |
-| **3. End-to-end tests** | The built application as a separate process: the real console, `Console.IsInputRedirected`, the UTF-8 input reader and Program | Run the application with each test-data file redirected and compare console output (stdout) with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after the end of input and after EXIT | `ToyRobot.EndToEndTests` |
+| **1. Unit tests** | Table, Direction, CommandParser, RobotOperator and each command class, one at a time | Direct calls with small inputs; any table size | `ToyRobot.Tests`, folder `Unit/` |
+| **2. Runner whole-flow tests** | The whole application in memory, from the Runner inward: Runner → CommandParser → RobotOperator → commands → Table, together (some through Program's internal `Run` method) | The Runner is given a `StringReader` as input and two `StringWriter`s as its outputs, instead of the console ([DEC-29][dec-29]). Console output (stdout) and console messages (stderr) are checked separately and exactly. Program's safeguard is tested the same way, through its internal `Run` method with a reader or writer that fails ([DEC-32][dec-32]). | `ToyRobot.Tests`, folder `RunnerWholeFlow/` |
+| **3. Console end-to-end tests** | The real built application as a separate process: the real console, `Console.IsInputRedirected`, the UTF-8 input reader and Program | Run the application with each test-data file redirected and compare console output (stdout) with the expected file; run it with an argument and check the how-to-run message and exit code 1; check exit code 0 after the end of input and after EXIT | `ToyRobot.ConsoleEndToEndTests` |
 
 - **Line by line.** Expected output is compared line by line, so Windows and Linux line endings both pass.
 - **Test names** use the challenge wording where possible, for example `Robot_not_on_table_ignores_MOVE`.
-- **Test data.** The `testdata/` folder holds input files with matching expected-output files, used by the end-to-end tests and by CI ([DEC-37][dec-37]).
+- **Test data.** The `testdata/` folder holds input files with matching expected-output files, used by the console end-to-end tests and by CI ([DEC-37][dec-37]).
 - **What must be covered.** The full list is in [DEC-31][dec-31]. In short: the three challenge examples and the hand-traced examples; every edge and corner; full LEFT and RIGHT cycles; a 2 x 2 table; every robot command before PLACE; invalid, repeated and negative PLACEs; letter case; every row of the [DEC-08][dec-08] table, including tabs and non-breaking spaces; every warning with its exact text; EXIT in every position; the prompt and the echo; an empty input; a byte-order mark; the how-to-run message and exit codes; the unexpected-problem line and exit code 2.
 - Page [10](10-traceability.md) shows which test levels prove each functional and non-functional requirement.
 
@@ -71,8 +71,8 @@ What runs on every push, on each of the three systems ([DEC-31][dec-31], [DEC-33
 flowchart LR
     A["Push to GitHub"] --> B["GitHub Actions<br>Windows, Linux, macOS"]
     B --> C["Build<br>(dotnet build)"]
-    C --> D["Unit tests and<br>whole-flow tests in memory"]
-    D --> E["End-to-end tests<br>of the built application"]
+    C --> D["Unit tests and<br>Runner whole-flow tests in memory"]
+    D --> E["Console end-to-end tests<br>of the built application"]
     E --> F["Run script with a<br>challenge example file"]
     F --> G{"Console output (stdout)<br>matches the expected file,<br>line by line?"}
     G -- "yes, on all three" --> H(["Pass"])
@@ -85,7 +85,7 @@ Any failed build, failed test or mismatch stops the run on that system and marks
 The application must work on Windows, Linux and macOS ([DEC-33][dec-33], [NFR-02][nfr-02]).
 
 - **Evidence.** A GitHub Actions workflow in `.github/workflows/` builds the application and runs all three test levels on `windows-latest`, `ubuntu-latest` and `macos-latest` on every push. On each system it also runs that system's run script with a challenge example file and compares console output (stdout) with the expected file, line by line.
-- **Why CI, not just a note.** Hosted CI gives real machines for all three systems, so macOS is proven without owning a Mac. The end-to-end tests and the script runs cover what is most likely to differ between systems: the real console, text encoding, input redirection, line endings and the scripts.
+- **Why CI, not just a note.** Hosted CI gives real machines for all three systems, so macOS is proven without owning a Mac. The console end-to-end tests and the script runs cover what is most likely to differ between systems: the real console, text encoding, input redirection, line endings and the scripts.
 - **Line endings.** A `.gitattributes` file keeps LF for all text files and CRLF for `.cmd` files. `run.sh` is committed as executable.
 - **.NET version** ([NFR-03][nfr-03]). The application targets .NET 8 and rolls forward to a newer installed major version (`RollForward` = `LatestMajor` in the project file), so it also runs where only .NET 9 or later is installed ([DEC-37][dec-37]).
 - **The README** says the solution is tested on all three systems through this workflow, and links to it.

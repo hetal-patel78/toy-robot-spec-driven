@@ -1,6 +1,6 @@
-using static ToyRobot.Tests.WholeFlow.SessionHarness;
+using static ToyRobot.Tests.RunnerWholeFlow.SessionHarness;
 
-namespace ToyRobot.Tests.WholeFlow;
+namespace ToyRobot.Tests.RunnerWholeFlow;
 
 // No input stops the session: NFR-01; DEC-19, DEC-20, DEC-22, DEC-32.
 public class NeverCrashTests

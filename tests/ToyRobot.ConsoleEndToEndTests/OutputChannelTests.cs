@@ -1,4 +1,4 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 // E2E-06: FR-12, FR-08; DEC-04, DEC-05, DEC-23.
 public class OutputChannelTests

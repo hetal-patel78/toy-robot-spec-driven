@@ -1,6 +1,6 @@
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
-// E2E-02, E2E-08: FR-17; DEC-04, DEC-31 "the how-to-run message and exit codes (end-to-end)".
+// E2E-02, E2E-08: FR-17; DEC-04, DEC-31 "the how-to-run message and exit codes (console end-to-end)".
 public class HowToRunMessageTests
 {
     private const string HowToRunMessage = "How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)";

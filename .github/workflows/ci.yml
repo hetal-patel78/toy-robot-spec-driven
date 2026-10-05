@@ -23,11 +23,11 @@ jobs:
       - name: Build
         run: dotnet build ToyRobot.sln
 
-      - name: Unit and whole-flow tests
+      - name: Unit and Runner whole-flow tests
         run: dotnet test tests/ToyRobot.Tests --no-build
 
-      - name: End-to-end tests
-        run: dotnet test tests/ToyRobot.EndToEndTests --no-build
+      - name: Console end-to-end tests
+        run: dotnet test tests/ToyRobot.ConsoleEndToEndTests --no-build
 
       - name: CI-06 line endings and executable mode
         shell: bash

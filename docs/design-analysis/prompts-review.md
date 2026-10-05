@@ -150,6 +150,11 @@ Answer: Yes, every line: 1,2 EAST, two moves to 3,2, LEFT to NORTH (3,2,NORTH), 
 
 Answer: A list of lines that are ignored with a warning (before any PLACE, badly formed lines, a PLACE off the table, a MOVE blocked at the edge), each with the exact warning, checked by running them through the built app. It became [try-it-by-typing.md](../try-it-by-typing.md) ([P163](prompts-implementation-phase.md#p163) to [P165](prompts-implementation-phase.md#p165)).
 
+<a id="r18"></a>**R18.** On the test levels.
+> I know whole flow is testing the runner and end to end is testing from Console end to end correct?
+
+Answer: Yes. The whole-flow tests run the whole application in memory, from the Runner inward (some through Program.Run), with in-memory input and output; the end-to-end tests start the real built application as a separate process and check console input and output, exit codes, the test data and the run scripts. The names were then made self-explanatory ([P173](prompts-implementation-phase.md#p173), [P174](prompts-implementation-phase.md#p174)).
+
 ## Issues found while testing by hand
 
 | Issue | Found in | Outcome |
@@ -158,3 +163,4 @@ Answer: A list of lines that are ignored with a warning (before any PLACE, badly
 | A number too large to read was reported as "must be a whole number" | [P167](prompts-implementation-phase.md#p167), [P168](prompts-implementation-phase.md#p168) | Its own reason: "X is too large" / "Y is too large" ([DEC-20](design-decisions.md#dec-20-bad-lines), [DEC-22](design-decisions.md#dec-22-warning-wording), [P169](prompts-implementation-phase.md#p169)) |
 | A line with two problems reported only the first | [P168](prompts-implementation-phase.md#p168) | Kept by design: one reason per line, the first problem only ([DEC-22](design-decisions.md#dec-22-warning-wording), [P169](prompts-implementation-phase.md#p169)) |
 | Page 8.3 (event-based alternative): the CommandParser returned an event | [P171](prompts-implementation-phase.md#p171), [P172](prompts-implementation-phase.md#p172) | The CommandParser returns a command, as in the chosen design; the Runner or a dispatcher turns it into an event for the store and reducer |
+| The names "whole-flow" and "end-to-end" for the two test levels were confusing | [P173](prompts-implementation-phase.md#p173) | Renamed: RunnerWholeFlow folder and ToyRobot.ConsoleEndToEndTests project ([P174](prompts-implementation-phase.md#p174)) |

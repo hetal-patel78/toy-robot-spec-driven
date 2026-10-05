@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace ToyRobot.EndToEndTests;
+namespace ToyRobot.ConsoleEndToEndTests;
 
 public sealed record AppResult(string Stdout, string Stderr, int ExitCode);
 
