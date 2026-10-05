@@ -40,7 +40,7 @@ fi
 
 # 3. Arguments: none, or one existing file.
 if [ "$#" -gt 1 ]; then
-  printf 'How to run: ./run.sh [commands.txt]\n' >&2
+  printf '%s\n' 'How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file to type the commands.' >&2
   exit 1
 fi
 app="$dir/src/ToyRobot/bin/Release/net8.0/ToyRobot"

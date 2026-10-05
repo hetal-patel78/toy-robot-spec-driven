@@ -317,3 +317,22 @@ Outcome: the assistant answered six command words: the five robot commands of th
 > ur read me does not include testing how to run?
 
 Outcome: the README had `dotnet test` only inside "Build, test and run directly". A new section, "Run the tests", gives the command for all tests and for each test level (unit, Runner whole-flow, console end-to-end) with the expected number passed, each command run first (364 + 106 + 26 = 496), and links to the table of test levels. No decision or code changed.
+
+<a id="p187"></a>**P187.** On testing by hand:
+> one more testing below step is also missing
+> https://github.com/hetal-patel78/toy-robot-spec-driven/blob/main/docs/solution-design/07-logical-flow/07-start-up.md
+
+Outcome: read as "the start-up steps on page 7.7 cannot be tried by hand from the testing-by-hand page". [docs/testing-by-hand.md](../testing-by-hand.md) has a new section, "Start-up checks": how to see the exit code in each shell; the application with an argument (how-to-run message, exit code 1); the run scripts with two files, a missing file, a folder and, for `run.cmd`, `*` or `?` (each message, exit code 1); a normal run (exit code 0); and why exit code 2 cannot be shown by hand, with the tests that check it. Every message and exit code was produced by running the command. No decision or code changed.
+
+<a id="p188"></a>**P188.** After trying the run scripts' wrong-argument cases by hand:
+> in the how to run u is showing  run.cmd [commands.txt] which is misleading
+>
+> we just use use
+>
+> run testdata\long-session.txt
+>
+> we don't use run.cmd and the command.txt under square bracket i know square brackets denotes placeholder but it can still create confusions
+
+Then, on the proposed wording: "yes proposed approach is the way to go".
+
+Outcome: the run scripts' how-to-run message (more than one argument) is now a command that can be copied as it is. `run.cmd`: "How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run." `run.sh`: "How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file to type the commands." Spec 003 leaves the wording of the scripts' error messages open; their exit code (1) and empty console output (stdout) are unchanged, and CI-02 checks those, not the words. The application's own how-to-run message ([DEC-04](design-decisions.md#dec-04-standard-input-only)) is unchanged. The testing-by-hand page, spec 003's research and tasks notes show the new wording. No decision changed.

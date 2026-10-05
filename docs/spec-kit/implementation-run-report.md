@@ -526,6 +526,8 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Out of scope: "a BACK command" became "commands other than the six (for example BACK)"; the README's "How this would evolve" says how a command is added | Developer's request ([P184][p184]): naming only BACK read as if it were the one command considered | scope page; then DEC-39; then the solution-design overview; then the README | Wording only; links checked |
 | "The six commands" now says "(the five robot commands and EXIT)" | Developer's question ([P185][p185]): the challenge has five commands, so "six" could read as a miscount | scope page; then DEC-39; then the solution-design overview | Wording only; links checked |
 | README: a "Run the tests" section, with the command for all tests and for each test level and the expected number passed | Developer's question ([P186][p186]): how to run the tests was not easy to find | README, before "Build, test and run directly" | Each command run on Windows: 496 = 364 unit + 106 Runner whole-flow + 26 console end-to-end, 0 failed; links checked |
+| [docs/testing-by-hand.md](../testing-by-hand.md): a "Start-up checks" section (page 7.7 by hand): exit codes in each shell, the application with an argument, the run scripts' wrong-argument cases, exit code 0 and why exit code 2 is checked only by tests | Developer's request ([P187][p187]) | the section, after "Run the test data" | Every message and exit code from a real run on Windows (cmd and Git Bash); links checked |
+| Run scripts: the how-to-run message (more than one argument) gives a real command, `run testdata\challenge-example-1.txt` / `./run.sh testdata/challenge-example-1.txt`, instead of `run.cmd [commands.txt]` / `./run.sh [commands.txt]` | Developer's request ([P188][p188]): the script name and the bracketed placeholder were misleading | `run.cmd` and `run.sh`; then the testing-by-hand page; then spec 003's research and tasks notes | Two-file case run in cmd and Git Bash: new message, exit code 1, empty console output (stdout); CI-02 unchanged; links checked |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -677,6 +679,8 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p184]: ../design-analysis/prompts-implementation-phase.md#p184
 [p185]: ../design-analysis/prompts-implementation-phase.md#p185
 [p186]: ../design-analysis/prompts-implementation-phase.md#p186
+[p187]: ../design-analysis/prompts-implementation-phase.md#p187
+[p188]: ../design-analysis/prompts-implementation-phase.md#p188
 [r-04]: ../../specs/003-delivery/research.md#r-04-script-channels-on-success
 [r-05]: ../../specs/003-delivery/research.md#r-05-ci-workflow-shape-nfr-02
 [r-08]: ../../specs/003-delivery/research.md#r-08-ci-05-failed-build-in-a-temporary-copy

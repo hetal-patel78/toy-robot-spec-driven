@@ -215,6 +215,42 @@ Output:
 3,0,EAST
 ```
 
+## Start-up checks
+How the application and the run scripts start, as shown on [solution design page 7.7](solution-design/07-logical-flow/07-start-up.md): the argument check and the exit codes. Run these from the repository root after a build (`dotnet build -c Release`, or any run of a script).
+
+See the exit code straight after a command:
+
+| Shell | Command |
+|---|---|
+| cmd | `echo %ERRORLEVEL%` |
+| PowerShell | `$LASTEXITCODE` |
+| bash, zsh | `echo $?` |
+
+**The application with an argument.** The application takes no arguments; it reads commands from console input. Any argument gives the how-to-run message and exit code 1, and no command is read.
+
+| Shell | Command |
+|---|---|
+| cmd, PowerShell | `src\ToyRobot\bin\Release\net8.0\ToyRobot.exe testdata\challenge-example-1.txt` |
+| bash, zsh | `./src/ToyRobot/bin/Release/net8.0/ToyRobot testdata/challenge-example-1.txt` |
+
+Console message (stderr), exit code 1:
+```
+How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)
+```
+
+**The run scripts with a wrong argument.** After their progress lines, the scripts stop with one console message (stderr) and exit code 1; console output (stdout) is empty.
+
+| Case | cmd (PowerShell: `.\run.cmd` instead of `run`) | bash, zsh | Console message (stderr) |
+|---|---|---|---|
+| Two files | `run testdata\challenge-example-1.txt testdata\challenge-example-2.txt` | `./run.sh testdata/challenge-example-1.txt testdata/challenge-example-2.txt` | `How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run.` (bash: `How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file to type the commands.`) |
+| A file that does not exist | `run testdata\no-such-file.txt` | `./run.sh testdata/no-such-file.txt` | `File not found: "testdata\no-such-file.txt"` (bash: `File not found: testdata/no-such-file.txt`) |
+| A folder | `run testdata` | `./run.sh testdata` | `File not found: "testdata"` (bash: `File not found: testdata`) |
+| `*` or `?` in the name (cmd only) | `run testdata\challenge-example-1.*` | | `The file name must not contain * or ?: "testdata\challenge-example-1.*"` |
+
+**A normal run** (any command in "Run the test data" above, or a typed session ended with `EXIT`) ends with exit code 0.
+
+**Exit code 2** (`Error: unexpected problem - ...`) is the last safeguard for a fault outside the application, such as the console closing while it writes. No input causes it, so it cannot be shown by hand; the Runner whole-flow tests in `tests/ToyRobot.Tests/RunnerWholeFlow/ProgramSafeguardTests.cs` check it.
+
 The rules behind each warning are in [design-decisions.md](design-analysis/design-decisions.md).
 
 ---

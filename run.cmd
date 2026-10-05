@@ -47,7 +47,7 @@ del "%log%"
 exit /b %rc%
 
 :howtorun
->&2 echo How to run: run.cmd [commands.txt]
+>&2 echo How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run.
 exit /b 1
 
 :wildcard
