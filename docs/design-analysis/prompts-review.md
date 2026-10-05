@@ -148,7 +148,7 @@ Answer: Yes, every line: 1,2 EAST, two moves to 3,2, LEFT to NORTH (3,2,NORTH), 
 <a id="r17"></a>**R17.**
 > give me bad cases
 
-Answer: A list of lines that are ignored with a warning (before any PLACE, badly formed lines, a PLACE off the table, a MOVE blocked at the edge), each with the exact warning, checked by running them through the built app. It became [try-it-by-typing.md](../try-it-by-typing.md) ([P163](prompts-implementation-phase.md#p163) to [P165](prompts-implementation-phase.md#p165)).
+Answer: A list of lines that are ignored with a warning (before any PLACE, badly formed lines, a PLACE off the table, a MOVE blocked at the edge), each with the exact warning, checked by running them through the built app. It became try-it-by-typing.md, renamed later to [testing-by-hand.md](../testing-by-hand.md) ([P179](prompts-implementation-phase.md#p179); [P163](prompts-implementation-phase.md#p163) to [P165](prompts-implementation-phase.md#p165)).
 
 <a id="r18"></a>**R18.** On the test levels.
 > I know whole flow is testing the runner and end to end is testing from Console end to end correct?

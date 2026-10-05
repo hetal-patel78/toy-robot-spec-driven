@@ -21,7 +21,7 @@ Run the commands from the repository root. The scripts build the app quietly and
 
 While they work, the scripts show what they are doing on the console (checking .NET, building, then running); only the application's REPORT output goes to console output (stdout).
 
-When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/try-it-by-typing.md](docs/try-it-by-typing.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
+When typing, end the session with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS). To try it by hand, see [docs/testing-by-hand.md](docs/testing-by-hand.md): the commands, a normal session, the commands that are ignored with the exact warning each prints, and a session blocked at the edge.
 
 ## The three challenge examples
 Copy and run; each prints the two lines shown.
@@ -92,7 +92,7 @@ The developer's brainstorm, the design analysis ([design-decisions.md](docs/desi
 | What | Location |
 |---|---|
 | The challenge | [docs/challenge/README.md](docs/challenge/README.md) |
-| Trying the application by hand: commands, a normal session, ignored commands and their warnings | [docs/try-it-by-typing.md](docs/try-it-by-typing.md) |
+| Trying the application by hand: commands, a normal session, ignored commands and their warnings | [docs/testing-by-hand.md](docs/testing-by-hand.md) |
 | Design analysis overview | [docs/design-analysis/README.md](docs/design-analysis/README.md) |
 | Design decisions (the single source of truth) | [docs/design-analysis/design-decisions.md](docs/design-analysis/design-decisions.md) |
 | Handwritten initial analysis | [docs/design-analysis/handwritten/images/](docs/design-analysis/handwritten/images/) (one image per page; the PDFs are in [docs/design-analysis/handwritten/](docs/design-analysis/handwritten/)) |

@@ -1,4 +1,4 @@
-# Try it by typing
+# Testing by hand
 
 How to run the application by hand and what to expect. Every warning and output line on this page was produced by running the same commands through the built application.
 

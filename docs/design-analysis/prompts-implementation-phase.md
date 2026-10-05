@@ -176,7 +176,7 @@ Outcome: a "Try it by typing" section was drafted in the README (P164 moved it t
 <a id="p164"></a>**P164.** On the draft README section:
 > actually add a subpage other wise it will polluste readme unless u are sure it will not
 
-Outcome: the section is its own page, [docs/try-it-by-typing.md](../try-it-by-typing.md): how to start a typed session in cmd, PowerShell and bash, a table of the commands, a normal session (challenge example 3), a table of commands that are ignored with the exact warning each prints, and a session blocked at the edge. The README links to it (P165). Every line on the page was checked by running the same commands through the built application; no behaviour changed.
+Outcome: the section is its own page, docs/try-it-by-typing.md (renamed later to [docs/testing-by-hand.md](../testing-by-hand.md), [P179](#p179)): how to start a typed session in cmd, PowerShell and bash, a table of the commands, a normal session (challenge example 3), a table of commands that are ignored with the exact warning each prints, and a session blocked at the edge. The README links to it (P165). Every line on the page was checked by running the same commands through the built application; no behaviour changed.
 
 <a id="p165"></a>**P165.** On where the README links to the new page:
 > it should be part of run it right?
@@ -273,3 +273,8 @@ Outcome: alternative 8.4 (each command is given the Robot and the Table) removed
 > can u also confirm all the sequence diagram matches with our current implementation
 
 Outcome: the sequence diagrams on pages 7.1 to 7.7 were compared with the code, line by line. Pages 7.1 to 7.6 match. Page 7.7 (start-up) showed Program choosing the reader after the argument check and after creating the parts; `Program.Main` chooses it first, before the argument check, as the page's own note on the safeguard already said. The diagram and its steps now show the reader chosen first (steps renumbered). The alternatives on page 8 describe designs that were not built, so they were not compared. No decision or code changed.
+
+<a id="p179"></a>**P179.** After the assistant suggested keeping the typed-session page in `docs/` rather than `testdata/` (which holds only the input and expected-output pairs the tests read), and renaming it so its purpose is clear:
+> ye good ideas to rename
+
+Outcome: `docs/try-it-by-typing.md` renamed to `docs/testing-by-hand.md`, with the heading "Testing by hand". The README links ("Run it" and "Where to look") point to the new name; earlier records that name the old page say it was renamed. The page's content is unchanged. No decision or code changed.
