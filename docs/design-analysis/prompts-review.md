@@ -108,3 +108,53 @@ Answer: Not static classes: each class keeps its type and gets one shared instan
 > yes sorry that is what i mean I phrased it incorrectly. How many places u will need to make changes and how long it will take?
 
 Answer: About 10 lines in 7 code files, about 60 lines in 7 test files, one sentence in `design-decisions.md` and four spec 001 files; about 45 minutes with CI and review. The developer chose to leave it (P156).
+
+<a id="r15"></a>**R15.** On testing the application by hand.
+> I have one question how will I enter the command manually and test it ?
+
+Answer: Run a script with no file name (`run` in cmd, `.\run.cmd` in PowerShell, `./run.sh` in bash); after the build the app shows a `> ` prompt; type one command per line and press Enter; end with `EXIT`. Challenge example 3 was given as a session to try.
+
+<a id="r16"></a>**R16.** On a typed session.
+> i used below
+>
+> Checking for a .NET SDK, version 8 or later...
+> Building the application (Release)...
+> Running the application: type commands, one per line; end with EXIT or Ctrl+Z then Enter.
+> > PLACE 1,2,EAST
+> > MOVE
+> > MOVE
+> > LEFT
+> > Report
+> Output:
+> 3,2,NORTH
+> > MOVE
+> > Report
+> Output:
+> 3,3,NORTH
+> > LEFT
+> > report
+> Output:
+> 3,3,WEST
+> > right
+> > report
+> Output:
+> 3,3,NORTH
+> >
+>
+> Is the output correct?
+
+Answer: Yes, every line: 1,2 EAST, two moves to 3,2, LEFT to NORTH (3,2,NORTH), MOVE to 3,3 (3,3,NORTH, as challenge example 3), LEFT to WEST, RIGHT back to NORTH. Mixed letter case is accepted, and LEFT and RIGHT turn without moving. The last `> ` is the app waiting for the next command.
+
+<a id="r17"></a>**R17.**
+> give me bad cases
+
+Answer: A list of lines that are ignored with a warning (before any PLACE, badly formed lines, a PLACE off the table, a MOVE blocked at the edge), each with the exact warning, checked by running them through the built app. It became [try-it-by-typing.md](../try-it-by-typing.md) ([P163](prompts-implementation-phase.md#p163) to [P165](prompts-implementation-phase.md#p165)).
+
+## Issues found while testing by hand
+
+| Issue | Found in | Outcome |
+|---|---|---|
+| Ctrl+Z then Enter did not end a typed session on Windows | [P161](prompts-implementation-phase.md#p161) | Fixed: a line that is only Ctrl+Z ends the input ([DEC-10](design-decisions.md#dec-10-ending-a-session), [P162](prompts-implementation-phase.md#p162)) |
+| A number too large to read was reported as "must be a whole number" | [P167](prompts-implementation-phase.md#p167), [P168](prompts-implementation-phase.md#p168) | Its own reason: "X is too large" / "Y is too large" ([DEC-20](design-decisions.md#dec-20-bad-lines), [DEC-22](design-decisions.md#dec-22-warning-wording), [P169](prompts-implementation-phase.md#p169)) |
+| A line with two problems reported only the first | [P168](prompts-implementation-phase.md#p168) | Kept by design: one reason per line, the first problem only ([DEC-22](design-decisions.md#dec-22-warning-wording), [P169](prompts-implementation-phase.md#p169)) |
+| Page 8.3 (event-based alternative): the CommandParser returned an event | [P171](prompts-implementation-phase.md#p171), [P172](prompts-implementation-phase.md#p172) | The CommandParser returns a command, as in the chosen design; the Runner or a dispatcher turns it into an event for the store and reducer |

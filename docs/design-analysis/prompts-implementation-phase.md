@@ -211,3 +211,25 @@ Outcome: chose the clearer message; the assistant explained that only the first 
 <a id="p169"></a>**P169.** On reporting several problems on one line: **[Selected: First problem only (Recommended)]**
 
 Outcome: a decision change confirmed by the developer (CLAUDE.md). In order: [DEC-20](design-decisions.md#dec-20-bad-lines) and [DEC-22](design-decisions.md#dec-22-warning-wording) (a number written as a whole number but too large to read, in either direction, is still a bad line and gets `X is too large` or `Y is too large`; anything not written as a whole number keeps `must be a whole number`; only the first problem on a line is reported, as before); then the solution design pages that list the warnings and the parse failures; then spec 001 and the other specs that list the texts (scenarios, edge cases, contract, research, task T059) and the check script; then the tests, written first (22 failed); then `CommandParser`; then the try-it page. 495 tests pass (470 unit and whole-flow, 25 end-to-end). Done by a Sonnet 5.5 agent.
+
+<a id="p170"></a>**P170.** While testing by hand:
+> update the review prompt with the issues I am noticing
+
+Outcome: [prompts-review.md](prompts-review.md) has R15 to R17 (how to type commands, whether a typed session's output is correct, and lines to try that are ignored) and a section "Issues found while testing by hand" with each issue, the prompt it was raised in and its outcome.
+
+<a id="p171"></a>**P171.** On solution design page 8.3:
+> There is also an issue with the sequence diagram of even based reducer
+>
+> Runner call command parser and command parser returns event that does not make sense commanparser just returns the command
+
+Outcome: the assistant proposed a diagram in which the reducer produced the event; the developer answered "no u are not getting my point" and was asked what the diagram should show (P172).
+
+<a id="p172"></a>**P172.** Asked what the event-based diagram should show after the CommandParser returns the command:
+> it only matter if we were going to implement it but we should still document the correct approach i.e.
+> Runner passes a raw string line to the CommandParser.
+> CommandParser returns a Command (e.g., MoveCommand, PlaceCommand).
+> Runner (or a Dispatcher) turns that Command into an Event (or the Store/Dispatcher handles the translation).
+> Store invokes the Reducer with (currentState, event).
+> Reducer returns (newState, warning)
+
+Outcome: [page 8.3](../solution-design/08-alternative-solutions/03-event-based-reducer.md) follows these steps: the CommandParser returns a command, the Runner turns it into an event (or a dispatcher or the store does), the store calls the reducer with the current state and the event, and the reducer returns the new state and any warning. The description, diagram and numbered steps changed; the pros, cons and the reason it was not chosen did not. No decision changed: page 8.3 describes a design that was not built.

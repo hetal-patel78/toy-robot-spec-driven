@@ -8,7 +8,7 @@ How to read this page: see [page 8](../08-alternative-solutions.md#how-to-read-t
 
 ## Description
 
-Each command becomes an **event**, such as "robot moved". A **reducer** is a pure function: given the current state and an event, it returns the new state, and it changes nothing else. A **store** keeps the current state, passes each event to the reducer and keeps the result. Because every change is an event, the history of events can be kept and replayed.
+The CommandParser returns a command, as in the chosen design, and each command is turned into an **event**, such as "move requested". A **reducer** is a pure function: given the current state and an event, it returns the new state, and it changes nothing else. A **store** keeps the current state, passes each event to the reducer and keeps the result. Because every change is an event, the history of events can be kept and replayed.
 
 ```mermaid
 sequenceDiagram
@@ -17,20 +17,22 @@ sequenceDiagram
     participant P as CommandParser
     participant S as Store (not built)
     participant F as Reducer (not built)
-    R->>P: pass the line
-    P-->>R: event: MoveRequested
+    R->>P: pass the raw line
+    P-->>R: command: MoveCommand
+    R->>R: turn the command into an event: MoveRequested
     R->>S: dispatch the event
     S->>F: reduce(current state, event)
     F-->>S: new state, plus any warning
     S-->>R: new state, plus any warning
 ```
 
-1. The Runner passes the line to the parser.
-2. The parser returns an event.
-3. The Runner sends the event to the store.
-4. The store calls the reducer with the current state and the event.
-5. The reducer returns the new state and any warning, without changing anything itself.
-6. The store keeps the new state and tells the Runner the result.
+1. The Runner passes the raw line to the CommandParser.
+2. The CommandParser returns a command, such as MoveCommand or PlaceCommand, as in the chosen design.
+3. The Runner turns the command into an event, such as MoveRequested. A dispatcher, or the store itself, could do this translation instead.
+4. The Runner dispatches the event to the store.
+5. The store calls the reducer with the current state and the event.
+6. The reducer returns the new state and any warning, without changing anything itself.
+7. The store keeps the new state and tells the Runner the result.
 
 ## Pros
 
