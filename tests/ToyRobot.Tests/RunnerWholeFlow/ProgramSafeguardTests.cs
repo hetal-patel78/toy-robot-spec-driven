@@ -54,7 +54,7 @@ public class ProgramSafeguardTests
         var output = NewWriter();
         var error = NewWriter();
 
-        var exitCode = Program.Run(new[] { "--help" }, input, output, error, interactive: false);
+        var exitCode = Program.Run(new[] { "commands.txt" }, input, output, error, interactive: false);
 
         Assert.Equal(1, exitCode);
         Assert.Equal("", output.ToString());
