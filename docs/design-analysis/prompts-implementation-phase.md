@@ -336,3 +336,9 @@ Outcome: read as "the start-up steps on page 7.7 cannot be tried by hand from th
 Then, on the proposed wording: "yes proposed approach is the way to go".
 
 Outcome: the run scripts' how-to-run message (more than one argument) is now a command that can be copied as it is. `run.cmd`: "How to run: run testdata\challenge-example-1.txt to run the commands in a file, or run with no file to type the commands. In PowerShell, use .\run.cmd instead of run." `run.sh`: "How to run: ./run.sh testdata/challenge-example-1.txt to run the commands in a file, or ./run.sh with no file to type the commands." Spec 003 leaves the wording of the scripts' error messages open; their exit code (1) and empty console output (stdout) are unchanged, and CI-02 checks those, not the words. The application's own how-to-run message ([DEC-04](design-decisions.md#dec-04-standard-input-only)) is unchanged. The testing-by-hand page, spec 003's research and tasks notes show the new wording. No decision changed.
+
+<a id="p189"></a>**P189.** On testing by hand: the developer copied the "A normal session" block (each command shown after the `> ` prompt) and pasted it into a typed session, which showed `>>` and ignored the lines:
+> I copy all and add paste it to the console then it show >> and so it is ignore. I suggest we remove > from the
+> testing by hand
+
+Outcome: in [docs/testing-by-hand.md](../testing-by-hand.md), "A normal session" and "Blocked at the edge" now give the commands as a block without `> `, which can be pasted as it is, followed by what the app prints (for "Blocked at the edge", a table of each line and what it prints). The typed-session instructions say to type only the command, not the `> `; the ignored-commands table explains with its `> MOVE` row why; the "Run the test data" blocks say their `> ` lines are the app's echo. Each block of commands was run through the built application and gives the output shown. No decision or code changed.

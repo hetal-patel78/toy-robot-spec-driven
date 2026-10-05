@@ -11,7 +11,7 @@ Run a script from the repository root with no file name:
 | PowerShell | `.\run.cmd` |
 | bash, zsh (Linux, macOS) | `./run.sh` |
 
-After the build the app shows a `> ` prompt. Type one command per line and press Enter. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
+After the build the app shows a `> ` prompt. Type one command per line and press Enter; type only the command, not the `> `. The blocks of commands on this page can be copied and pasted into the session as they are. End with `EXIT`, or with Ctrl+Z then Enter (Windows) or Ctrl+D (Linux, macOS).
 
 ## Commands
 
@@ -26,17 +26,21 @@ After the build the app shows a `> ` prompt. Type one command per line and press
 Commands are accepted in any letter case.
 
 ## A normal session
-Challenge example 3:
+Challenge example 3. Type or paste:
 ```
-> PLACE 1,2,EAST
-> MOVE
-> MOVE
-> LEFT
-> MOVE
-> REPORT
+PLACE 1,2,EAST
+MOVE
+MOVE
+LEFT
+MOVE
+REPORT
+EXIT
+```
+
+After `REPORT` the app prints:
+```
 Output:
 3,3,NORTH
-> EXIT
 ```
 
 ## Commands that are ignored
@@ -58,27 +62,35 @@ Type these in a new session, in this order. Each prints its warning and the sess
 | `move now` | `Warning: 'move now' ignored - MOVE takes no values` |
 | `> MOVE` | `Warning: '> MOVE' ignored - unknown command` |
 
+The last row is why the commands on this page are shown without the `> `: a line typed or pasted with it is not a command.
+
 ## Blocked at the edge
-In the same session. The blocked MOVE and the off-table PLACE are ignored; the commands after them still work:
+In the same session. The blocked MOVE and the off-table PLACE are ignored; the commands after them still work. Type or paste:
 ```
-> PLACE 4,2,EAST
-> MOVE
-Warning: MOVE ignored - next position is off the table so robot stays at 4,2,EAST
-> REPORT
-Output:
-4,2,EAST
-> LEFT
-> MOVE
-> REPORT
-Output:
-4,3,NORTH
-> PLACE 7,7,NORTH
-Warning: PLACE 7,7,NORTH ignored - position is off the table
-> REPORT
-Output:
-4,3,NORTH
-> EXIT
+PLACE 4,2,EAST
+MOVE
+REPORT
+LEFT
+MOVE
+REPORT
+PLACE 7,7,NORTH
+REPORT
+EXIT
 ```
+
+What the app prints after each line:
+
+| Line | Printed |
+|---|---|
+| `PLACE 4,2,EAST` | nothing |
+| `MOVE` | `Warning: MOVE ignored - next position is off the table so robot stays at 4,2,EAST` |
+| `REPORT` | `Output:` `4,2,EAST` |
+| `LEFT` | nothing |
+| `MOVE` | nothing (the robot moves to 4,3) |
+| `REPORT` | `Output:` `4,3,NORTH` |
+| `PLACE 7,7,NORTH` | `Warning: PLACE 7,7,NORTH ignored - position is off the table` |
+| `REPORT` | `Output:` `4,3,NORTH` |
+| `EXIT` | nothing; the session ends |
 
 ## Run the test data
 Each file in `testdata/` can be run the same way, from the repository root:
@@ -89,7 +101,7 @@ Each file in `testdata/` can be run the same way, from the repository root:
 | PowerShell | `.\run.cmd testdata\long-session.txt` |
 | bash, zsh (Linux, macOS) | `./run.sh testdata/long-session.txt` |
 
-After the script's three progress lines (checking .NET, building, running), the console shows each line of the file as `> ` and the line, then any warning or report for it. Only the `Output:` lines and the positions are console output (stdout); the expected file next to each input file (`<name>.expected.txt`) holds exactly those lines. What each file shows on the console:
+After the script's three progress lines (checking .NET, building, running), the console shows each line of the file as `> ` and the line, then any warning or report for it. Only the `Output:` lines and the positions are console output (stdout); the expected file next to each input file (`<name>.expected.txt`) holds exactly those lines. What each file shows on the console (the `> ` lines are the app echoing the file, not lines to type; to type a file by hand, paste the lines of the file itself):
 
 ### challenge-example-1
 Challenge example 1.
