@@ -8,14 +8,15 @@ What the built application (`ToyRobot`) promises to a person, a shell or a test.
 |---|---|---|
 | `ToyRobot` (console input not redirected) | a person types commands | [DEC-04][dec-04], [DEC-24][dec-24] |
 | `ToyRobot < commands.txt` (cmd, bash, zsh), or a pipe | commands come from a file or pipe | [DEC-04][dec-04] |
-| `ToyRobot <anything>` | any argument: how-to-run message, exit code 1, nothing read | [DEC-04][dec-04] |
+| `ToyRobot --help` | exactly this one argument, lower case: the help text on stdout, exit code 0, nothing read | [DEC-04][dec-04] |
+| `ToyRobot <anything else>` | any other argument, or more than one (`-h`, `--HELP`, `--help commands.txt`, a file name): how-to-run message, exit code 1, nothing read | [DEC-04][dec-04] |
 
 ## Channels (DEC-23)
 
 | Channel | Carries |
 |---|---|
 | Console input (stdin) | the commands, one per line ([DEC-05][dec-05]); UTF-8 when redirected, a leading byte-order mark ignored ([DEC-20][dec-20]) |
-| Console output (stdout) | only the REPORT result: `Output:` then `X,Y,F`, each on its own line ([DEC-21][dec-21]) |
+| Console output (stdout) | only the REPORT result: `Output:` then `X,Y,F`, each on its own line ([DEC-21][dec-21]); with `--help`, the help text instead |
 | Console messages (stderr) | the prompt, the echo, warnings, the how-to-run message and the unexpected-problem error line |
 
 ## Exact strings
@@ -23,6 +24,7 @@ What the built application (`ToyRobot`) promises to a person, a shell or a test.
 | Item | Text | Channel | Source |
 |---|---|---|---|
 | How-to-run message | `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` (three spaces before the bracket), one line | stderr | [DEC-04][dec-04] |
+| Help text | the text of spec [FR-18](../spec.md#fr-18), line for line, each line ending with a line break | stdout | [DEC-04][dec-04] |
 | REPORT label | `Output:` | stdout | [DEC-21][dec-21] |
 | REPORT position | `X,Y,F`, for example `0,1,NORTH`, upper case | stdout | [DEC-21][dec-21], [DEC-07][dec-07] |
 | Prompt (typing only) | `> ` (`>` and a space, no line break), before each read, including the read that finds the end of the input | stderr | [DEC-24][dec-24], [DEC-10][dec-10] |
@@ -35,7 +37,8 @@ What the built application (`ToyRobot`) promises to a person, a shell or a test.
 | Exit code | When | Source |
 |---|---|---|
 | 0 | the input ends, or EXIT is read (any case; anything after it on the line is ignored) | [DEC-10][dec-10] |
-| 1 | any argument is given (after the how-to-run message) | [DEC-04][dec-04] |
+| 0 | `--help` is the only argument (after the help text) | [DEC-04][dec-04] |
+| 1 | any other argument is given (after the how-to-run message) | [DEC-04][dec-04] |
 | 2 | an unexpected problem, not caused by any input (after the error line; also when the error line cannot be written) | [DEC-32][dec-32] |
 | non-zero, set by the system | Ctrl+C (not handled by the application; not tested) | [DEC-10][dec-10] |
 

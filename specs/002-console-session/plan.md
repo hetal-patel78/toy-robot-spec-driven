@@ -48,7 +48,7 @@ Technical approach (pages 5, 6, 7, 9; [DEC-26][dec-26], [DEC-29][dec-29]):
 | III. Never Crash | The Runner handles every parse result and outcome; nothing is thrown for any input; [NFR-01][nfr-01] tests at both levels (empty input, a number too large, every kind of bad line, BOM). Program's last safeguard turns an unexpected exception into one error line and exit code 2 ([PG-02][pg-02], [DEC-32][dec-32]), tested in memory ([SG-01][sg-01]). | Pass |
 | IV. Cross-Platform | No platform-specific code in the application; the console end-to-end tests start `ToyRobot.exe` or `ToyRobot` by platform; CRLF and LF input are both tested ([WF-03][wf-03], [E2E-07][e2e-07]); CI runs all levels on three systems (spec 003). | Pass |
 | V. No Over-Engineering | Only the BCL and xUnit; no options, no configuration, no extra commands or messages; the table size stays a constructor argument set by Program. | Pass |
-| VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`. Every test checks the two channels separately. | Pass |
+| VI. Standard Output for REPORT Output Only | The Runner writes only `Output:` and the position text to `output`; prompt, echo and warnings go to `error`; Program writes the how-to-run message to `Console.Error`, and the help text for `--help` to `Console.Out` (DEC-23 lists it on standard output; see the note on principle VI below). Every test checks the two channels separately. | Pass |
 
 No violations; Complexity Tracking is empty.
 
@@ -93,6 +93,7 @@ tests/
 │       ├── PromptTests.cs                    # FR-13
 │       ├── NeverCrashTests.cs                # NFR-01
 │       ├── ProgramSafeguardTests.cs          # SG-01: Program's Run in memory (PG-01, PG-02)
+│       ├── ProgramHelpTests.cs               # SG-01: --help and the other arguments through Program's Run (FR-17, FR-18)
 │       ├── SmallTableTests.cs                # NFR-05 (2 x 2)
 │       └── RobotRulesAsConsoleTextTests.cs   # WF-01: spec 001's scenarios as console text
 └── ToyRobot.ConsoleEndToEndTests/       # from spec 001 (empty); this spec adds:
@@ -101,6 +102,7 @@ tests/
     ├── LineComparer.cs                       # splits text into lines (CRLF or LF) for line-by-line comparison
     ├── TestDataTests.cs                      # E2E-01
     ├── HowToRunMessageTests.cs               # E2E-02, E2E-08
+    ├── HelpTests.cs                          # E2E-10
     ├── SessionEndTests.cs                    # E2E-03, E2E-04
     ├── ByteOrderMarkTests.cs                 # E2E-05
     ├── OutputChannelTests.cs                 # E2E-06
@@ -131,7 +133,9 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 - `internal static class Program` (not public, so the public type list in spec 001's DesignRulesTests, to which only `Runner` is added, stays exact), with two methods.
 - `static int Main(string[] args)`: `bool interactive = !Console.IsInputRedirected`; reader = `interactive ? Console.In : new StreamReader(Console.OpenStandardInput(), Encoding.UTF8, detectEncodingFromByteOrderMarks: false)` (research [R-02][r-02]); return `Run(args, reader, Console.Out, Console.Error, interactive)`. Creating the reader reads nothing, so with an argument console input is still not read.
 - `internal static int Run(string[] args, TextReader input, TextWriter output, TextWriter error, bool interactive)`, all inside one `try`:
-  - `if (args.Length > 0)`: `error.WriteLine("How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)")`; return 1. `input` is not read.
+  - `if (args.Length == 1 && args[0] == "--help")` (ordinal, case-sensitive): write each line of the help text ([FR-18][fr-18]) with `output.WriteLine`; return 0. `input` is not read ([DEC-04][dec-04]).
+  - `else if (args.Length > 0)`: `error.WriteLine("How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)")`; return 1. `input` is not read.
+  - The help text is a `private static readonly string[] HelpLines` in Program, copied line for line from [DEC-04][dec-04] (spec Assumptions, "help text in Program").
   - Otherwise: `var table = new Table(5, 5)`; `var robotOperator = new RobotOperator(table)`; `new Runner(input, output, error, robotOperator, interactive).Run()`; return 0.
   - `catch (Exception exception)`: in an inner `try`, `error.WriteLine("Error: unexpected problem - " + exception.Message)`, with an inner `catch (Exception)` that ignores a failure to write it; return 2 ([PG-02][pg-02], [DEC-23][dec-23], [DEC-32][dec-32]).
 - `src/ToyRobot/ToyRobot.csproj` gets an `ItemGroup` with `<InternalsVisibleTo Include="ToyRobot.Tests" />` (an MSBuild item; no library or package), so `ToyRobot.Tests` can call `Run` ([SG-01][sg-01]).
@@ -147,7 +151,7 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 - finds the repository root by walking up from `AppContext.BaseDirectory` to the folder holding `ToyRobot.sln`;
 - finds the executable at `src/ToyRobot/bin/<configuration>/net8.0/ToyRobot.exe` (Windows) or `.../ToyRobot` (Linux, macOS), where `<configuration>` comes from the test assembly's `AssemblyConfigurationAttribute` (research [R-04][r-04]);
 - starts it with `UseShellExecute = false`, console input, console output and console messages redirected, and each argument added through `ArgumentList`;
-- starts reading console output (stdout) and console messages (stderr) asynchronously before writing, writes the bytes to the input's base stream and closes it (an `IOException` while writing is ignored, because with an argument the application exits without reading, [E2E-08][e2e-08]), waits up to 30 seconds (a timeout kills the process and fails the test), and returns the stdout text, the stderr text and the exit code.
+- starts reading console output (stdout) and console messages (stderr) asynchronously before writing, writes the bytes to the input's base stream and closes it (an `IOException` while writing is ignored, because with an argument the application exits without reading, [E2E-08][e2e-08], [E2E-10][e2e-10]), waits up to 30 seconds (a timeout kills the process and fails the test), and returns the stdout text, the stderr text and the exit code.
 
 `LineComparer.Lines(string text)` splits on CRLF or LF and drops the one empty element after a final line break, so expected files and output compare line by line whatever line endings they use ([DEC-31][dec-31]).
 
@@ -198,3 +202,5 @@ No Constitution Check violations; nothing to justify.
 [sk-02]: ../001-robot-rules/spec.md#sk-02
 [ut-04]: ../001-robot-rules/spec.md#ut-04
 [wf-03]: spec.md#wf-03
+[fr-18]: spec.md#fr-18
+[e2e-10]: spec.md#e2e-10

@@ -9,7 +9,7 @@ description: "Task list for spec 002-console-session (Runner, Program, Runner wh
 
 **Prerequisites**: spec 001-robot-rules is fully implemented and all its tests pass (see Phase 1). Spec 003-delivery is implemented after this spec and depends on it (Dependencies section).
 
-**Tests**: Required. The spec plans Runner whole-flow tests in memory ([WF-01][wf-01] to [WF-03][wf-03]) and console end-to-end tests ([E2E-01][e2e-01] to [E2E-09][e2e-09]), and the safeguard tests of Program's `Run` in memory ([SG-01][sg-01]), and the constitution (principle II) and the Spec Kit brief (rule 8) require tests first. In every phase the test tasks come before the code that makes them pass; until that code exists the new tests fail or do not compile (red), and the phase ends only when `dotnet build` and `dotnet test` from the repository root both pass (green).
+**Tests**: Required. The spec plans Runner whole-flow tests in memory ([WF-01][wf-01] to [WF-03][wf-03]) and console end-to-end tests ([E2E-01][e2e-01] to [E2E-10][e2e-10]), and the safeguard tests of Program's `Run` in memory ([SG-01][sg-01]), and the constitution (principle II) and the Spec Kit brief (rule 8) require tests first. In every phase the test tasks come before the code that makes them pass; until that code exists the new tests fail or do not compile (red), and the phase ends only when `dotnet build` and `dotnet test` from the repository root both pass (green).
 
 **Exact strings**: every expected text below, and every expected text a task takes from `spec.md` or `specs/001-robot-rules/spec.md`, is copied character for character (brief rule 2). Runner whole-flow tests compare console output (stdout) and console messages (stderr) separately and exactly, using `SessionHarness` (writers with `NewLine = "\n"`, research [R-06][r-06]); console end-to-end tests compare line by line using `LineComparer` ([DEC-31][dec-31]).
 
@@ -198,7 +198,8 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 | prompt shown when interactive and not otherwise; echo content | T032 to T035, T012, T028 | — |
 | an empty input | T014, T019 | spec 003 script run |
 | input starting with a byte-order mark (console end-to-end, all three systems) | T016 (console end-to-end, stdout), T010, T011 (Runner whole-flow, both channels) | CI on three systems (spec 003) |
-| the how-to-run message and exit codes (console end-to-end) | T038, T039, T019, T029 | script exit codes (spec 003) |
+| the how-to-run message and exit codes (console end-to-end), including `-h`, `--HELP` and `--help` with another argument | T038, T039, T061, T060 b, T019, T029 | script exit codes (spec 003) |
+| the help text word for word, nothing on stderr, exit code 0, no input read | T060 a (in memory, through Program's `Run`), T062 (console end-to-end) | run scripts with `--help` and menu choice 4 (spec 003) |
 | the unexpected-problem line and exit code 2 | T053 (in memory, through Program's `Run`) | — |
 
 ---
@@ -244,6 +245,26 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 
 ---
 
+## Phase 12: Help for `--help` (DEC-04)
+
+**Goal**: started with exactly `--help`, Program writes the help text to console output (stdout), nothing to console messages (stderr), reads no input and returns exit code 0; any other argument keeps the how-to-run message and exit code 1 ([FR-17][fr-17], [FR-18][fr-18]; [DEC-04][dec-04], [DEC-23][dec-23], [DEC-32][dec-32]; spec.md User Story 4 scenario 2 and User Story 6).
+
+**Independent Test**: Program's `Run` in memory and the built application: `dotnet test` from the repository root passes with the new tests.
+
+### Tests for User Story 6 (write first; T060 and T062 fail until T063; T061 passes before and after T063)
+
+- [ ] T060 [P] [US6] In `tests/ToyRobot.Tests/RunnerWholeFlow/ProgramHelpTests.cs` (namespace `ToyRobot.Tests.RunnerWholeFlow`; [SG-01][sg-01]; [FR-17][fr-17], [FR-18][fr-18]; [DEC-04][dec-04], [DEC-31][dec-31]), with the test's own copy of the help text of [FR-18][fr-18] as lines: (a) `Run_with_help_writes_the_help_text_and_exit_code_0`: args `--help`, input a `StringReader` holding `PLACE 0,0,NORTH` → stdout exactly the help lines, each followed by `"\n"` (writers with `NewLine` = `"\n"`); stderr `""`; exit code 0; `input.ReadLine()` still returns `PLACE 0,0,NORTH`; (b) theory `Run_with_any_other_argument_gives_the_how_to_run_message_and_exit_code_1` with rows `-h`, `--HELP`, `help`, and the two arguments `--help`, `commands.txt` → stdout `""`; stderr exactly the how-to-run message followed by `"\n"`; exit code 1; input unread.
+- [ ] T061 [P] [US4] Keep the existing argument tests on an argument other than `--help` ([E2E-02][e2e-02], [E2E-08][e2e-08], [SG-01][sg-01]; [FR-17][fr-17]): in `tests/ToyRobot.ConsoleEndToEndTests/HowToRunMessageTests.cs`, replace the theory row `--help` (T038) with the rows `-h`, `--HELP`, and the two arguments `--help`, `commands.txt`, and change the argument of `Input_is_not_read_when_started_with_an_argument` (T039) to `commands.txt`; in `tests/ToyRobot.Tests/RunnerWholeFlow/ProgramSafeguardTests.cs`, change the args of `Run_with_an_argument_gives_the_how_to_run_message_and_exit_code_1` (T054 a) to `commands.txt`. The expected results do not change.
+- [ ] T062 [P] [US6] In `tests/ToyRobot.ConsoleEndToEndTests/HelpTests.cs` (namespace `ToyRobot.ConsoleEndToEndTests`; [E2E-10][e2e-10]; [FR-18][fr-18]; [DEC-04][dec-04], [DEC-31][dec-31]), test `Help_text_and_exit_code_0_when_started_with_help`: argument `--help`, stdin `AppProcess.Utf8("PLACE 0,0,NORTH", "REPORT")`; `LineComparer.Lines(stdout)` equals the test's own copy of the help lines; stderr `""`; exit code 0.
+
+### Implementation for User Story 6
+
+- [ ] T063 [US6] In `src/ToyRobot/Program.cs` ([PG-01][pg-01], [PG-02][pg-02]; [FR-17][fr-17], [FR-18][fr-18]; [DEC-04][dec-04], [DEC-26][dec-26]; plan "Program"): add `private static readonly string[] HelpLines`, copied line for line from [DEC-04][dec-04]; at the start of `Run`, inside the existing `try`, `if (args.Length == 1 && args[0] == "--help")` write each line with `output.WriteLine` and return 0; the existing `if (args.Length > 0)` how-to-run branch follows unchanged. Update the class and `Run` comments to say 0 for help (DEC-04).
+- [ ] T064 Run `dotnet build ToyRobot.sln` (0 warnings), `dotnet test ToyRobot.sln` and `dotnet test ToyRobot.sln -c Release` from the repository root: all pass ([NFR-06][nfr-06]; [DEC-31][dec-31]).
+- [ ] T065 [P] Check by search that the help lines in `src/ToyRobot/Program.cs`, `ProgramHelpTests.cs` and `HelpTests.cs` match [DEC-04][dec-04] line for line, and review `src/ToyRobot/Program.cs` against page 6 and [PG-01][pg-01] ([NFR-07][nfr-07] in spec 001; [DEC-26][dec-26], [DEC-34][dec-34]).
+
+---
+
 ## Dependencies & Execution Order
 
 ### Dependencies on other specs
@@ -253,7 +274,7 @@ Namespaces follow the folders, as in spec 001: `Runner` is in `ToyRobot.Session`
 
 ### Phase dependencies
 
-- Phase 1 (Setup) → Phase 2 (Foundational) → Phase 3 (US1) → Phase 4 (US2) → Phase 5 (US3) → Phase 6 (US4) → Phase 7 (US5) → Phase 8 (Polish) → Phase 9 (Safeguard, [DEC-32][dec-32]).
+- Phase 1 (Setup) → Phase 2 (Foundational) → Phase 3 (US1) → Phase 4 (US2) → Phase 5 (US3) → Phase 6 (US4) → Phase 7 (US5) → Phase 8 (Polish) → Phase 9 (Safeguard, [DEC-32][dec-32]) → Phase 10 → Phase 11 → Phase 12 (help, [DEC-04][dec-04]).
 - The stories build one class step by step (the Runner's steps 2 to 5 in US1, EXIT in US2, the prompt in US3; Program's no-argument path in US1 and its argument check in US4), so the phases run in this order; each ends with every test passing.
 
 ### Within each phase
@@ -364,3 +385,5 @@ Each later phase adds one Runner or Program step after its tests (EXIT, prompt, 
 [wf-01]: spec.md#wf-01
 [wf-02]: spec.md#wf-02
 [wf-03]: spec.md#wf-03
+[fr-18]: spec.md#fr-18
+[e2e-10]: spec.md#e2e-10

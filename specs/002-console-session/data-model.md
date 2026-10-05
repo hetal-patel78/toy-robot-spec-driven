@@ -43,7 +43,8 @@ The robot's own state (on the table or not, its position) is held by RobotOperat
 
 | Input | What Program does | Exit code |
 |---|---|---|
-| any argument | writes `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` and a line break to `error` (`Console.Error`); reads nothing | 1 |
+| exactly `--help` | writes the help text ([FR-18][fr-18]), each line with a line break, to `output` (`Console.Out`); reads nothing | 0 |
+| any other argument | writes `How to run: ToyRobot < commands.txt   (or run ToyRobot with no arguments and type commands)` and a line break to `error` (`Console.Error`); reads nothing | 1 |
 | no argument, console input redirected | `Table(5, 5)`, `RobotOperator(table)`, `interactive` = false, its own UTF-8 reader over console input, `Runner(reader, Console.Out, Console.Error, robotOperator, false).Run()` | 0 |
 | no argument, a person typing | the same, with `interactive` = true and `Console.In` | 0 |
 | any exception escapes the work above (not caused by any input) | writes `Error: unexpected problem - <exception message>` (the exception's `Message`) and a line break to `error`, and nothing more; if that write throws, it is ignored | 2 |
@@ -71,3 +72,4 @@ The robot's own state (on the table or not, its position) is held by RobotOperat
 [pg-01]: spec.md#pg-01
 [pg-02]: spec.md#pg-02
 [sg-01]: spec.md#sg-01
+[fr-18]: spec.md#fr-18

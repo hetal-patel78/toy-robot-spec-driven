@@ -177,6 +177,17 @@ Rules for every cmd step below (GitHub's `shell: cmd` runs with delayed expansio
 - [x] T042 [US1] Menu in the run scripts ([MN-01][mn-01]; [NFR-08][nfr-08]; [DEC-41][dec-41]; developer request 2026-10-05). Test first: change the CI-08 steps to run `run.cmd` and `run.sh` with no argument, `TOYROBOT_MENU` and `NO_COLOR` set and the choices `2`, `1`, `8`, `x`, `0`, `y`, `0`, and take `menu.sh` out of the mode check of [CI-06][ci-06]. Then move the menu into `run.cmd` (CRLF) and `run.sh` (LF, executable): shown after the build when there is no argument and console input is a keyboard (`run.sh`: `[ -t 0 ]`; `run.cmd`: `timeout /t 0` succeeds) or `TOYROBOT_MENU` is set; main menu 1 typed session, 2 test-data menu, 3 tests, 0 quit. Remove `menu.cmd` and `menu.sh`. Run by hand on Windows from cmd and PowerShell and in Git Bash: the menu at a keyboard, every choice, `x`, and `run < testdata\challenge-example-1.txt` (no menu).
 - [x] T043 [US1] Report layout of a test-data run in the menu ([MN-01][mn-01]; [DEC-41][dec-41]; developer request 2026-10-06): save the app's console messages (stderr) apart; show "Commands" (the echo without `> `, warnings in yellow), "Output" (bright cyan), "Expected" on a FAIL because the output differs, and the PASS or FAIL line; choice 8 ends with a summary. CI-08 is unchanged (its `PASS: challenge-example-1` and `^FAIL: ` checks still hold). Run by hand on Windows in cmd and in Git Bash: every file, a copy with a changed expected file (FAIL), with and without `NO_COLOR`.
 
+## Phase 11: Help in the run scripts and the menu (developer request 2026-10-05)
+
+Needs spec 002 Phase 12 (the application's `--help`) done first.
+
+- [ ] T044 [US1] Tests first ([CI-08][ci-08], [CI-09][ci-09]; [NFR-08][nfr-08]; [DEC-04][dec-04], [DEC-41][dec-41]): in `.github/workflows/ci.yml`, change the CI-08 input to the choices `2`, `1`, `8`, `x`, `0`, `4`, `y`, `0` and add the check for `Toy Robot Simulator - help`; add the CI-09 run steps (cmd on Windows, bash otherwise) and the bash check step of contracts/ci-workflow.md step 14. Run the CI-08 and CI-09 commands locally against the current scripts: both fail (no choice 4; `--help` is taken as a file name).
+- [ ] T045 [US1] In `run.sh` (LF, executable) and `run.cmd` (CRLF) ([NFR-08][nfr-08], [MN-01][mn-01]; [DEC-04][dec-04], [DEC-37][dec-37], [DEC-41][dec-41]; research [R-03][r-03]; spec "Decided: `--help` in the run scripts"): after the build, before the file checks, the one argument `--help` (exact, case-sensitive) starts the application with `--help` and console input from `/dev/null` or `nul`, with no "Running" line, and exits with its exit code; in the main menu add the line `   4  Show help (commands, rules, how to end a session)` and the choice 4, which runs the application with `--help` and no console input and shows the menu again; update the header comments. The commands of T044 now pass, and so does every earlier CI command (CI-01 to CI-08) run locally.
+- [ ] T046 [US3] Update the README ([NFR-09][nfr-09]; [DEC-37][dec-37]): "Run it" gets how to show the help (`run --help`, `.\run.cmd --help`, `./run.sh --help`, the application with `--help`) and menu choice 4; "Output format" says the help text is on console output (stdout) with exit code 0 and that exit code 1 is for any other argument; "Key assumptions" says the app takes no arguments except `--help`. Update `docs/testing-by-hand.md` ("The application with an argument", the menu) the same way. Follow the new README lines word for word in bash (and, on Windows, cmd and PowerShell when available).
+- [ ] T047 Run `dotnet build ToyRobot.sln` (0 warnings) and `dotnet test ToyRobot.sln`; run by hand `./run.sh --help`, `./run.sh -h` (file not found, exit code 1), and the menu with choice 4 then 0, with and without `NO_COLOR` ([NFR-08][nfr-08]; [DEC-31][dec-31]).
+
+---
+
 ## Test coverage of every behaviour in spec.md
 
 | Behaviour (spec) | Planned test | Task |
@@ -186,6 +197,9 @@ Rules for every cmd step below (GitHub's `shell: cmd` runs with delayed expansio
 | US1 sc. 5: no argument, typed | real run by hand (CI cannot type; prompt itself in spec 002) | T035 |
 | US1 sc. 5a: no argument, redirected console input (stdout and exit code) | [CI-03][ci-03] | T015, T016 |
 | US1 sc. 6: missing file, folder (message on stderr) | [CI-02][ci-02] | T017, T023 |
+| US1 sc. 6b: `--help` gives the application's help text, exit code 0 | [CI-09][ci-09] | T044, T045 |
+| US1 sc. 6c, [MN-01][mn-01] choice 4: the menu shows the help | [CI-08][ci-08] | T044, T045 |
+| [NFR-09][nfr-09]: the README says how to show the help | README check | T046 |
 | US1 sc. 7: more than one argument (how-to-run message on stderr) | [CI-02][ci-02] | T017, T023 |
 | US1 sc. 8: no `dotnet`; only an older SDK (message naming `https://dotnet.microsoft.com/download` on stderr) | [CI-04][ci-04] (a), (b) | T018, T023, T035 |
 | US1 sc. 9: build fails | [CI-05][ci-05] | T019, T024, T035 |
@@ -288,3 +302,4 @@ US1 example:
 [sk-02]: ../001-robot-rules/spec.md#sk-02
 [td-01]: spec.md#td-01
 [td-02]: spec.md#td-02
+[ci-09]: spec.md#ci-09

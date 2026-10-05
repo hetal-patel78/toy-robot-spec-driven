@@ -24,6 +24,7 @@ Steps, in this order; each failing step ends the script:
 | 2 | Build `src/ToyRobot/ToyRobot.csproj`, `Release`, output captured, no console input | nothing shown | the captured build output | the build's |
 | 3a | No argument | start the application with the script's console input | — | — |
 | 3b | One argument, an existing file | start the application with the file on its console input (stdin) | — | — |
+| 3a' | One argument, exactly `--help` | start the application with `--help` and no console input | — | — |
 | 3c | One argument, missing or a folder | — | file not found | 1 |
 | 3d | More than one argument | — | the script's how-to-run message | 1 |
 | 4 | Application ends | — | — | the application's |
