@@ -563,9 +563,13 @@ A person may type commands in any letter case, with extra whitespace of any kind
    | `PLACE 1,2` | `> PLACE 1,2`<br>`Warning: 'PLACE 1,2' ignored - expected PLACE X,Y,F` |
    | `PLACE 0 0 NORTH` | `> PLACE 0 0 NORTH`<br>`Warning: 'PLACE 0 0 NORTH' ignored - expected PLACE X,Y,F` |
    | `PLACE A,0,NORTH` | `> PLACE A,0,NORTH`<br>`Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
-   | `PLACE 99999999999,0,NORTH` | `> PLACE 99999999999,0,NORTH`<br>`Warning: 'PLACE 99999999999,0,NORTH' ignored - X must be a whole number` |
+   | `PLACE 9999999999,0,NORTH` | `> PLACE 9999999999,0,NORTH`<br>`Warning: 'PLACE 9999999999,0,NORTH' ignored - X is too large` |
+   | `PLACE 99999999999,0,NORTH` | `> PLACE 99999999999,0,NORTH`<br>`Warning: 'PLACE 99999999999,0,NORTH' ignored - X is too large` |
+   | `PLACE -99999999999,0,NORTH` | `> PLACE -99999999999,0,NORTH`<br>`Warning: 'PLACE -99999999999,0,NORTH' ignored - X is too large` |
    | `PLACE 1 0,0,NORTH` | `> PLACE 1 0,0,NORTH`<br>`Warning: 'PLACE 1 0,0,NORTH' ignored - X must be a whole number` |
    | `PLACE 0,B,NORTH` | `> PLACE 0,B,NORTH`<br>`Warning: 'PLACE 0,B,NORTH' ignored - Y must be a whole number` |
+   | `PLACE 0,9999999999,NORTH` | `> PLACE 0,9999999999,NORTH`<br>`Warning: 'PLACE 0,9999999999,NORTH' ignored - Y is too large` |
+   | `PLACE 0,99999999999,NORTH` | `> PLACE 0,99999999999,NORTH`<br>`Warning: 'PLACE 0,99999999999,NORTH' ignored - Y is too large` |
    | `PLACE 1,2,UP` | `> PLACE 1,2,UP`<br>`Warning: 'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST` |
    | `PLACE 0,0,N` | `> PLACE 0,0,N`<br>`Warning: 'PLACE 0,0,N' ignored - F must be NORTH, SOUTH, EAST or WEST` |
    | `PLACE 1,2,N` | `> PLACE 1,2,N`<br>`Warning: 'PLACE 1,2,N' ignored - F must be NORTH, SOUTH, EAST or WEST` |
@@ -633,6 +637,8 @@ A person may type commands in any letter case, with extra whitespace of any kind
    | `PLACE` | `Warning: 'PLACE' ignored - expected PLACE X,Y,F` |
    | `PLACE A,B,UP` | `Warning: 'PLACE A,B,UP' ignored - X must be a whole number` |
    | `PLACE 0,B,UP` | `Warning: 'PLACE 0,B,UP' ignored - Y must be a whole number` |
+   | `PLACE 9999999999999999999,111111111111111111111111111,east` | `Warning: 'PLACE 9999999999999999999,111111111111111111111111111,east' ignored - X is too large` |
+   | `PLACE 1,111111111111111111111111111,east` | `Warning: 'PLACE 1,111111111111111111111111111,east' ignored - Y is too large` |
 
 8. **[FR-10; DEC-08, DEC-10, page 6 "Parse result"] EXIT is recognised by the parser.** **When** the input lines are `exit now`, `REPORT`, **Then console output (stdout):** (empty); **console messages (stderr):** `> exit now` (page 2 [FR-15][fr-15] example; the session ending, the unread REPORT line and exit code 0 are [FR-15][fr-15], owned and tested as console text by spec 002). At unit level, CommandParser returns EXIT for `EXIT`, `exit`, `Exit`, `EXIT now` and `exit now` (anything after the command word is ignored), and a failure with reason `'EXITING' ignored - unknown command` for `EXITING`. What the session does with EXIT (stop reading, exit code 0) is [FR-15][fr-15], owned by spec 002.
 
@@ -642,8 +648,9 @@ A person may type commands in any letter case, with extra whitespace of any kind
 
 All of these are covered by the scenarios above or follow directly from the rules below; each has a planned unit test.
 
-- A PLACE at the largest number that can be read (`PLACE 2147483647,0,NORTH`) is read normally and refused by the Table: `Warning: PLACE 2147483647,0,NORTH ignored - position is off the table`. One more (`PLACE 2147483648,0,NORTH`) cannot be read as a number: `Warning: 'PLACE 2147483648,0,NORTH' ignored - X must be a whole number` ([DEC-20][dec-20], [DEC-22][dec-22]).
-- A Y value too large to read (`PLACE 0,99999999999,NORTH`): `Warning: 'PLACE 0,99999999999,NORTH' ignored - Y must be a whole number` ([DEC-20][dec-20], [DEC-22][dec-22]).
+- A PLACE at the largest number that can be read (`PLACE 2147483647,0,NORTH`) is read normally and refused by the Table: `Warning: PLACE 2147483647,0,NORTH ignored - position is off the table`. One more (`PLACE 2147483648,0,NORTH`) is a whole number but too large to read: `Warning: 'PLACE 2147483648,0,NORTH' ignored - X is too large` ([DEC-20][dec-20], [DEC-22][dec-22]).
+- A Y value too large to read (`PLACE 0,99999999999,NORTH`): `Warning: 'PLACE 0,99999999999,NORTH' ignored - Y is too large` ([DEC-20][dec-20], [DEC-22][dec-22]).
+- A hugely negative X written as a whole number (`PLACE -99999999999,0,NORTH`) is too large to read in the other direction and gets the same reason, `X is too large`; a value not written as a whole number (`PLACE 1.5,0,NORTH`) keeps `X must be a whole number` ([DEC-20][dec-20], [DEC-22][dec-22]).
 - Three empty PLACE values (`PLACE ,,`): `Warning: 'PLACE ,,' ignored - X must be a whole number` ([DEC-08][dec-08] step 3, [DEC-22][dec-22] order).
 - A bad line is refused by the CommandParser before the robot is considered, so `REPORT now` before PLACE gives the "takes no values" warning, not the "not on the table" warning ([DEC-27][dec-27], [DEC-22][dec-22]).
 - A refused PLACE or MOVE never leaves the robot changed: the next position is checked with the Table before the robot's state is replaced ([DEC-13][dec-13]); a later valid command still works ([DEC-16][dec-16]).
@@ -674,7 +681,7 @@ All of these are covered by the scenarios above or follow directly from the rule
   1. Whitespace of any kind (spaces, tabs, non-breaking spaces and every other character that the platform's standard trim removes) at the start and end of the line is removed. Whitespace inside the line is never removed; it only separates the parts.
   2. The command word is the text up to the first whitespace character (any character of the same kind as in step 1, so a tab or a non-breaking space also ends it), or the whole line if there is none.
   3. For PLACE, the rest of the line is split on commas into exactly three parts (X, Y, F), and whitespace of any kind around each part is removed. At least one whitespace character is required between `PLACE` and its values.
-  4. X and Y are whole numbers read with fixed rules that do not depend on the machine's regional settings: an optional leading sign (`-` or `+`) followed by digits, leading zeros allowed (`-1`, `+1` and `01` are numbers; `1 0` and `1.5` are not), within the range of a 32-bit signed whole number (−2147483648 to 2147483647).
+  4. X and Y are whole numbers read with fixed rules that do not depend on the machine's regional settings: an optional leading sign (`-` or `+`) followed by digits, leading zeros allowed (`-1`, `+1` and `01` are numbers; `1 0` and `1.5` are not), within the range of a 32-bit signed whole number (−2147483648 to 2147483647). A value written this way but outside that range, in either direction, is too large to read (see FR-10).
   5. F is one of the full words NORTH, SOUTH, EAST, WEST in any case; abbreviations (N, S, E, W), numbers (such as `1`) and any other text are not accepted ([DEC-06][dec-06]).
 - **FR-10**<a id="fr-10"></a> ([DEC-06][dec-06], [DEC-08][dec-08], [DEC-09][dec-09], [DEC-20][dec-20], [DEC-22][dec-22], [DEC-28][dec-28]): A line that is not a valid command MUST be ignored with exactly one warning, and processing continues with the next line; typed and redirected input behave the same. The CommandParser MUST return a failure, never throw an exception, and MUST check the format only (never whether a position is on the table). The failure reasons, which are the warning texts without the `Warning: ` prefix, MUST be exactly:
 
@@ -683,8 +690,10 @@ All of these are covered by the scenarios above or follow directly from the rule
   | Unknown command word (including `> MOVE`, `EXITNOW`, `PLACE0,0,NORTH`, `PLACEHOLDER`, `PLACE,1,2`) | `'<line>' ignored - unknown command` |
   | Empty or whitespace-only line | `blank line ignored` |
   | PLACE without exactly three comma-separated values | `'<line>' ignored - expected PLACE X,Y,F` |
-  | X is not a whole number, or too large | `'<line>' ignored - X must be a whole number` |
-  | Y is not a whole number, or too large | `'<line>' ignored - Y must be a whole number` |
+  | X is not a whole number | `'<line>' ignored - X must be a whole number` |
+  | X is written as a whole number (as in FR-09 step 4) but is outside the 32-bit range, in either direction | `'<line>' ignored - X is too large` |
+  | Y is not a whole number | `'<line>' ignored - Y must be a whole number` |
+  | Y is written as a whole number (as in FR-09 step 4) but is outside the 32-bit range, in either direction | `'<line>' ignored - Y is too large` |
   | Invalid direction (including abbreviations and an empty F) | `'<line>' ignored - F must be NORTH, SOUTH, EAST or WEST` |
   | Values after MOVE, LEFT, RIGHT or REPORT | `'<line>' ignored - <COMMAND> takes no values` |
 
@@ -736,7 +745,7 @@ All of these are covered by the scenarios above or follow directly from the rule
 ### Measurable Outcomes
 
 - **SC-001**<a id="sc-001"></a> ([FR-01][fr-01] to [FR-07][fr-07], [FR-09][fr-09], [FR-10][fr-10]): 100% of the acceptance scenarios in this spec have a passing unit test that checks the exact parse result or outcome text.
-- **SC-002**<a id="sc-002"></a> ([FR-02][fr-02], [FR-04][fr-04], [FR-07][fr-07], [FR-10][fr-10]; [DEC-22][dec-22]): All 10 kinds of warning in [DEC-22][dec-22] are produced with text that matches [DEC-22][dec-22] character for character (the seven bad-line reasons by the CommandParser, the off-table PLACE and blocked MOVE warnings by the command classes, the "not on the table" warning by RobotOperator).
+- **SC-002**<a id="sc-002"></a> ([FR-02][fr-02], [FR-04][fr-04], [FR-07][fr-07], [FR-10][fr-10]; [DEC-22][dec-22]): All 12 kinds of warning in [DEC-22][dec-22] are produced with text that matches [DEC-22][dec-22] character for character (the nine bad-line reasons by the CommandParser, the off-table PLACE and blocked MOVE warnings by the command classes, the "not on the table" warning by RobotOperator).
 - **SC-003**<a id="sc-003"></a> ([FR-09][fr-09], [FR-10][fr-10]; [DEC-08][dec-08]): All 9 rows of the [DEC-08][dec-08] table give the result the table states, in a unit test each.
 - **SC-004**<a id="sc-004"></a> ([FR-04][fr-04], [FR-02][fr-02]; [DEC-13][dec-13]): In 0 tests does a refused PLACE or MOVE change the robot's position or direction.
 - **SC-005**<a id="sc-005"></a> ([UT-04][ut-04]; [DEC-32][dec-32]): 0 unit tests observe an exception thrown by any component in this spec for any input line, when the line goes through `CommandParser.Parse` and any command object through `RobotOperator.Run`.

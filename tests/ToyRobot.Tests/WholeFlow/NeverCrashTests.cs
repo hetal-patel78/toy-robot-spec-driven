@@ -14,7 +14,7 @@ public class NeverCrashTests
         Assert.Equal(
             Lines(
                 "> PLACE 99999999999,0,NORTH",
-                "Warning: 'PLACE 99999999999,0,NORTH' ignored - X must be a whole number",
+                "Warning: 'PLACE 99999999999,0,NORTH' ignored - X is too large",
                 "> HELLO",
                 "Warning: 'HELLO' ignored - unknown command",
                 "> ",
@@ -63,7 +63,7 @@ public class NeverCrashTests
                 "> move now",
                 "Warning: 'move now' ignored - MOVE takes no values",
                 "> PLACE 99999999999,0,NORTH",
-                "Warning: 'PLACE 99999999999,0,NORTH' ignored - X must be a whole number",
+                "Warning: 'PLACE 99999999999,0,NORTH' ignored - X is too large",
                 "> > MOVE",
                 "Warning: '> MOVE' ignored - unknown command",
                 "> MOVE",

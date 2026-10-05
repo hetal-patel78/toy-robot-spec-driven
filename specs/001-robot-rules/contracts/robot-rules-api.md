@@ -91,7 +91,7 @@ public sealed class CommandParser
 | `PlaceCommand` | `PLACE X,Y,F ignored - position is off the table` (parsed values, F in upper case), e.g. `PLACE 9,9,NORTH ignored - position is off the table` |
 | `MoveCommand` | `MOVE ignored - next position is off the table so robot stays at X,Y,F` (current position), e.g. `MOVE ignored - next position is off the table so robot stays at 4,2,EAST` |
 | RobotOperator | `MOVE ignored - robot is not on the table`, `LEFT ignored - robot is not on the table`, `RIGHT ignored - robot is not on the table`, `REPORT ignored - robot is not on the table` |
-| CommandParser | The seven failure reasons in `command-line-grammar.md` |
+| CommandParser | The nine failure reasons in `command-line-grammar.md` |
 
 [dec-03]: ../../../docs/design-analysis/design-decisions.md#dec-03-table-size-is-a-constructor-parameter
 [dec-21]: ../../../docs/design-analysis/design-decisions.md#dec-21-report-format

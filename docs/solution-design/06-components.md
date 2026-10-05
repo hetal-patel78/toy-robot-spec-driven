@@ -60,7 +60,7 @@ How a line is read ([DEC-08][dec-08]):
 2. The **command word** is the text up to the first whitespace character, or the whole line. It is compared with the six command names ignoring case ([DEC-07][dec-07]).
 3. `MOVE`, `LEFT`, `RIGHT` and `REPORT` must have nothing after the command word ([DEC-06][dec-06]).
 4. `EXIT` ignores anything after it ([DEC-10][dec-10]).
-5. For `PLACE`, the rest of the line is split on commas into exactly three parts, and each part is trimmed. X and Y are read with `int.TryParse`, using `NumberStyles.AllowLeadingSign` and the invariant culture. F must be one of the four full direction names, in any case.
+5. For `PLACE`, the rest of the line is split on commas into exactly three parts, and each part is trimmed. X and Y are read with `int.TryParse`, using `NumberStyles.AllowLeadingSign` and the invariant culture. A part that cannot be read but is written as a whole number (an optional sign and digits only) is too large to read, and the reason says so ([DEC-20][dec-20]). F must be one of the four full direction names, in any case.
 6. Only the first problem is reported, checked in this order: command word, number of values, X, Y, F ([DEC-22][dec-22]).
 
 ### Parse result
@@ -80,8 +80,10 @@ The reason is the warning text without the `Warning: ` prefix, for example `'PLA
 | Unknown command word | `'<line>' ignored - unknown command` |
 | Blank line | `blank line ignored` |
 | PLACE without exactly three values | `'<line>' ignored - expected PLACE X,Y,F` |
-| X is not a whole number, or too large | `'<line>' ignored - X must be a whole number` |
-| Y is not a whole number, or too large | `'<line>' ignored - Y must be a whole number` |
+| X is not a whole number | `'<line>' ignored - X must be a whole number` |
+| X is written as a whole number but is too large to read (either direction) | `'<line>' ignored - X is too large` |
+| Y is not a whole number | `'<line>' ignored - Y must be a whole number` |
+| Y is written as a whole number but is too large to read (either direction) | `'<line>' ignored - Y is too large` |
 | Invalid direction | `'<line>' ignored - F must be NORTH, SOUTH, EAST or WEST` |
 | Values after MOVE, LEFT, RIGHT or REPORT | `'<line>' ignored - <COMMAND> takes no values` |
 

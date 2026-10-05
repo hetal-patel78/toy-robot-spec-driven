@@ -8,7 +8,7 @@ The grammar of one input line and the exact parse result for each case ([DEC-06]
 2. Command word = `trimmed` up to the first whitespace character (`char.IsWhiteSpace`), or all of `trimmed`. `rest` = what follows that whitespace character.
 3. The command word is compared with `PLACE`, `MOVE`, `LEFT`, `RIGHT`, `REPORT` and `EXIT` with an ordinal comparison that ignores case.
 4. For PLACE, `rest` is split on `,` into parts, and each part is trimmed (`string.Trim()`).
-5. X and Y: `int.TryParse(part, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value)`.
+5. X and Y: `int.TryParse(part, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out value)`. If it fails, the part is "written as a whole number" when it is an optional `-` or `+` followed by one or more characters `0` to `9` and nothing else; such a part is too large to read (outside the 32-bit range, in either direction); any other part is not a whole number.
 6. F: equal, ignoring case (ordinal), to the `Name` of one of `Direction.All` (`NORTH`, `EAST`, `SOUTH`, `WEST`).
 
 ## Results, in the order they are checked (DEC-22: command word, number of values, X, Y, F)
@@ -22,8 +22,10 @@ The grammar of one input line and the exact parse result for each case ([DEC-06]
 | 3 | Command word is MOVE, LEFT, RIGHT or REPORT and nothing follows | `CommandObject(new MoveCommand())` / `LeftCommand` / `RightCommand` / `ReportCommand` |
 | 4 | Command word is MOVE, LEFT, RIGHT or REPORT and something follows | `Failure("'<line>' ignored - <COMMAND> takes no values")` |
 | 5 | Command word is PLACE and `rest` does not split into exactly 3 parts | `Failure("'<line>' ignored - expected PLACE X,Y,F")` |
-| 6 | PLACE, X part not readable | `Failure("'<line>' ignored - X must be a whole number")` |
-| 7 | PLACE, Y part not readable | `Failure("'<line>' ignored - Y must be a whole number")` |
+| 6 | PLACE, X part not readable and not written as a whole number | `Failure("'<line>' ignored - X must be a whole number")` |
+| 6a | PLACE, X part written as a whole number but too large to read | `Failure("'<line>' ignored - X is too large")` |
+| 7 | PLACE, Y part not readable and not written as a whole number | `Failure("'<line>' ignored - Y must be a whole number")` |
+| 7a | PLACE, Y part written as a whole number but too large to read | `Failure("'<line>' ignored - Y is too large")` |
 | 8 | PLACE, F part not a direction name | `Failure("'<line>' ignored - F must be NORTH, SOUTH, EAST or WEST")` |
 | 9 | PLACE, all three parts valid | `CommandObject(new PlaceCommand(x, y, f))` (no table check, [DEC-28][dec-28]) |
 | 10 | Any other command word | `Failure("'<line>' ignored - unknown command")` |
@@ -60,13 +62,16 @@ The grammar of one input line and the exact parse result for each case ([DEC-06]
 | `PLACE 1,2,3,4` | `Failure("'PLACE 1,2,3,4' ignored - expected PLACE X,Y,F")` |
 | `PLACE` | `Failure("'PLACE' ignored - expected PLACE X,Y,F")` |
 | `PLACE A,0,NORTH` | `Failure("'PLACE A,0,NORTH' ignored - X must be a whole number")` |
-| `PLACE 99999999999,0,NORTH` | `Failure("'PLACE 99999999999,0,NORTH' ignored - X must be a whole number")` |
-| `PLACE 2147483648,0,NORTH` | `Failure("'PLACE 2147483648,0,NORTH' ignored - X must be a whole number")` |
+| `PLACE 99999999999,0,NORTH` | `Failure("'PLACE 99999999999,0,NORTH' ignored - X is too large")` |
+| `PLACE 2147483648,0,NORTH` | `Failure("'PLACE 2147483648,0,NORTH' ignored - X is too large")` |
+| `PLACE -99999999999,0,NORTH` | `Failure("'PLACE -99999999999,0,NORTH' ignored - X is too large")` |
+| `PLACE 9999999999999999999,111111111111111111111111111,east` | `Failure("'PLACE 9999999999999999999,111111111111111111111111111,east' ignored - X is too large")` |
 | `PLACE 1 0,0,NORTH` | `Failure("'PLACE 1 0,0,NORTH' ignored - X must be a whole number")` |
 | `PLACE ,,` | `Failure("'PLACE ,,' ignored - X must be a whole number")` |
 | `PLACE A,B,UP` | `Failure("'PLACE A,B,UP' ignored - X must be a whole number")` |
 | `PLACE 0,B,NORTH` | `Failure("'PLACE 0,B,NORTH' ignored - Y must be a whole number")` |
-| `PLACE 0,99999999999,NORTH` | `Failure("'PLACE 0,99999999999,NORTH' ignored - Y must be a whole number")` |
+| `PLACE 0,99999999999,NORTH` | `Failure("'PLACE 0,99999999999,NORTH' ignored - Y is too large")` |
+| `PLACE 1,111111111111111111111111111,east` | `Failure("'PLACE 1,111111111111111111111111111,east' ignored - Y is too large")` |
 | `PLACE 0,B,UP` | `Failure("'PLACE 0,B,UP' ignored - Y must be a whole number")` |
 | `PLACE 1,2,UP` | `Failure("'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST")` |
 | `PLACE 0,0,N` | `Failure("'PLACE 0,0,N' ignored - F must be NORTH, SOUTH, EAST or WEST")` |

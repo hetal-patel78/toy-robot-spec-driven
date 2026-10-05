@@ -11,7 +11,7 @@ No input makes the application crash, including an empty input or a very large n
 | Input | What happens | Decision |
 |---|---|---|
 | A line that is not a valid command (unknown word, wrong number of values, bad X, Y or F, extra values, blank line) | The CommandParser returns a failure with its reason. The Runner writes it as a warning and reads the next line. No exception is thrown. | [DEC-20][dec-20], [DEC-22][dec-22], [DEC-27][dec-27] |
-| X or Y too large for a whole number (`int`) | Read with `int.TryParse`, which answers "not a number" instead of throwing, so the line is a bad line | [DEC-08][dec-08], [DEC-20][dec-20] |
+| X or Y too large for a whole number (`int`) | Read with `int.TryParse`, which answers "not a number" instead of throwing, so the line is a bad line; if the text is a sign and digits only, the reason is "X is too large" (or Y), otherwise "must be a whole number" | [DEC-08][dec-08], [DEC-20][dec-20] |
 | A position off the table (PLACE or MOVE) | Checked with the Table **before** the robot changes, so there is nothing to undo | [DEC-13][dec-13], [DEC-15][dec-15], [DEC-16][dec-16] |
 | A robot command before a valid PLACE | Ignored with a warning; RobotOperator checks this before running the command | [DEC-19][dec-19] |
 | An empty input | The session ends at once with exit code 0 | [DEC-10][dec-10] |
@@ -174,7 +174,7 @@ Each line is quoted from the decision's "Trade-off" line in design-decisions.md.
 | An unexpected problem shows one line, `Error: unexpected problem - <exception message>`, not a full stack trace | The safeguard keeps the message clear for a user; a defect is still caught by the tests, which check output and exit codes exactly | [DEC-32][dec-32] |
 | Ctrl+C stops the application with a non-zero exit code set by the system | The application does not handle Ctrl+C; the standard .NET behaviour applies | [DEC-10][dec-10] |
 | When a typed session ends with Ctrl+Z / Ctrl+D, the last `> ` prompt stays on screen | The prompt was already shown before the end of input was read; this is expected | [DEC-10][dec-10] |
-| X or Y larger than about 2.1 billion gives "must be a whole number", although it is one | Values that do not fit in an `int` cannot be read as a number; they could never be on the table anyway | [DEC-20][dec-20] |
+| X or Y outside the range of an `int` (about plus or minus 2.1 billion) is a bad line with "X is too large" (or Y), although it is a whole number; a hugely negative number gets the same words | Values that do not fit in an `int` cannot be read as a number; they could never be on the table anyway. The reason says "too large" so the line is not described as not being a whole number | [DEC-20][dec-20], [DEC-22][dec-22] |
 | An invisible character that is not whitespace (such as a zero-width space), or a look-alike letter from another alphabet, makes a line a bad line whose quote in the warning looks correct | Only whitespace is removed (what `Trim()` removes); other characters are part of the command. Non-breaking spaces and tabs are whitespace, so they are handled. | [DEC-08][dec-08], [DEC-22][dec-22] |
 | The table size is fixed at 5 x 5 | The challenge fixes it; a different size needs a change in Program | [DEC-03][dec-03] |
 | One robot only | The rules for several robots are not defined | [DEC-38][dec-38] |

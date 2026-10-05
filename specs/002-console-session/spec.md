@@ -301,7 +301,7 @@ Whatever the input holds, the application keeps going: every bad line gets its w
    **Console messages (stderr):**
    ```text
    > PLACE 99999999999,0,NORTH
-   Warning: 'PLACE 99999999999,0,NORTH' ignored - X must be a whole number
+   Warning: 'PLACE 99999999999,0,NORTH' ignored - X is too large
    > HELLO
    Warning: 'HELLO' ignored - unknown command
    > 

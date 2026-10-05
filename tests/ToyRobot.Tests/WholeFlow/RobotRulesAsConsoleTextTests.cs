@@ -309,9 +309,13 @@ public class RobotRulesAsConsoleTextTests
     [InlineData("PLACE 1,2", "'PLACE 1,2' ignored - expected PLACE X,Y,F")]
     [InlineData("PLACE 0 0 NORTH", "'PLACE 0 0 NORTH' ignored - expected PLACE X,Y,F")]
     [InlineData("PLACE A,0,NORTH", "'PLACE A,0,NORTH' ignored - X must be a whole number")]
-    [InlineData("PLACE 99999999999,0,NORTH", "'PLACE 99999999999,0,NORTH' ignored - X must be a whole number")]
+    [InlineData("PLACE 9999999999,0,NORTH", "'PLACE 9999999999,0,NORTH' ignored - X is too large")]
+    [InlineData("PLACE 99999999999,0,NORTH", "'PLACE 99999999999,0,NORTH' ignored - X is too large")]
+    [InlineData("PLACE -99999999999,0,NORTH", "'PLACE -99999999999,0,NORTH' ignored - X is too large")]
     [InlineData("PLACE 1 0,0,NORTH", "'PLACE 1 0,0,NORTH' ignored - X must be a whole number")]
     [InlineData("PLACE 0,B,NORTH", "'PLACE 0,B,NORTH' ignored - Y must be a whole number")]
+    [InlineData("PLACE 0,9999999999,NORTH", "'PLACE 0,9999999999,NORTH' ignored - Y is too large")]
+    [InlineData("PLACE 0,99999999999,NORTH", "'PLACE 0,99999999999,NORTH' ignored - Y is too large")]
     [InlineData("PLACE 1,2,UP", "'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST")]
     [InlineData("PLACE 0,0,N", "'PLACE 0,0,N' ignored - F must be NORTH, SOUTH, EAST or WEST")]
     [InlineData("PLACE 1,2,N", "'PLACE 1,2,N' ignored - F must be NORTH, SOUTH, EAST or WEST")]
@@ -395,6 +399,8 @@ public class RobotRulesAsConsoleTextTests
     [InlineData("PLACE", "'PLACE' ignored - expected PLACE X,Y,F")]
     [InlineData("PLACE A,B,UP", "'PLACE A,B,UP' ignored - X must be a whole number")]
     [InlineData("PLACE 0,B,UP", "'PLACE 0,B,UP' ignored - Y must be a whole number")]
+    [InlineData("PLACE 9999999999999999999,111111111111111111111111111,east", "'PLACE 9999999999999999999,111111111111111111111111111,east' ignored - X is too large")]
+    [InlineData("PLACE 1,111111111111111111111111111,east", "'PLACE 1,111111111111111111111111111,east' ignored - Y is too large")]
     public void US4_7_Only_the_first_problem_is_reported(string line, string warning)
     {
         Expect(Text(line), Text(), Text("> " + line, "Warning: " + warning));

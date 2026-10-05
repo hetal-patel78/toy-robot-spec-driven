@@ -82,7 +82,7 @@ Phase 0 of `/speckit-plan`. The technical choices are fixed by the sources (Spec
 1. Trimmed line empty → `Failure("blank line ignored")`.
 2. Command word `EXIT` (any case) → `Exit()`, whatever follows.
 3. Command word `MOVE`, `LEFT`, `RIGHT` or `REPORT` (any case): nothing after it → the command object; anything after it → `Failure("'<line>' ignored - <COMMAND> takes no values")`.
-4. Command word `PLACE` (any case): rest split on commas; not exactly three parts → `Failure("'<line>' ignored - expected PLACE X,Y,F")`; then X not readable → `... - X must be a whole number`; then Y → `... - Y must be a whole number`; then F not one of the four names → `... - F must be NORTH, SOUTH, EAST or WEST`; otherwise `CommandObject(new PlaceCommand(x, y, f))`.
+4. Command word `PLACE` (any case): rest split on commas; not exactly three parts → `Failure("'<line>' ignored - expected PLACE X,Y,F")`; then X not readable → `... - X is too large` if it is written as a whole number (optional sign and digits) and `... - X must be a whole number` otherwise; then Y the same way (`... - Y is too large`, `... - Y must be a whole number`); then F not one of the four names → `... - F must be NORTH, SOUTH, EAST or WEST`; otherwise `CommandObject(new PlaceCommand(x, y, f))`.
 5. Any other command word → `Failure("'<line>' ignored - unknown command")`.
 
 `<line>` is the trimmed line exactly as typed; `<COMMAND>` is the command name in upper case. `PLACE` with nothing after it has one (empty) part, so it gives "expected PLACE X,Y,F". This is [DEC-22][dec-22]'s order: command word, number of values, X, Y, F.

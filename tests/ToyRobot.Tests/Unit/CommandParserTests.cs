@@ -95,8 +95,16 @@ public class CommandParserTests
 
         // X
         { "PLACE A,0,NORTH", "'PLACE A,0,NORTH' ignored - X must be a whole number" },
-        { "PLACE 99999999999,0,NORTH", "'PLACE 99999999999,0,NORTH' ignored - X must be a whole number" },
-        { "PLACE 2147483648,0,NORTH", "'PLACE 2147483648,0,NORTH' ignored - X must be a whole number" },
+        { "PLACE 99999999999,0,NORTH", "'PLACE 99999999999,0,NORTH' ignored - X is too large" },
+        { "PLACE 9999999999,0,NORTH", "'PLACE 9999999999,0,NORTH' ignored - X is too large" },
+        { "PLACE 2147483648,0,NORTH", "'PLACE 2147483648,0,NORTH' ignored - X is too large" },
+        { "PLACE -2147483649,0,NORTH", "'PLACE -2147483649,0,NORTH' ignored - X is too large" },
+        { "PLACE -99999999999,0,NORTH", "'PLACE -99999999999,0,NORTH' ignored - X is too large" },
+        { "PLACE +99999999999,0,NORTH", "'PLACE +99999999999,0,NORTH' ignored - X is too large" },
+        { "PLACE 9999999999999999999,0,east", "'PLACE 9999999999999999999,0,east' ignored - X is too large" },
+        { "PLACE 99999999999.5,0,NORTH", "'PLACE 99999999999.5,0,NORTH' ignored - X must be a whole number" },
+        { "PLACE -,0,NORTH", "'PLACE -,0,NORTH' ignored - X must be a whole number" },
+        { "PLACE 9999999999999999999,111111111111111111111111111,east", "'PLACE 9999999999999999999,111111111111111111111111111,east' ignored - X is too large" },
         { "PLACE 1 0,0,NORTH", "'PLACE 1 0,0,NORTH' ignored - X must be a whole number" },
         { "PLACE 1.5,0,NORTH", "'PLACE 1.5,0,NORTH' ignored - X must be a whole number" },
         { "PLACE ,,", "'PLACE ,,' ignored - X must be a whole number" },
@@ -104,7 +112,10 @@ public class CommandParserTests
 
         // Y
         { "PLACE 0,B,NORTH", "'PLACE 0,B,NORTH' ignored - Y must be a whole number" },
-        { "PLACE 0,99999999999,NORTH", "'PLACE 0,99999999999,NORTH' ignored - Y must be a whole number" },
+        { "PLACE 0,99999999999,NORTH", "'PLACE 0,99999999999,NORTH' ignored - Y is too large" },
+        { "PLACE 0,9999999999,NORTH", "'PLACE 0,9999999999,NORTH' ignored - Y is too large" },
+        { "PLACE 0,-99999999999,NORTH", "'PLACE 0,-99999999999,NORTH' ignored - Y is too large" },
+        { "PLACE 1,111111111111111111111111111,east", "'PLACE 1,111111111111111111111111111,east' ignored - Y is too large" },
         { "PLACE 0,B,UP", "'PLACE 0,B,UP' ignored - Y must be a whole number" },
 
         // F

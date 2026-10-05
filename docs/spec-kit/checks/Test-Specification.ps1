@@ -193,7 +193,7 @@ foreach ($l in $dec22) {
     $mm = [regex]::Match($l, '^\| [^|]+ \| `(Warning: [^`]+)`')
     if ($mm.Success) { $dec22Texts.Add($mm.Groups[1].Value) }
 }
-if ($dec22Texts.Count -ne 10) { throw ('DEC-22 table: expected 10 warnings, found {0}' -f $dec22Texts.Count) }
+if ($dec22Texts.Count -ne 12) { throw ('DEC-22 table: expected 12 warnings, found {0}' -f $dec22Texts.Count) }
 
 # Generic patterns built from the DEC-22 texts: the quoted line, a position and the command name
 # become variables; template placeholders (<line>, <COMMAND>, X,Y,F, {name}) are accepted.
@@ -249,8 +249,14 @@ function Get-ExpectedReason([string]$line) {
         [int]$v = 0
         $ns = [System.Globalization.NumberStyles]::AllowLeadingSign
         $ci = [System.Globalization.CultureInfo]::InvariantCulture
-        if (-not [int]::TryParse($parts[0].Trim(), $ns, $ci, [ref]$v)) { return ("'{0}' ignored - X must be a whole number" -f $t) }
-        if (-not [int]::TryParse($parts[1].Trim(), $ns, $ci, [ref]$v)) { return ("'{0}' ignored - Y must be a whole number" -f $t) }
+        if (-not [int]::TryParse($parts[0].Trim(), $ns, $ci, [ref]$v)) {
+            if ($parts[0].Trim() -match '^[+-]?[0-9]+$') { return ("'{0}' ignored - X is too large" -f $t) }
+            return ("'{0}' ignored - X must be a whole number" -f $t)
+        }
+        if (-not [int]::TryParse($parts[1].Trim(), $ns, $ci, [ref]$v)) {
+            if ($parts[1].Trim() -match '^[+-]?[0-9]+$') { return ("'{0}' ignored - Y is too large" -f $t) }
+            return ("'{0}' ignored - Y must be a whole number" -f $t)
+        }
         $f = $parts[2].Trim()
         $okF = $false
         foreach ($d in @('NORTH', 'SOUTH', 'EAST', 'WEST')) { if ([string]::Equals($d, $f, $oic)) { $okF = $true } }
@@ -484,7 +490,7 @@ Write-Host ('  {0} warning texts compared with DEC-22' -f $script:checkedWarning
 $allSpecText = ($mdFiles | ForEach-Object { (Read-Lines $_) -join "`n" }) -join "`n"
 foreach ($t in $dec22Texts) { if (-not $allSpecText.Contains($t)) { Add-Issue 'specs' ('DEC-22 text appears in no spec: ' + (Show $t)) } }
 if (-not $allSpecText.Contains('`' + $howToRunMessage + '`')) { Add-Issue 'specs' 'the DEC-04 how-to-run message appears in no spec' }
-End-Check 'every warning, how-to-run message, Output: label, prompt and echo matches design-decisions.md; all 10 DEC-22 texts appear verbatim'
+End-Check 'every warning, how-to-run message, Output: label, prompt and echo matches design-decisions.md; all 12 DEC-22 texts appear verbatim'
 
 # =============================================================================================
 # Check 3: Exit codes and channels
@@ -1017,7 +1023,7 @@ $cases += @(
     @{ N = '`> MOVE`'; A = @([regex]::Escape("'> MOVE' ignored - unknown command")) }
     @{ N = '`MOVE now`'; A = @([regex]::Escape("'MOVE now' ignored - MOVE takes no values")) }
     @{ N = '`PLACEHOLDER`'; A = @('`PLACEHOLDER` && unknown command') }
-    @{ N = '`PLACE 99999999999,0,NORTH`'; A = @([regex]::Escape("'PLACE 99999999999,0,NORTH' ignored - X must be a whole number")) }
+    @{ N = '`PLACE 99999999999,0,NORTH`'; A = @([regex]::Escape("'PLACE 99999999999,0,NORTH' ignored - X is too large")) }
     @{ N = 'abbreviation `PLACE 0,0,N`'; A = @('`PLACE 0,0,N` && F must be NORTH, SOUTH, EAST or WEST') }
     @{ N = 'blank lines'; A = @('blank line ignored && ""|empty string') }
     @{ N = 'off-table warning with parsed values'; A = @('`place 09 , \+9 , north` && PLACE 9,9,NORTH ignored - position is off the table') }

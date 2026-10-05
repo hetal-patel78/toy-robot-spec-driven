@@ -46,8 +46,10 @@ What the application must do, as numbered requirements, each with one acceptance
 | `HELLO` (also `> MOVE`, `EXITNOW`, `PLACE0,0,NORTH`) | `Warning: 'HELLO' ignored - unknown command` |
 | An empty line, or only whitespace | `Warning: blank line ignored` |
 | `PLACE 1,2` | `Warning: 'PLACE 1,2' ignored - expected PLACE X,Y,F` |
-| `PLACE A,0,NORTH` (also a number too large to read) | `Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
+| `PLACE A,0,NORTH` | `Warning: 'PLACE A,0,NORTH' ignored - X must be a whole number` |
+| `PLACE 9999999999,0,NORTH` (a whole number too large to read, in either direction) | `Warning: 'PLACE 9999999999,0,NORTH' ignored - X is too large` |
 | `PLACE 0,B,NORTH` | `Warning: 'PLACE 0,B,NORTH' ignored - Y must be a whole number` |
+| `PLACE 0,9999999999,NORTH` | `Warning: 'PLACE 0,9999999999,NORTH' ignored - Y is too large` |
 | `PLACE 1,2,UP` (also `PLACE 1,2,N`) | `Warning: 'PLACE 1,2,UP' ignored - F must be NORTH, SOUTH, EAST or WEST` |
 | `move now` | `Warning: 'move now' ignored - MOVE takes no values` |
 
