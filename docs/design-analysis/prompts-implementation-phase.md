@@ -487,7 +487,12 @@ Outcome: constitution 1.1.1 (PATCH): the help text is in the list of strings tha
 
 Outcome: once CI run 50 was green on Windows, Linux and macOS (the Windows job waited about 30 minutes for a GitHub runner), `main` was fast-forwarded to the working branch and pushed.
 
-<a id="p211"></a>**P211.** After testing menu choice 4 on Windows (with a photo of the terminal showing the end of the help and the menu):
+<a id="p211"></a>**P211.** After `main` with the `--help` change ([P200](#p200) to [P210](#p210)) was pulled into the working copy, the assistant ran the spec check script: it stopped with an error, because it expected exactly FR-01 to FR-17, and once that was fixed it reported 12 issues in checks 2, 3 and 4, almost all from the script not knowing `--help`. The developer answered:
+> yes go ahead and push
+
+Outcome: the spec check script now knows FR-18: it is owned by spec 002 and added after the run (the Spec Kit brief, the record of the run's inputs, is unchanged); the lines of DEC-04's help text are not taken for warnings; `--help` on its own, in lower case, gives exit code 0 and any other argument 1; page 2's "the help text" is matched for FR-18; scenarios such as 6b and 6c are read as their own scenarios; `HelpLines` is a decided name, now written in spec 002's decision "help text in Program". In spec 003's contracts two displayed texts are in quotes instead of code spans. All 6 scripted checks pass. The application is unchanged.
+
+<a id="p212"></a>**P212.** After testing menu choice 4 on Windows (with a photo of the terminal showing the end of the help and the menu):
 > U missed one thing in help it does not show how to run place command 
 >
 > And it is not show what each command does 
@@ -498,15 +503,15 @@ Outcome: once CI run 50 was green on Windows, Linux and macOS (the Windows job w
 
 The assistant found that the help was complete but the menu, printed straight after the 38 lines, pushed the start of the help (HOW TO START, THE TABLE, COMMANDS) off the top of a small terminal. It proposed a pause ("Press Enter to go back to the menu"), shown as a flow diagram, then, on the developer's question "I just don understand why show help cannot show the sub menu instead of help", a help menu of topics.
 
-<a id="p212"></a>**P212.**
+<a id="p213"></a>**P213.**
 > go with the sub menu
 
 Outcome: menu choice 4 opens a help menu: 1 How to start, 2 The table, 3 Commands, 4 Rules, 5 Ending a session, 6 All of it, 0 back. Each topic is the section of the app's `--help` output under its heading, so there is still one help text. [DEC-41](design-decisions.md#dec-41-menu-in-the-run-scripts), with a note in DEC-04; solution design page 9; spec 003 (MN-01, scenario 6c, CI-08, SC-008, contracts, tasks T048 to T051); CI-08 changed first and shown failing, then `run.sh` and `run.cmd`; README and testing-by-hand. The application is unchanged.
 
-<a id="p213"></a>**P213.** Asked whether to push the help menu to `main` once CI is green:
+<a id="p214"></a>**P214.** Asked whether to push the help menu to `main` once CI is green:
 > Yes
 
-<a id="p214"></a>**P214.** With CI still waiting for GitHub runners:
+<a id="p215"></a>**P215.** With CI still waiting for GitHub runners:
 > Merge it to main
 
-Outcome: `main` was fast-forwarded to the working branch and pushed before the CI run for the help menu had started, at the developer's request; CI then ran on `main` and the branch.
+Outcome: `main` had moved: the developer's own commit for [P211](#p211) (the spec check script) was on it. It was merged into the working branch; the prompt numbers of this change became P212 to P215, after P211; the two contract lines both commits changed keep the developer's double quotes with the help-menu content. The spec check script passed all six scripted checks, all 505 tests passed and the Linux CI steps passed; then `main` was pushed, before the CI run for the help menu had started, at the developer's request.

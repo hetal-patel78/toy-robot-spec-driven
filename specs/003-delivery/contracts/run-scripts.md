@@ -52,13 +52,13 @@ Shown by `run` (cmd), `.\run.cmd` (PowerShell) or `./run.sh` (bash, zsh) with no
 | 1 | the app with the script's console input | the typed session, then "Typed session ended." |
 | 2 | the test-data menu | the test-data menu |
 | 3 | `dotnet test` on `ToyRobot.sln` with `--nologo`, no console input | the test results |
-| 4 (menu line `4  Show help (commands, rules, how to end a session)`) | the help menu (below) | the help menu |
+| 4 (menu line "4  Show help (commands, rules, how to end a session)") | the help menu (below) | the help menu |
 | 0 | — | nothing; exit code 0 |
 | anything else | — | "Not a choice: <choice>" |
 
 | Help menu choice | Runs | Writes (console output, stdout) |
 |---|---|---|
-| 1 to 5 | the app with `--help`, no console input | only the section of the help text under `HOW TO START`, `THE TABLE`, `COMMANDS`, `RULES` or `ENDING A SESSION` (from the heading line to the line before the next blank line), no colour; then the help menu again |
+| 1 to 5 | the app with `--help`, no console input | only the section of the help text under "HOW TO START", "THE TABLE", "COMMANDS", "RULES" or "ENDING A SESSION" (from the heading line to the line before the next blank line), no colour; then the help menu again |
 | 6 | the app with `--help`, no console input | the whole help text, no colour; then the help menu again |
 | 0 | — | the main menu again |
 | anything else | — | "Not a choice: <choice>" |

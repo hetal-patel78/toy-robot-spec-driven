@@ -5,8 +5,9 @@
   specs/001-robot-rules, specs/002-console-session and specs/003-delivery.
 
 .DESCRIPTION
-  1 Coverage        FR-01..FR-17 and NFR-01..NFR-09 from page 10 are each owned by exactly one spec, as
-                    the brief's ownership table says; every requirement-like ID defined in a spec.md
+  1 Coverage        FR-01..FR-18 and NFR-01..NFR-09 from page 10 are each owned by exactly one spec, as
+                    the brief's ownership table says (FR-18, --help, was added after the run, so the brief
+                    does not list it); every requirement-like ID defined in a spec.md
                     cites an FR or NFR on its defining bullet.
   2 Exact strings   every warning, the how-to-run message, the Output: label, the prompt and the echo written in
                     the spec folders match design-decisions.md (DEC-04, DEC-21, DEC-22, DEC-24, DEC-25);
@@ -171,6 +172,15 @@ $dec04 = Get-DecSection 'DEC-04'
 $howToRunMessage = $null
 for ($i = 0; $i -lt $dec04.Count; $i++) { if ($dec04[$i] -match '^```' -and $null -eq $howToRunMessage) { $howToRunMessage = $dec04[$i + 1] } }
 if ($howToRunMessage -notmatch '^How to run: ToyRobot') { throw 'DEC-04 how-to-run message not found' }
+# The help text of --help (FR-18): DEC-04's second fenced block. Its lines describe the rules (some say
+# "ignored"), so they are not warnings.
+$helpTextLines = New-Object System.Collections.Generic.HashSet[string]
+$fenceCount = 0; $inHelp = $false
+foreach ($l in $dec04) {
+    if ($l -match '^```') { $fenceCount++; $inHelp = ($fenceCount -eq 3); continue }
+    if ($inHelp) { [void]$helpTextLines.Add($l.Trim()) }
+}
+if ($helpTextLines.Count -eq 0) { throw 'DEC-04 help text not found' }
 
 $dec21 = Get-DecSection 'DEC-21'
 $outputLabel = $null
@@ -284,7 +294,7 @@ $page10Ids = New-Object System.Collections.Generic.List[string]
 foreach ($l in (Read-Lines $page10File)) {
     foreach ($mm in [regex]::Matches($l, '\[(N?FR-\d{2})\]\(0[23]-')) { if (-not $page10Ids.Contains($mm.Groups[1].Value)) { $page10Ids.Add($mm.Groups[1].Value) } }
 }
-$expectedIds = @(1..17 | ForEach-Object { 'FR-{0:D2}' -f $_ }) + @(1..9 | ForEach-Object { 'NFR-{0:D2}' -f $_ })
+$expectedIds = @(1..18 | ForEach-Object { 'FR-{0:D2}' -f $_ }) + @(1..9 | ForEach-Object { 'NFR-{0:D2}' -f $_ })
 foreach ($id in $expectedIds) { if (-not $page10Ids.Contains($id)) { Add-Issue 'docs/solution-design/10-traceability.md' "$id missing from page 10" } }
 foreach ($id in $page10Ids) { if ($expectedIds -notcontains $id) { Add-Issue 'docs/solution-design/10-traceability.md' "unexpected requirement $id on page 10" } }
 
@@ -299,15 +309,17 @@ function Expand-Ids([string]$text) {
 }
 
 # The ownership table as the task states it, cross-checked with the brief's own table.
+$addedAfterRun = @{ '002-console-session' = @('FR-18') }
 $ownTable = @{
     '001-robot-rules'     = @('FR-01', 'FR-02', 'FR-03', 'FR-04', 'FR-05', 'FR-06', 'FR-07', 'FR-09', 'FR-10', 'NFR-07')
-    '002-console-session' = @('FR-08', 'FR-11', 'FR-12', 'FR-13', 'FR-14', 'FR-15', 'FR-16', 'FR-17', 'NFR-01', 'NFR-04', 'NFR-05', 'NFR-06')
+    '002-console-session' = @('FR-08', 'FR-11', 'FR-12', 'FR-13', 'FR-14', 'FR-15', 'FR-16', 'FR-17', 'FR-18', 'NFR-01', 'NFR-04', 'NFR-05', 'NFR-06')
     '003-delivery'        = @('NFR-02', 'NFR-03', 'NFR-08', 'NFR-09')
 }
 foreach ($l in (Read-Lines $briefFile)) {
     $mm = [regex]::Match($l, '^\| \*\*(00\d-[a-z-]+)\*\* \| ([^|]+) \|')
     if ($mm.Success) {
-        $b = @(Expand-Ids $mm.Groups[2].Value | Sort-Object)
+        # Requirements added after the run are not in the brief, which records the run's inputs.
+        $b = @(@(Expand-Ids $mm.Groups[2].Value) + @($addedAfterRun[$mm.Groups[1].Value] | Where-Object { $_ }) | Sort-Object)
         $t = @($ownTable[$mm.Groups[1].Value] | Sort-Object)
         if (($b -join ',') -ne ($t -join ',')) { Add-Issue 'docs/spec-kit/spec-kit-brief.md' ("ownership of {0} in the brief ({1}) differs from the expected table ({2})" -f $mm.Groups[1].Value, ($b -join ', '), ($t -join ', ')) }
     }
@@ -381,7 +393,7 @@ foreach ($s in $specIds) {
     }
 }
 Write-Host ('  {0} requirement-like IDs checked for an FR/NFR citation' -f $citeCount)
-End-Check ('26 requirements from page 10 each owned by exactly one spec as in the brief; every defined requirement cites an FR or NFR')
+End-Check ('27 requirements from page 10 (FR-01 to FR-18, NFR-01 to NFR-09) each owned by exactly one spec as in the brief, with FR-18 added after the run; every defined requirement cites an FR or NFR')
 
 # =============================================================================================
 # Check 2: Exact strings
@@ -462,6 +474,7 @@ foreach ($f in $mdFiles) {
     foreach ($o in $md[$f]) {
         $where = '{0}:{1}' -f $rel, $o.N
         if ($o.Kind -eq 'code') {
+            if ($helpTextLines.Contains($o.Text.Trim())) { continue }
             foreach ($p in (Get-Pieces $o.Text)) { Test-Piece $p $where $true }
         } elseif ($o.Kind -eq 'text') {
             $spans = Get-Spans $o.Text
@@ -511,7 +524,7 @@ function Get-Scenarios([string]$specId) {
             if ($o.Text -match '^### (User Story \d+)') { $story = $Matches[1]; $inSection = $false; $close = $true }
             elseif ($o.Text -match '^\*\*Acceptance Scenarios\*\*') { $inSection = $true; $close = $true }
             elseif ($inSection -and ($o.Text -match '^---\s*$' -or $o.Text -match '^#{2,4} ')) { $inSection = $false; $close = $true }
-            elseif ($inSection -and $o.Text -match '^(\d+a?)\. ') {
+            elseif ($inSection -and $o.Text -match '^(\d+[a-z]?)\. ') {
                 if ($null -ne $cur) { $list.Add($cur) }
                 $cur = [pscustomobject]@{ Spec = $specId; Rel = (Get-Rel $f); Story = $story; Num = $Matches[1]; Start = $o.N; Lines = (New-Object System.Collections.Generic.List[object]) }
             }
@@ -674,7 +687,6 @@ foreach ($s in $specIds) {
         foreach ($e in $info.TableErr) { Test-StderrLines $e.Lines ('{0}:{1}' -f $sc.Rel, $e.N) $true }
 
         # Exit codes.
-        $isArg = ($info.Text -match [regex]::Escape($howToRunMessage)) -or ($info.Text -match '--help')
         $hasClaim = $info.EmptyOut -or $info.EmptyErr -or $info.InlineOut.Count -gt 0 -or $info.InlineErr.Count -gt 0 -or $info.TableOut.Count -gt 0 -or $info.TableErr.Count -gt 0 -or (@($info.Fences | Where-Object { $_.Channel -ne 'input' }).Count -gt 0)
         # A scenario that states one exit code is judged as a whole; one that states several (the
         # CI scenario) is judged clause by clause.
@@ -683,7 +695,10 @@ foreach ($s in $specIds) {
             $ex = $info.Exits[$xi]
             $ctx = $info.Text
             if ($distinct -gt 1) { $ctx = $info.ExitClauses[$xi] }
-            $isArg = ($ctx -match [regex]::Escape($howToRunMessage)) -or ($ctx -match '--help')
+            # An argument: the how-to-run message, or "started with/as" a command line with an argument.
+            $isArg = ($ctx -match [regex]::Escape($howToRunMessage)) -or ($ctx -match ('(?i)started (?:with|as)[^.]*' + [char]96 + 'ToyRobot [^<' + [char]96 + ']')) -or (@($info.Fences | Where-Object { @($_.Lines | ForEach-Object { $_.Text }) -contains $howToRunMessage }).Count -gt 0)
+            # --help on its own, in lower case (FR-18), exits with 0.
+            $isHelp = $ctx -cmatch ([char]96 + 'ToyRobot --help' + [char]96)
             $exitTotal++
             if ($s -eq '003-delivery') {
                 $isScriptError = $ctx -match '(?i)does not exist|missing file|a folder|more than one argument|two arguments|no \.NET SDK|older SDK|does not build'
@@ -693,8 +708,8 @@ foreach ($s in $specIds) {
                 else { Add-Issue $where ("exit code '$ex' is not 0, 1 or the build's exit code") }
             } else {
                 if ($ex -eq 'not applicable') { if ($info.Text -notmatch '(?i)in memory') { Add-Issue $where 'exit code "not applicable" for a scenario that is not in memory only' } }
-                elseif ($ex -eq '1') { if (-not $isArg) { Add-Issue $where 'exit code 1 stated for a scenario without an argument (only FR-17 gives 1)' } }
-                elseif ($ex -eq '0') { if ($isArg) { Add-Issue $where 'exit code 0 stated for a scenario started with an argument' } }
+                elseif ($ex -eq '1') { if (-not $isArg -or $isHelp) { Add-Issue $where 'exit code 1 stated for a scenario without an argument other than --help (only FR-17 gives 1; FR-18, --help, gives 0)' } }
+                elseif ($ex -eq '0') { if ($isArg -and -not $isHelp) { Add-Issue $where 'exit code 0 stated for a scenario started with an argument other than --help' } }
                 elseif ($ex -eq '2') { if ($ctx -notmatch '(?i)unexpected problem') { Add-Issue $where 'exit code 2 stated for a scenario that is not an unexpected problem (DEC-32)' } }
                 else { Add-Issue $where ("application exit code '$ex' is not 0, 1 or 2") }
                 if ($s -eq '001-robot-rules' -and $ex -ne '0') { Add-Issue $where ("spec 001 states exit code '$ex'; its scenarios all end with 0") }
@@ -714,12 +729,12 @@ foreach ($l in (Read-Lines $page2File)) {
     $id = $mm.Groups[1].Value
     $cells = $l.Split('|')
     $acc = $cells[2]
-    $e = [pscustomobject]@{ Out = (New-Object System.Collections.Generic.List[string]); Err = (New-Object System.Collections.Generic.List[string]); OutEmpty = $false; ErrEmpty = $false; RefBoth = $null; RefErr = $null; Exit = '0' }
+    $e = [pscustomobject]@{ Out = (New-Object System.Collections.Generic.List[string]); Err = (New-Object System.Collections.Generic.List[string]); OutEmpty = $false; OutHelp = $false; ErrEmpty = $false; RefBoth = $null; RefErr = $null; Exit = '0' }
     $mode = ''
     foreach ($seg in ($acc -split '<br>')) {
         if ($seg -match 'console output \(stdout\) and console messages \(stderr\) are exactly as for (FR-\d{2})') { $e.RefBoth = $Matches[1]; $mode = ''; continue }
         if ($seg -match '\*\*Exit code:\*\*\s*(\d+)') { $e.Exit = $Matches[1]; $mode = ''; continue }
-        if ($seg -match '(?i)console output \(stdout\)') { $mode = 'out'; if ($seg -match '\(empty\)') { $e.OutEmpty = $true }; continue }
+        if ($seg -match '(?i)console output \(stdout\)') { $mode = 'out'; if ($seg -match '\(empty\)') { $e.OutEmpty = $true }; if ($seg -match '(?i)help text') { $e.OutHelp = $true }; continue }
         if ($seg -match 'holds exactly') { $mode = 'out'; continue }
         if ($seg -match '(?i)console messages \(stderr\)') {
             $mode = 'err'
@@ -766,7 +781,7 @@ foreach ($id in ($page2.Keys | Sort-Object)) {
     if ($cands.Count -eq 0) { Add-Issue (Get-Rel (Spec-File $owner 'spec.md')) "no acceptance scenario is tagged with $id"; continue }
     $found = $false
     foreach ($c in $cands) {
-        $okOut = Test-Channel $c.Info 'stdout' $e.Out $e.OutEmpty
+        if ($e.OutHelp) { $okOut = $c.Info.Text -match '(?i)help text' } else { $okOut = Test-Channel $c.Info 'stdout' $e.Out $e.OutEmpty }
         $okErr = Test-Channel $c.Info 'stderr' $e.Err $e.ErrEmpty
         $okExit = $true
         if ($owner -ne '001-robot-rules') { $okExit = ($c.Info.Exits -contains $e.Exit) }
@@ -779,8 +794,8 @@ foreach ($id in ($page2.Keys | Sort-Object)) {
     }
 }
 Write-Host ('  page 2: {0} of {1} FR acceptance criteria found in the owning spec''s scenarios' -f $page2Ok, $page2.Count)
-if ($page2.Count -ne 17) { Add-Issue 'docs/solution-design/02-functional-requirements.md' ('expected 17 FR rows, found {0}' -f $page2.Count) }
-End-Check 'every scenario keeps REPORT results on stdout and everything else on stderr; exit codes 0/1/2 as DEC-04, DEC-10, DEC-32 and NFR-08 say; page 2 found for FR-01 to FR-17'
+if ($page2.Count -ne 18) { Add-Issue 'docs/solution-design/02-functional-requirements.md' ('expected 18 FR rows, found {0}' -f $page2.Count) }
+End-Check 'every scenario keeps REPORT results on stdout and everything else on stderr; exit codes 0/1/2 as DEC-04, DEC-10, DEC-32 and NFR-08 say; page 2 found for FR-01 to FR-18'
 
 # =============================================================================================
 # Check 4: Names
@@ -827,6 +842,11 @@ $s2 = Spec-File '002-console-session' 'spec.md'
 $spec002Refs = New-Object System.Collections.Generic.List[object]
 foreach ($o in $md[$s2]) {
     if ($o.Kind -ne 'text') { continue }
+    if ($o.Text -match '^- <a id="decided-help-text-in-program"></a>') {
+        $chosen = $o.Text; $oi = $chosen.IndexOf('Other options'); if ($oi -gt 0) { $chosen = $chosen.Substring(0, $oi) }
+        foreach ($t in (Get-NameTokens $chosen)) { [void]$decided.Add($t) }
+        $decidedSources += ('{0}:{1}' -f (Get-Rel $s2), $o.N)
+    }
     if ($o.Text -match '^- (?:<a id="[^"]*"></a>)?\*\*Decided in the run: method names of Runner and Program') {
         $chosen = $o.Text; $ci = $chosen.IndexOf('Chosen:'); $oi = $chosen.IndexOf('Other options')
         if ($ci -ge 0 -and $oi -gt $ci) { $chosen = $chosen.Substring($ci, $oi - $ci) }
