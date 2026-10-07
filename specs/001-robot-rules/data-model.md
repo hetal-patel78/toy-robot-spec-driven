@@ -8,7 +8,7 @@ Phase 1 of `/speckit-plan`. The entities are the components of page 6 that hold 
 |---|---|---|
 | `Table(int width, int height)` | constructor | Stores the size. No check of the values (spec Assumptions). |
 | `Width`, `Height` | `int`, read-only | As given. |
-| `IsOnTable(int x, int y)` | `bool` | True exactly when `0 <= x < Width` and `0 <= y < Height`. |
+| `Contains(int x, int y)` | `bool` | True exactly when `0 <= x < Width` and `0 <= y < Height`. |
 
 Does not hold the robot, know commands or read configuration. The application's table is `Table(5, 5)`, created by Program (spec 002).
 

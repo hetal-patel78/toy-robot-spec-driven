@@ -13,5 +13,5 @@ public sealed class Table
 
     public int Height { get; }
 
-    public bool IsOnTable(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
+    public bool Contains(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
 }

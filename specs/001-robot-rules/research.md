@@ -33,14 +33,14 @@ Phase 0 of `/speckit-plan`. The technical choices are fixed by the sources (Spec
   | CommandParser turns one line into a parse result ("pass the line", 7.1) | `CommandParser.Parse(string line)` |
   | RobotOperator runs a command object ("run the PlaceCommand", 7.1) | `RobotOperator.Run(IRobotCommand command)` |
   | Robot's placement and its single replace method ("replace placement", 7.1) | `Robot.Placement`, `Robot.Replace(RobotState state)` |
-  | Table answers "is this position on the table?" | `Table.IsOnTable(int x, int y)`, constructor `Table(int width, int height)`, read-only `Table.Width` and `Table.Height` |
+  | Table answers "is this position on the table?" | `Table.Contains(int x, int y)`, constructor `Table(int width, int height)`, read-only `Table.Width` and `Table.Height` |
   | RobotState: X, Y and the facing Direction | `RobotState(int X, int Y, Direction Facing)` |
   | `PlaceCommand` holds X, Y and F | `PlaceCommand(int X, int Y, Direction F)` |
   | Direction: four values, turning left and right, name in upper case | `Direction.North`, `Direction.East`, `Direction.South`, `Direction.West`, `Direction.All`, `Name`, `TurnLeft()`, `TurnRight()` |
   | Page 5 folder layout: the application folders and their namespaces (spec Assumptions, "source folders", added by T060) | `Domain`, `Commands`, `Parsing`, `Session`: namespaces `ToyRobot.Domain`, `ToyRobot.Commands`, `ToyRobot.Parsing`, `ToyRobot.Session` |
 
   The members page 6 names itself are used exactly: `IRobotCommand.Name`, `NeedsRobotOnTable`, `Execute(IRobotOperator robot)`; `IRobotOperator.CurrentState`, `TryMoveTo(next)` (parameter name `next`).
-- **Rationale**: specs 001 and 002 must use the same names (brief rule 6); spec 001 owns these components. `ParseResult` and `Outcome` are result types, not new components: page 6 defines both under CommandParser and RobotOperator.
+- **Rationale**: specs 001 and 002 must use the same names (brief rule 6); spec 001 owns these components. `ParseResult` and `Outcome` are result types, not new components: page 6 defines both under CommandParser and RobotOperator. `Table.Contains` was first `IsOnTable`, renamed after the run (T061): at the call site `table.IsOnTable(x, y)` repeats "table"; `table.Contains(x, y)` reads as a sentence ("does the table contain x, y?") and follows .NET's own `Contains` (for example `Rectangle.Contains`).
 - **Alternatives considered**: leave names to implementation (risk of mismatch with spec 002).
 
 ## R5. Shape of `ParseResult` and `Outcome` (Decided)

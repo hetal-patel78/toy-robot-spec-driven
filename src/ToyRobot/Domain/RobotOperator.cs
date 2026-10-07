@@ -20,7 +20,7 @@ public sealed class RobotOperator : IRobotOperator
 
     public bool TryMoveTo(RobotState next)
     {
-        if (!_table.IsOnTable(next.X, next.Y))
+        if (!_table.Contains(next.X, next.Y))
         {
             return false;
         }

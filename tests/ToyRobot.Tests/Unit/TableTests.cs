@@ -20,7 +20,7 @@ public class TableTests
     [InlineData(2, 2)]
     public void Positions_on_a_5_by_5_table_are_on_the_table(int x, int y)
     {
-        Assert.True(new Table(5, 5).IsOnTable(x, y));
+        Assert.True(new Table(5, 5).Contains(x, y));
     }
 
     [Theory]
@@ -33,7 +33,7 @@ public class TableTests
     [InlineData(-2147483648, 0)]
     public void Positions_outside_a_5_by_5_table_are_not_on_the_table(int x, int y)
     {
-        Assert.False(new Table(5, 5).IsOnTable(x, y));
+        Assert.False(new Table(5, 5).Contains(x, y));
     }
 
     [Theory]
@@ -43,7 +43,7 @@ public class TableTests
     [InlineData(1, 1)]
     public void Positions_on_a_2_by_2_table_are_on_the_table(int x, int y)
     {
-        Assert.True(new Table(2, 2).IsOnTable(x, y));
+        Assert.True(new Table(2, 2).Contains(x, y));
     }
 
     [Theory]
@@ -53,6 +53,6 @@ public class TableTests
     [InlineData(0, -1)]
     public void Positions_outside_a_2_by_2_table_are_not_on_the_table(int x, int y)
     {
-        Assert.False(new Table(2, 2).IsOnTable(x, y));
+        Assert.False(new Table(2, 2).Contains(x, y));
     }
 }

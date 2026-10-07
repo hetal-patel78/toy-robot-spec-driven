@@ -530,3 +530,12 @@ Outcome: no finding in the application's behaviour. Fixed, in order:
 - **README:** the Status line says what was checked and when; stdout wording; the testing-by-hand summary; "How this would evolve" gives the local change for each item and "a few lines in the parser and a line in the help text" for a new command. The testing-by-hand page points the help topics to its Start-up checks.
 
 Left as they are: the unreachable `throw` in `Direction` (a defensive line, documented by the tests' contract); `run.cmd` with an empty `""` argument (quoting it safely would make the argument check fragile for names with `&`); temporary menu files left only when the menu is stopped with Ctrl+C (cmd cannot clean up then); the help text's "How to start" lines (changing them would change the application's tested help text).
+
+<a id="p217"></a>**P217.** Naming of the Table's position check:
+> table checking isontable  is confusing?
+>
+> method should be more self explanatory correct?
+
+> yes change it
+
+Outcome: `Table.IsOnTable(x, y)` renamed to `Table.Contains(x, y)`. At the call site `table.IsOnTable(x, y)` repeats "table"; `table.Contains(x, y)` reads as a sentence ("does the table contain x, y?") and follows .NET's own `Contains` (for example `Rectangle.Contains`). No decision or solution-design page names the method (page 6 says only that the Table answers "is this position on the table?"), so the change starts in spec 001, which decided the name: the Assumptions entry on code names, research R4, the data model, the contract and task T061; then the spec check script; then `TableTests`; then `Table` and `RobotOperator`. The run report's list of names decided in the run keeps `IsOnTable`, with a note that it was renamed. No behaviour changes.
