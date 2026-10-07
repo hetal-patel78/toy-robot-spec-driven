@@ -27,7 +27,7 @@ flowchart LR
     RobotOperator -- "4. run it" --> Commands
     Commands -- "5. try to move to the next state" --> RobotOperator
     RobotOperator -- "6. is X,Y on the table?" --> Table
-    RobotOperator -- "7. replace placement" --> Robot
+    RobotOperator -- "7. move to the next state" --> Robot
     RobotOperator -- "8. outcome" --> Runner
 ```
 

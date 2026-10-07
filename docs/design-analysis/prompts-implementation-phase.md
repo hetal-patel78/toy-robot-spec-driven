@@ -539,3 +539,17 @@ Left as they are: the unreachable `throw` in `Direction` (a defensive line, docu
 > yes change it
 
 Outcome: `Table.IsOnTable(x, y)` renamed to `Table.Contains(x, y)`. At the call site `table.IsOnTable(x, y)` repeats "table"; `table.Contains(x, y)` reads as a sentence ("does the table contain x, y?") and follows .NET's own `Contains` (for example `Rectangle.Contains`). No decision or solution-design page names the method (page 6 says only that the Table answers "is this position on the table?"), so the change starts in spec 001, which decided the name: the Assumptions entry on code names, research R4, the data model, the contract and task T061; then the spec check script; then `TableTests`; then `Table` and `RobotOperator`. The run report's list of names decided in the run keeps `IsOnTable`, with a note that it was renamed. No behaviour changes.
+
+<a id="p218"></a>**P218.** Naming inside `TryMoveTo`:
+> also the variable name in below should be
+>
+> public bool TryMoveTo(RobotState nextState) … _robot.ReplaceWith(nextState);
+>
+> Then it reads as replacerobot with the next state or even better
+>
+> robot.currentstate.replacewith(nextstate)?
+
+> still not reads odd
+> _robot.ReplacePlacement(nextState);
+
+Outcome: the parameter `next` of `TryMoveTo` became `nextState`, and the Robot's `Replace(state)` became `MoveTo(nextState)` (chosen from `MoveTo`, `SetPlacement`, `PlaceAt` and keeping `Replace`). Read together, the operator tries and the robot does: `TryMoveTo(nextState)` asks the Table, then `robot.MoveTo(nextState)`; turning is already a move to the same square facing a new way. `nextState` says what the value is, where `next` did not. The state is still replaced, never changed in place (DEC-13). `ReplaceWith` was not used because it reads as replacing the robot itself, and `CurrentState.ReplaceWith(...)` cannot work: `RobotState` is an immutable value (DEC-12), and changing it through `CurrentState` would let a command skip the Table check (DEC-13, DEC-14). Changed in order: solution design pages 5, 6 and 7.1 and the glossary; spec 001 (Clarifications, NFR-07d, NFR-07g, Key Entities, Assumptions, research R4, data model, contract, tasks, task T062); the spec check script; the tests; the code. No behaviour changes.

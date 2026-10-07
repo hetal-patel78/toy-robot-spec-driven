@@ -120,7 +120,7 @@ Words used in this section:
    *Sources:* [spec 001, Assumptions][decided-001-culture-independent]; [NFR-04][nfr-04].
 4. **Code names for the things the solution design describes but does not name.** Confirmed by the developer ([P154][p154]). Specs 001 and 002 must use
    the same names, so they are taken from page 6's own wording: `ParseResult` (`CommandObject`, `Exit`,
-   `Failure`), `Outcome` (`PositionText`, `Warning`, `Done`), `Parse`, `Run`, `Placement`, `Replace`,
+   `Failure`), `Outcome` (`PositionText`, `Warning`, `Done`), `Parse`, `Run`, `Placement`, `Replace` (later renamed `MoveTo`),
    `IsOnTable` (later renamed `Contains`), `Width`, `Height`, `RobotState(X, Y, Facing)`, `Direction` with `North`/`East`/`South`/`West`,
    `All`, `Name`, `TurnLeft`, `TurnRight`. They become the public shape of the code.
    *Sources:* [spec 001, Assumptions][decided-001-code-names]; research R4 in spec 001.
@@ -171,7 +171,7 @@ Words used in this section:
   spec 002's, so spec 001 adds `src/ToyRobot/Program.cs` that reads nothing, writes nothing and returns exit
   code 0, and spec 002 replaces it. The template's "Hello, World!" is not used, because it prints to console
   output, against [DEC-23][dec-23]. *Sources:* [spec 001][decided-001-placeholder-entry-point].
-- **`Robot.Replace` refuses a missing state, at compile time and at run time.** [DEC-14][dec-14] says it
+- **`Robot.Replace` (now `MoveTo`) refuses a missing state, at compile time and at run time.** [DEC-14][dec-14] says it
   accepts only a real state, never `null`. The parameter is declared non-null and a `null` is also refused
   at run time with an argument error, with a unit test; no input line can reach this.
   *Sources:* [spec 001][decided-001-replace-refuses-null]; [DEC-14][dec-14].
@@ -543,6 +543,7 @@ Each push was approved first by a separate review agent (Opus 5.5) that wrote no
 | Menu choice 4 opens a help menu of topics (How to start, The table, Commands, Rules, Ending a session, All of it), each cut from the app's `--help` output by its heading | Developer's report from Windows ([P212][p212]): the whole help followed by the menu pushed the commands off a small terminal; the developer chose a sub-menu ([P213][p213]) | [DEC-41][dec-41] (and a note in [DEC-04][dec-04]); solution design page 9; spec 003 (MN-01, scenario 6c, CI-08, SC-008, T048 to T051); CI-08 first, then `run.sh` and `run.cmd`; README and testing-by-hand | 505 tests pass; CI-01 to CI-09 bash steps pass locally on Linux; `run.cmd` checked by CI on Windows |
 | Final review: decisions, solution design, specs, scripts, CI, tests and README brought into line; `run.cmd` menu choices made safe | Developer's request ([P216][p216]); five separate read-only review agents | DEC-26, DEC-35, DEC-37, DEC-39, DEC-41; then solution design pages 2, 3, 5, 6, 7, 9, 10, 11, 12 and the overview; then specs 001, 002 and 003 (spec, plan, data model, research, tasks T052, contracts); then the scripts and CI; then the tests; then the README and testing-by-hand | `run.cmd` with `x & echo INJECTED`, `a"b` and LF-only input; help topic 1 in Git Bash; all tests pass (476 + 29); spec checks; links checked; CI on all three systems |
 | `Table.IsOnTable` renamed to `Table.Contains`, so the call site reads as a sentence | Developer's request ([P217][p217]) | Spec 001 (Assumptions, research R4, data model, contract, task T061); then the spec check script; then `TableTests`; then `Table` and `RobotOperator` | All tests pass; spec checks; links checked; CI on all three systems |
+| `Robot.Replace` renamed to `Robot.MoveTo`, and the parameter `next` of `TryMoveTo` to `nextState` | Developer's request ([P218][p218]) | Solution design pages 5, 6, 7.1 and the glossary; then spec 001 (Clarifications, NFR-07d, NFR-07g, Key Entities, Assumptions, research R4, data model, contract, task T062); then the spec check script; then the tests; then the code | All tests pass; spec checks; links checked; CI on all three systems |
 
 The first review of the progress-lines change was rejected: `run.cmd` echoed the file name so that a `&` in it ran the text after it as a command, with its output on stdout, and research [R-04][r-04] in spec 003 still said a successful run shows nothing from the script. Both fixed: the name is echoed through a `for` variable (tested by hand with `rvq&echo INJECTED.txt` and `rvq^x (1).txt`: the name shown as text, stdout unchanged), and [R-04][r-04] rewritten.
 
@@ -724,3 +725,4 @@ Check 7 of `Test-Specification.ps1` ("no code yet") now reports the implementati
 [p213]: ../design-analysis/prompts-implementation-phase.md#p213
 [p216]: ../design-analysis/prompts-implementation-phase.md#p216
 [p217]: ../design-analysis/prompts-implementation-phase.md#p217
+[p218]: ../design-analysis/prompts-implementation-phase.md#p218

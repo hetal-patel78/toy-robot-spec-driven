@@ -9,12 +9,12 @@ public sealed class FakeRobotOperator : IRobotOperator
 
     public List<RobotState> Requests { get; } = new();
 
-    public bool TryMoveTo(RobotState next)
+    public bool TryMoveTo(RobotState nextState)
     {
-        Requests.Add(next);
+        Requests.Add(nextState);
         if (Answer)
         {
-            CurrentState = next;
+            CurrentState = nextState;
         }
 
         return Answer;

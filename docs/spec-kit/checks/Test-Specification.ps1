@@ -935,7 +935,7 @@ Write-Host ('  {0} identifier chains checked in {1} plan, data-model and contrac
 # (or spec 002 for Runner and Program) decided.
 $members = @{
     'ParseResult' = @('CommandObject', 'Exit', 'Failure'); 'Outcome' = @('PositionText', 'Warning', 'Done'); 'CommandParser' = @('Parse')
-    'RobotOperator' = @('Run', 'CurrentState', 'TryMoveTo'); 'Robot' = @('Placement', 'Replace'); 'Table' = @('Contains', 'Width', 'Height')
+    'RobotOperator' = @('Run', 'CurrentState', 'TryMoveTo'); 'Robot' = @('Placement', 'MoveTo'); 'Table' = @('Contains', 'Width', 'Height')
     'Direction' = @('North', 'East', 'South', 'West', 'All', 'Name', 'TurnLeft', 'TurnRight', 'ToString'); 'RobotState' = @('X', 'Y', 'Facing', 'ToString')
     'IRobotCommand' = @('Name', 'NeedsRobotOnTable', 'Execute'); 'IRobotOperator' = @('CurrentState', 'TryMoveTo'); 'Runner' = @('Run'); 'Program' = @('Main', 'Run')
     'PlaceCommand' = @('X', 'Y', 'F', 'Name', 'NeedsRobotOnTable', 'Execute')

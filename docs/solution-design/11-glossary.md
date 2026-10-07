@@ -66,7 +66,7 @@ In alphabetical order.
 | **README** | The short README at the repository root that tells a reviewer how to build, test and run the application ([DEC-37][dec-37]). |
 | **Redirected input** | Input that comes from a file or another program instead of the keyboard, for example `ToyRobot < commands.txt` ([DEC-04][dec-04]). |
 | **Release build** | The optimised build of the application, which the run scripts use (page [5](05-high-level-design.md#folder-layout-and-the-built-application)). |
-| **Replace** | The only way the robot changes: a new RobotState takes the place of the old one, after the Table has checked it ([DEC-13][dec-13]). |
+| **Replace** | The only way the robot changes: a new RobotState takes the place of the old one, after the Table has checked it ([DEC-13][dec-13]). In the code it is the Robot's `MoveTo` method. |
 | **RollForward** | A project setting that lets the application, built for .NET 8, run on a newer installed .NET version ([DEC-37][dec-37]). |
 | **Run scripts** | `run.cmd` (Windows) and `run.sh` (Linux, macOS): check .NET and build; then show the [menu](#menu) (no file, console input from a keyboard), read redirected console input, show the help (`--help`) or run the commands in a file ([DEC-37][dec-37], [DEC-41][dec-41]). |
 | **Menu**<a id="menu"></a> | What the run scripts show when started with no file at a keyboard: 1 type commands, 2 the test-data menu (each file with PASS or FAIL against its expected output), 3 the automated tests, 4 the help menu of topics, 0 quit. The environment variable `TOYROBOT_MENU` shows it with redirected input (CI uses this); `NO_COLOR` turns its colours off ([DEC-41][dec-41]). |

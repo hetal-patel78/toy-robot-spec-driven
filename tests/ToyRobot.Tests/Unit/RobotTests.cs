@@ -10,45 +10,45 @@ public class RobotTests
     }
 
     [Fact]
-    public void Replace_sets_the_placement()
+    public void MoveTo_sets_the_placement()
     {
         var robot = new Robot();
         var state = new RobotState(0, 0, Direction.North);
 
-        robot.Replace(state);
+        robot.MoveTo(state);
 
         Assert.Equal(state, robot.Placement);
     }
 
     [Fact]
-    public void A_second_Replace_replaces_the_placement()
+    public void A_second_MoveTo_replaces_the_placement()
     {
         var robot = new Robot();
-        robot.Replace(new RobotState(0, 0, Direction.North));
+        robot.MoveTo(new RobotState(0, 0, Direction.North));
         var second = new RobotState(3, 2, Direction.West);
 
-        robot.Replace(second);
+        robot.MoveTo(second);
 
         Assert.Equal(second, robot.Placement);
     }
 
     [Fact]
-    public void Replace_with_null_throws_and_leaves_a_new_robot_unplaced()
+    public void MoveTo_with_null_throws_and_leaves_a_new_robot_unplaced()
     {
         var robot = new Robot();
 
-        Assert.Throws<ArgumentNullException>(() => robot.Replace(null!));
+        Assert.Throws<ArgumentNullException>(() => robot.MoveTo(null!));
         Assert.Null(robot.Placement);
     }
 
     [Fact]
-    public void Replace_with_null_throws_and_leaves_a_placed_robot_unchanged()
+    public void MoveTo_with_null_throws_and_leaves_a_placed_robot_unchanged()
     {
         var robot = new Robot();
         var state = new RobotState(1, 1, Direction.East);
-        robot.Replace(state);
+        robot.MoveTo(state);
 
-        Assert.Throws<ArgumentNullException>(() => robot.Replace(null!));
+        Assert.Throws<ArgumentNullException>(() => robot.MoveTo(null!));
         Assert.Equal(state, robot.Placement);
     }
 

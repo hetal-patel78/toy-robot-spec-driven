@@ -141,7 +141,7 @@ It implements `IRobotOperator`, the only way commands can reach the robot ([DEC-
 | Member | What it does |
 |---|---|
 | `CurrentState` | The robot's current state, read-only: a `RobotState`, or `null` when the robot is not on the table |
-| `TryMoveTo(next)` | Asks the Table whether `next` is on the table. If it is, replaces the Robot's state with it and answers yes; if not, leaves the robot unchanged and answers no |
+| `TryMoveTo(nextState)` | Asks the Table whether `nextState` is on the table. If it is, replaces the Robot's state with it and answers yes; if not, leaves the robot unchanged and answers no |
 
 When the Runner passes it a command object:
 1. If the command needs the robot on the table and the robot is not on the table, return the warning `<NAME> ignored - robot is not on the table`, for example `MOVE ignored - robot is not on the table` ([DEC-19][dec-19]).

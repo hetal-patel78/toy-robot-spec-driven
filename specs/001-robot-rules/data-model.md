@@ -42,13 +42,13 @@ Does not check whether it is on the table.
 |---|---|---|
 | `Robot()` | constructor | Starts with `Placement` = `null` (not on the table). |
 | `Placement` | `RobotState?`, read-only | `null` or a valid state. |
-| `Replace(RobotState state)` | `void` | Sets `Placement` to `state`. A `null` argument throws `ArgumentNullException` (research R12). No member sets `Placement` back to `null`. |
+| `MoveTo(RobotState nextState)` | `void` | Sets `Placement` to `nextState`. A `null` argument throws `ArgumentNullException` (research R12). No member sets `Placement` back to `null`. |
 
 State transitions:
 
 ```text
-not on the table (Placement = null) --Replace(s)--> on the table (Placement = s)
-on the table (Placement = s1)       --Replace(s2)-> on the table (Placement = s2)
+not on the table (Placement = null) --MoveTo(s)---> on the table (Placement = s)
+on the table (Placement = s1)       --MoveTo(s2)--> on the table (Placement = s2)
 (no transition back to "not on the table")
 ```
 
@@ -59,7 +59,7 @@ Only RobotOperator creates and holds the Robot; it is never handed out ([DEC-14]
 | Member | Type | Rule |
 |---|---|---|
 | `CurrentState` | `RobotState?`, read-only | The robot's placement. |
-| `TryMoveTo(RobotState next)` | `bool` | If the Table says `next` is on the table: replace the Robot's state with `next`, answer `true`. Otherwise leave the robot unchanged, answer `false`. |
+| `TryMoveTo(RobotState nextState)` | `bool` | If the Table says `nextState` is on the table: the Robot moves to `nextState`, answer `true`. Otherwise leave the robot unchanged, answer `false`. |
 
 ## RobotOperator (DEC-13, DEC-14, DEC-19, DEC-26, DEC-27, DEC-30; NFR-07h)
 
@@ -68,7 +68,7 @@ Only RobotOperator creates and holds the Robot; it is never handed out ([DEC-14]
 | Member | Type | Rule |
 |---|---|---|
 | `RobotOperator(Table table)` | constructor | Keeps the Table; creates the only Robot. |
-| `CurrentState`, `TryMoveTo(next)` | from `IRobotOperator` | As above. |
+| `CurrentState`, `TryMoveTo(nextState)` | from `IRobotOperator` | As above. |
 | `Run(IRobotCommand command)` | `Outcome` | 1. If `command.NeedsRobotOnTable` and the robot is not on the table: return `Outcome.Warning("<Name> ignored - robot is not on the table")` without running the command. 2. Otherwise return `command.Execute(this)`. |
 
 Never receives EXIT or a failure (the Runner, spec 002, filters them).
@@ -80,7 +80,7 @@ Never receives EXIT or a failure (the Runner, spec 002, filters them).
 | Class | Values | `Name` | `NeedsRobotOnTable` | `Execute(robot)` |
 |---|---|---|---|---|
 | `PlaceCommand` (`sealed record PlaceCommand(int X, int Y, Direction F)`) | X, Y, F | `PLACE` | `false` | `proposed = new RobotState(X, Y, F)`; `TryMoveTo(proposed)` true → `Outcome.Done()`; false → `Outcome.Warning("PLACE " + proposed + " ignored - position is off the table")` |
-| `MoveCommand` (`sealed record`) | none | `MOVE` | `true` | `current = CurrentState` (null → `InvalidOperationException`); next = one step: NORTH Y + 1, SOUTH Y − 1, EAST X + 1, WEST X − 1, same facing; `TryMoveTo(next)` true → `Outcome.Done()`; false → `Outcome.Warning("MOVE ignored - next position is off the table so robot stays at " + current)` |
+| `MoveCommand` (`sealed record`) | none | `MOVE` | `true` | `current = CurrentState` (null → `InvalidOperationException`); next = one step: NORTH Y + 1, SOUTH Y − 1, EAST X + 1, WEST X − 1, same facing; `TryMoveTo(nextState)` true → `Outcome.Done()`; false → `Outcome.Warning("MOVE ignored - next position is off the table so robot stays at " + current)` |
 | `LeftCommand` (`sealed record`) | none | `LEFT` | `true` | `current` (null → `InvalidOperationException`); `TryMoveTo(current with { Facing = current.Facing.TurnLeft() })`; `Outcome.Done()` (no warning, page 6) |
 | `RightCommand` (`sealed record`) | none | `RIGHT` | `true` | As LEFT with `TurnRight()` |
 | `ReportCommand` (`sealed record`) | none | `REPORT` | `true` | `current` (null → `InvalidOperationException`); `Outcome.PositionText(current.ToString())`; does not call `TryMoveTo` |

@@ -5,5 +5,5 @@ public interface IRobotOperator
 {
     RobotState? CurrentState { get; }
 
-    bool TryMoveTo(RobotState next);
+    bool TryMoveTo(RobotState nextState);
 }

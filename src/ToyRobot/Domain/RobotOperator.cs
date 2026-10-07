@@ -18,14 +18,14 @@ public sealed class RobotOperator : IRobotOperator
 
     public RobotState? CurrentState => _robot.Placement;
 
-    public bool TryMoveTo(RobotState next)
+    public bool TryMoveTo(RobotState nextState)
     {
-        if (!_table.Contains(next.X, next.Y))
+        if (!_table.Contains(nextState.X, nextState.Y))
         {
             return false;
         }
 
-        _robot.Replace(next);
+        _robot.MoveTo(nextState);
         return true;
     }
 

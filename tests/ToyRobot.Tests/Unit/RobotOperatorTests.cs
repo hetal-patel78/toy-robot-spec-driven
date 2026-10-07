@@ -17,10 +17,10 @@ public class RobotOperatorTests
     public void TryMoveTo_a_position_on_the_table_returns_true_and_sets_the_state()
     {
         var robot = NewOperator();
-        var next = new RobotState(2, 2, Direction.North);
+        var nextState = new RobotState(2, 2, Direction.North);
 
-        Assert.True(robot.TryMoveTo(next));
-        Assert.Equal(next, robot.CurrentState);
+        Assert.True(robot.TryMoveTo(nextState));
+        Assert.Equal(nextState, robot.CurrentState);
     }
 
     [Fact]

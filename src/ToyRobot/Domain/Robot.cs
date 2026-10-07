@@ -5,9 +5,9 @@ public sealed class Robot
 {
     public RobotState? Placement { get; private set; }
 
-    public void Replace(RobotState state)
+    public void MoveTo(RobotState nextState)
     {
-        ArgumentNullException.ThrowIfNull(state);
-        Placement = state;
+        ArgumentNullException.ThrowIfNull(nextState);
+        Placement = nextState;
     }
 }

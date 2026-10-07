@@ -14,9 +14,9 @@ public sealed record MoveCommand : IRobotCommand
         var current = robot.CurrentState
             ?? throw new InvalidOperationException("MOVE needs the robot to be on the table.");
 
-        var next = Step(current);
+        var nextState = Step(current);
 
-        return robot.TryMoveTo(next)
+        return robot.TryMoveTo(nextState)
             ? new Outcome.Done()
             : new Outcome.Warning($"MOVE ignored - next position is off the table so robot stays at {current}");
     }

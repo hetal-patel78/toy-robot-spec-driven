@@ -28,21 +28,21 @@ public sealed record RobotState(int X, int Y, Direction Facing)
 
 public sealed class Robot
 {
-    public RobotState? Placement { get; }          // null until the first Replace
-    public void Replace(RobotState state);         // null -> ArgumentNullException
+    public RobotState? Placement { get; }          // null until the first MoveTo
+    public void MoveTo(RobotState nextState);      // null -> ArgumentNullException
 }
 
 public interface IRobotOperator
 {
     RobotState? CurrentState { get; }
-    bool TryMoveTo(RobotState next);
+    bool TryMoveTo(RobotState nextState);
 }
 
 public sealed class RobotOperator : IRobotOperator
 {
     public RobotOperator(Table table);
     public RobotState? CurrentState { get; }
-    public bool TryMoveTo(RobotState next);
+    public bool TryMoveTo(RobotState nextState);
     public Outcome Run(IRobotCommand command);
 }
 

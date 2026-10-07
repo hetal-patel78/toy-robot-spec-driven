@@ -32,15 +32,15 @@ Phase 0 of `/speckit-plan`. The technical choices are fixed by the sources (Spec
   | Outcome: the position text, a warning, done with nothing to show | `Outcome` with `Outcome.PositionText(string Text)`, `Outcome.Warning(string Text)`, `Outcome.Done()` |
   | CommandParser turns one line into a parse result ("pass the line", 7.1) | `CommandParser.Parse(string line)` |
   | RobotOperator runs a command object ("run the PlaceCommand", 7.1) | `RobotOperator.Run(IRobotCommand command)` |
-  | Robot's placement and its single replace method ("replace placement", 7.1) | `Robot.Placement`, `Robot.Replace(RobotState state)` |
+  | Robot's placement and its single replace method ("move to", 7.1) | `Robot.Placement`, `Robot.MoveTo(RobotState nextState)` |
   | Table answers "is this position on the table?" | `Table.Contains(int x, int y)`, constructor `Table(int width, int height)`, read-only `Table.Width` and `Table.Height` |
   | RobotState: X, Y and the facing Direction | `RobotState(int X, int Y, Direction Facing)` |
   | `PlaceCommand` holds X, Y and F | `PlaceCommand(int X, int Y, Direction F)` |
   | Direction: four values, turning left and right, name in upper case | `Direction.North`, `Direction.East`, `Direction.South`, `Direction.West`, `Direction.All`, `Name`, `TurnLeft()`, `TurnRight()` |
   | Page 5 folder layout: the application folders and their namespaces (spec Assumptions, "source folders", added by T060) | `Domain`, `Commands`, `Parsing`, `Session`: namespaces `ToyRobot.Domain`, `ToyRobot.Commands`, `ToyRobot.Parsing`, `ToyRobot.Session` |
 
-  The members page 6 names itself are used exactly: `IRobotCommand.Name`, `NeedsRobotOnTable`, `Execute(IRobotOperator robot)`; `IRobotOperator.CurrentState`, `TryMoveTo(next)` (parameter name `next`).
-- **Rationale**: specs 001 and 002 must use the same names (brief rule 6); spec 001 owns these components. `ParseResult` and `Outcome` are result types, not new components: page 6 defines both under CommandParser and RobotOperator. `Table.Contains` was first `IsOnTable`, renamed after the run (T061): at the call site `table.IsOnTable(x, y)` repeats "table"; `table.Contains(x, y)` reads as a sentence ("does the table contain x, y?") and follows .NET's own `Contains` (for example `Rectangle.Contains`).
+  The members page 6 names itself are used exactly: `IRobotCommand.Name`, `NeedsRobotOnTable`, `Execute(IRobotOperator robot)`; `IRobotOperator.CurrentState`, `TryMoveTo(nextState)` (parameter name `nextState`).
+- **Rationale**: specs 001 and 002 must use the same names (brief rule 6); spec 001 owns these components. `ParseResult` and `Outcome` are result types, not new components: page 6 defines both under CommandParser and RobotOperator. `Table.Contains` was first `IsOnTable`, renamed after the run (T061): at the call site `table.IsOnTable(x, y)` repeats "table"; `table.Contains(x, y)` reads as a sentence ("does the table contain x, y?") and follows .NET's own `Contains` (for example `Rectangle.Contains`). The Robot's `MoveTo` was first named `Replace`, and the parameter of `TryMoveTo` was `next`; both renamed after the run (T062). Read together, the operator tries and the robot does: `TryMoveTo(nextState)` asks the Table, then `robot.MoveTo(nextState)`; turning is already a move to the same square facing a new way. `nextState` says what the value is, where `next` did not. The state is still replaced, never changed in place ([DEC-13][dec-13]).
 - **Alternatives considered**: leave names to implementation (risk of mismatch with spec 002).
 
 ## R5. Shape of `ParseResult` and `Outcome` (Decided)
@@ -90,7 +90,7 @@ Phase 0 of `/speckit-plan`. The technical choices are fixed by the sources (Spec
 
 ## R12. Preconditions inside command classes (Decided)
 
-- **Decision**: `MoveCommand`, `LeftCommand`, `RightCommand` and `ReportCommand` read `robot.CurrentState`; if it is `null` they throw `InvalidOperationException`. RobotOperator never runs them in that case ([FR-07][fr-07]), so no input line can reach the throw. `Robot.Replace` throws `ArgumentNullException` for a `null` state ([DEC-14][dec-14]), which also no input can reach. Each throw has a unit test.
+- **Decision**: `MoveCommand`, `LeftCommand`, `RightCommand` and `ReportCommand` read `robot.CurrentState`; if it is `null` they throw `InvalidOperationException`. RobotOperator never runs them in that case ([FR-07][fr-07]), so no input line can reach the throw. `Robot.MoveTo` throws `ArgumentNullException` for a `null` state ([DEC-14][dec-14]), which also no input can reach. Each throw has a unit test.
 - **Rationale**: page 6 says the command classes do not check whether the robot is on the table; RobotOperator does it once. The throw states the precondition instead of failing with a null-reference error, and no warning text is invented for a path no input can take. [DEC-32][dec-32] (never crash) concerns input; it holds because RobotOperator's check comes first, which [FR-07][fr-07]'s tests prove.
 - **Alternatives considered**: return a warning from the command (duplicates RobotOperator's rule, against [DEC-27][dec-27]); the `!` operator (would fail with a null-reference error, less clear).
 

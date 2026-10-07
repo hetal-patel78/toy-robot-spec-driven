@@ -25,7 +25,7 @@ sequenceDiagram
     K->>O: try to move to 0,0,NORTH
     O->>T: is 0,0 on the table?
     T-->>O: yes
-    O->>B: replace placement with 0,0,NORTH
+    O->>B: move to 0,0,NORTH
     O-->>K: yes, moved
     K-->>O: outcome: done, nothing to show
     O-->>R: outcome: done, nothing to show
