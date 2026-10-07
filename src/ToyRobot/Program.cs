@@ -60,7 +60,13 @@ internal static class Program
     /// <summary>The thin wiring of the real console: chooses the input reader (reading nothing) and calls <see cref="Run"/>.</summary>
     private static int Main(string[] args)
     {
+        // True if a person is typing on the console; false if the data comes from a file or pipe.
         var interactive = !Console.IsInputRedirected;
+
+        // For a file or pipe:
+        // Console.OpenStandardInput()      - the raw bytes coming in from the file or pipe.
+        // Encoding.UTF8                    - turns those bytes into text using UTF-8.
+        // detectEncodingFromByteOrderMarks - false: don't let the file's first bytes switch to another encoding.
         TextReader reader = interactive
             ? Console.In
             : new StreamReader(Console.OpenStandardInput(), Encoding.UTF8, detectEncodingFromByteOrderMarks: false);

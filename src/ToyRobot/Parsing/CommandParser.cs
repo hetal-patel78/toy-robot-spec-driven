@@ -41,10 +41,13 @@ public sealed class CommandParser
         return new ParseResult.Failure($"'{trimmed}' ignored - unknown command");
     }
 
+    // Splits a line into the command word and the rest.
+    // Example: "PLACE 1,2,NORTH" → word = "PLACE", rest = "1,2,NORTH"
+    //          "MOVE"            → word = "MOVE",  rest = ""
     private static (string Word, string Remainder) SplitCommandWord(string trimmed)
     {
         var end = 0;
-        while (end < trimmed.Length && !char.IsWhiteSpace(trimmed[end]))
+        while (end < trimmed.Length && !char.IsWhiteSpace(trimmed[end])) // IsWhiteSpace is true for a space, a tab, or a non-breaking space
         {
             end++;
         }

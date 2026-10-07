@@ -56,6 +56,20 @@ public sealed class Runner
                 return;
             }
 
+            // Removes an invisible "byte order mark" (BOM) from the start of the first line.
+            //
+            // What is it? Some editors, like Notepad, put a hidden character (\uFEFF) at the very
+            // start of a file to say "this file is UTF-8". You can't see it, but it's there.
+            //
+            // Why remove it? Without this, the first line would be "\uFEFFPLACE 0,0,NORTH".
+            // Trim() does not remove this character, so the command word would be "\uFEFFPLACE",
+            // which is not PLACE. The robot would never be placed, and the warning would look
+            // like a normal PLACE line, because the character is invisible.
+            //
+            // isFirstLine     - a BOM can only be at the start of a file, so only check the first line.
+            // line.Length > 0 - an empty line has no line[0]; reading it would crash the app.
+            // line[0]         - the first character of the line.
+            // Substring(1)    - keeps everything after the first character, so the BOM is dropped.
             if (isFirstLine && line.Length > 0 && line[0] == ByteOrderMark)
             {
                 line = line.Substring(1);

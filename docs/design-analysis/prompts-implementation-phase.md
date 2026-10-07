@@ -553,3 +553,8 @@ Outcome: `Table.IsOnTable(x, y)` renamed to `Table.Contains(x, y)`. At the call 
 > _robot.ReplacePlacement(nextState);
 
 Outcome: the parameter `next` of `TryMoveTo` became `nextState`, and the Robot's `Replace(state)` became `MoveTo(nextState)` (chosen from `MoveTo`, `SetPlacement`, `PlaceAt` and keeping `Replace`). Read together, the operator tries and the robot does: `TryMoveTo(nextState)` asks the Table, then `robot.MoveTo(nextState)`; turning is already a move to the same square facing a new way. `nextState` says what the value is, where `next` did not. The state is still replaced, never changed in place (DEC-13). `ReplaceWith` was not used because it reads as replacing the robot itself, and `CurrentState.ReplaceWith(...)` cannot work: `RobotState` is an immutable value (DEC-12), and changing it through `CurrentState` would let a command skip the Table check (DEC-13, DEC-14). Changed in order: solution design pages 5, 6 and 7.1 and the glossary; spec 001 (Clarifications, NFR-07d, NFR-07g, Key Entities, Assumptions, research R4, data model, contract, tasks, task T062); the spec check script; the tests; the code. No behaviour changes.
+
+<a id="p219"></a>**P219.** Plain-English code comments:
+> commit my comments on the main and push it
+
+Outcome: plain-English comments added where a line needs explaining to a new reader: `Program.Main` (what `interactive` means, and the parts of the UTF-8 reader for a file or pipe), `Runner.Run` (why a byte-order mark is removed from the first line, and each part of the check), `CommandParser.SplitCommandWord` (what it returns, with examples, and what `char.IsWhiteSpace` matches) and `ParseResult.CommandObject` (what it holds and who uses it). Comments only; no behaviour changes.
